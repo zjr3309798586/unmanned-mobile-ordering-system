@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>优惠券管理 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-page="coupons">
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><div class="sidebar-logo">点</div><div><div class="sidebar-title">点餐后台</div><div class="sidebar-subtitle">Management</div></div></div>
+      <nav class="nav-list">
+        <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
+        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
+        <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
+        <a class="nav-item" data-page="users" href="users.html">用户管理</a>
+        <a class="nav-item" data-page="coupons" href="coupons.html">优惠券管理</a>
+        <a class="nav-item" data-page="activities" href="activities.html">活动管理</a>
+        <a class="nav-item" data-page="analytics" href="analytics.html">统计分析</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>优惠券管理</h1><p>维护新人券、省钱卡券和满减券。</p></div>
+        <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
+      </header>
+      <section class="coupon-list">
+        <div class="small-card"><strong>新人立减券</strong><p class="muted">满 20 减 5，有效期 7 天</p><button class="link-btn" data-toast="已模拟发券">发放</button></div>
+        <div class="small-card"><strong>下午茶券</strong><p class="muted">满 30 减 8，14:00-17:00 可用</p><button class="link-btn" data-toast="已模拟发券">发放</button></div>
+        <div class="small-card"><strong>会员专享券</strong><p class="muted">满 15 减 3，省钱卡用户可领</p><button class="link-btn" data-toast="已模拟发券">发放</button></div>
+      </section>
+      <section class="card" style="margin-top:18px;">
+        <div class="card-header"><h2>新增优惠券</h2><span class="muted">静态表单示例</span></div>
+        <div class="form-grid">
+          <div class="field"><label>券名称</label><input placeholder="例如：周末满减券"></div>
+          <div class="field"><label>优惠金额</label><input placeholder="5.00"></div>
+          <div class="field"><label>使用门槛</label><input placeholder="满 20 可用"></div>
+          <div class="field"><label>状态</label><select><option>启用</option><option>停用</option></select></div>
+        </div>
+        <button class="btn" data-toast="已模拟保存优惠券">保存优惠券</button>
+      </section>
+    </main>
+  </div>
+  <script src="js/admin.js"></script>
+</body>
+</html>

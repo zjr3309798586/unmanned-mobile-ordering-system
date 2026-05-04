@@ -1,0 +1,89 @@
+CREATE TABLE IF NOT EXISTS stores (
+  id VARCHAR(32) PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  address VARCHAR(200) NOT NULL,
+  distance VARCHAR(30) NOT NULL,
+  business_hours VARCHAR(50) NOT NULL,
+  notice VARCHAR(500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS categories (
+  id VARCHAR(32) PRIMARY KEY,
+  name VARCHAR(60) NOT NULL,
+  sort_order INT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS products (
+  id VARCHAR(32) PRIMARY KEY,
+  category_id VARCHAR(32) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(500) NOT NULL,
+  image VARCHAR(200) NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  sales INT NOT NULL DEFAULT 0,
+  tags VARCHAR(200) NOT NULL DEFAULT '',
+  enabled TINYINT(1) NOT NULL DEFAULT 1,
+  INDEX idx_products_category (category_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS coupons (
+  id VARCHAR(32) PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  condition_text VARCHAR(200) NOT NULL,
+  discount_amount DECIMAL(10, 2) NOT NULL,
+  valid_until VARCHAR(30) NOT NULL,
+  available TINYINT(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS saving_card_plans (
+  id VARCHAR(32) PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  description VARCHAR(500) NOT NULL,
+  benefits VARCHAR(500) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_profiles (
+  user_id VARCHAR(32) PRIMARY KEY,
+  nickname VARCHAR(80) NOT NULL,
+  member_level VARCHAR(50) NOT NULL,
+  points INT NOT NULL DEFAULT 0,
+  balance DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  coupon_count INT NOT NULL DEFAULT 0,
+  saving_amount DECIMAL(10, 2) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS cart_items (
+  id VARCHAR(40) PRIMARY KEY,
+  product_id VARCHAR(32) NOT NULL,
+  spec VARCHAR(200) NOT NULL,
+  quantity INT NOT NULL,
+  created_at DATETIME NOT NULL,
+  UNIQUE KEY uk_cart_product_spec (product_id, spec)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS orders (
+  id VARCHAR(40) PRIMARY KEY,
+  order_no VARCHAR(40) NOT NULL UNIQUE,
+  pickup_type VARCHAR(40) NOT NULL,
+  store_name VARCHAR(100) NOT NULL,
+  table_no VARCHAR(40),
+  remark VARCHAR(300),
+  status VARCHAR(40) NOT NULL,
+  total_amount DECIMAL(10, 2) NOT NULL,
+  discount_amount DECIMAL(10, 2) NOT NULL,
+  payable_amount DECIMAL(10, 2) NOT NULL,
+  created_at DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS order_items (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  order_id VARCHAR(40) NOT NULL,
+  product_id VARCHAR(32) NOT NULL,
+  product_name VARCHAR(100) NOT NULL,
+  spec VARCHAR(200) NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  quantity INT NOT NULL,
+  UNIQUE KEY uk_order_item (order_id, product_id, spec),
+  INDEX idx_order_items_order_id (order_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

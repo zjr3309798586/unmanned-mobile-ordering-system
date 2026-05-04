@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据看板 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-page="dashboard">
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">点</div>
+        <div>
+          <div class="sidebar-title">点餐后台</div>
+          <div class="sidebar-subtitle">Management</div>
+        </div>
+      </div>
+      <nav class="nav-list">
+        <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
+        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
+        <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
+        <a class="nav-item" data-page="users" href="users.html">用户管理</a>
+        <a class="nav-item" data-page="coupons" href="coupons.html">优惠券管理</a>
+        <a class="nav-item" data-page="activities" href="activities.html">活动管理</a>
+        <a class="nav-item" data-page="analytics" href="analytics.html">统计分析</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <button class="btn ghost menu-toggle" id="menuToggle">菜单</button>
+          <h1>数据看板</h1>
+          <p>今天是 <span class="js-date"></span>，以下为演示数据。</p>
+        </div>
+        <div class="top-actions">
+          <div class="admin-user"><span class="avatar">A</span> 管理员</div>
+          <button class="btn ghost" id="logoutBtn">退出</button>
+        </div>
+      </header>
+
+      <section class="grid stats-grid">
+        <div class="card stat-card"><div class="stat-label">今日营业额</div><div class="stat-value">¥ 1,286</div><div class="stat-change">较昨日 +12%</div></div>
+        <div class="card stat-card"><div class="stat-label">今日订单</div><div class="stat-value">86</div><div class="stat-change">堂食自取 64 单</div></div>
+        <div class="card stat-card"><div class="stat-label">在售菜品</div><div class="stat-value">38</div><div class="stat-change">热销商品 8 个</div></div>
+        <div class="card stat-card"><div class="stat-label">新增用户</div><div class="stat-value">24</div><div class="stat-change">会员转化 31%</div></div>
+      </section>
+
+      <section class="grid content-grid" style="margin-top:18px;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2>近七日订单趋势</h2>
+              <p class="muted">用于答辩展示的数据分析模块。</p>
+            </div>
+          </div>
+          <div class="chart-bars">
+            <div class="bar-row"><span>周一</span><div class="bar"><span style="width:64%;"></span></div><strong>64</strong></div>
+            <div class="bar-row"><span>周二</span><div class="bar"><span style="width:72%;"></span></div><strong>72</strong></div>
+            <div class="bar-row"><span>周三</span><div class="bar"><span style="width:68%;"></span></div><strong>68</strong></div>
+            <div class="bar-row"><span>周四</span><div class="bar"><span style="width:81%;"></span></div><strong>81</strong></div>
+            <div class="bar-row"><span>周五</span><div class="bar"><span style="width:92%;"></span></div><strong>92</strong></div>
+            <div class="bar-row"><span>周六</span><div class="bar"><span style="width:78%;"></span></div><strong>78</strong></div>
+            <div class="bar-row"><span>周日</span><div class="bar"><span style="width:86%;"></span></div><strong>86</strong></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>热销排行</h2>
+            <button class="link-btn" data-toast="当前为静态演示，后续可接销售排行接口">刷新</button>
+          </div>
+          <table>
+            <tbody>
+              <tr><td>橙香美式</td><td>388 杯</td></tr>
+              <tr><td>西柚绿茶</td><td>356 杯</td></tr>
+              <tr><td>黑糖珍珠奶茶</td><td>301 杯</td></tr>
+              <tr><td>生椰拿铁</td><td>246 杯</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="js/admin.js"></script>
+</body>
+</html>

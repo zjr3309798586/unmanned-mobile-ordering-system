@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订单管理 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-page="orders">
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><div class="sidebar-logo">点</div><div><div class="sidebar-title">点餐后台</div><div class="sidebar-subtitle">Management</div></div></div>
+      <nav class="nav-list">
+        <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
+        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
+        <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
+        <a class="nav-item" data-page="users" href="users.html">用户管理</a>
+        <a class="nav-item" data-page="coupons" href="coupons.html">优惠券管理</a>
+        <a class="nav-item" data-page="activities" href="activities.html">活动管理</a>
+        <a class="nav-item" data-page="analytics" href="analytics.html">统计分析</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>订单管理</h1><p>查看订单状态，处理取消和出餐。</p></div>
+        <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
+      </header>
+
+      <section class="card">
+        <div class="toolbar">
+          <div class="tabs">
+            <button class="tab active" data-status-filter="all" data-target="#ordersTable">全部</button>
+            <button class="tab" data-status-filter="waiting" data-target="#ordersTable">待取餐</button>
+            <button class="tab" data-status-filter="done" data-target="#ordersTable">已完成</button>
+            <button class="tab" data-status-filter="cancel" data-target="#ordersTable">已取消</button>
+          </div>
+          <input class="search" data-table-search="#ordersTable" placeholder="搜索订单号、用户或商品">
+        </div>
+        <div class="table-wrap">
+          <table id="ordersTable">
+            <thead><tr><th>订单号</th><th>用户</th><th>商品</th><th>金额</th><th>取餐方式</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr data-status="waiting"><td>UMO20260504001</td><td>Guest User</td><td>橙香美式 x2</td><td>¥26.80</td><td>到店自取</td><td><span class="status orange">待取餐</span></td><td><button class="link-btn" data-toast="已模拟完成订单">完成</button></td></tr>
+              <tr data-status="done"><td>UMO20260504002</td><td>会员用户</td><td>西柚绿茶 x1</td><td>¥13.90</td><td>平台外送</td><td><span class="status green">已完成</span></td><td><button class="link-btn" data-toast="已模拟查看详情">详情</button></td></tr>
+              <tr data-status="cancel"><td>UMO20260503009</td><td>新用户</td><td>生椰拿铁 x1</td><td>¥17.90</td><td>到店自取</td><td><span class="status red">已取消</span></td><td><button class="link-btn" data-toast="已模拟查看详情">详情</button></td></tr>
+              <tr data-status="waiting"><td>UMO20260504003</td><td>学生用户</td><td>黑糖珍珠奶茶 x2</td><td>¥29.80</td><td>到店自取</td><td><span class="status orange">待取餐</span></td><td><button class="link-btn" data-toast="已模拟完成订单">完成</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="js/admin.js"></script>
+</body>
+</html>

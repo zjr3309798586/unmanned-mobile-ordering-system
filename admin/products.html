@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>菜品管理 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-page="products">
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><div class="sidebar-logo">点</div><div><div class="sidebar-title">点餐后台</div><div class="sidebar-subtitle">Management</div></div></div>
+      <nav class="nav-list">
+        <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
+        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
+        <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
+        <a class="nav-item" data-page="users" href="users.html">用户管理</a>
+        <a class="nav-item" data-page="coupons" href="coupons.html">优惠券管理</a>
+        <a class="nav-item" data-page="activities" href="activities.html">活动管理</a>
+        <a class="nav-item" data-page="analytics" href="analytics.html">统计分析</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>菜品管理</h1><p>维护点餐页展示的商品信息。</p></div>
+        <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
+      </header>
+
+      <section class="card">
+        <div class="toolbar">
+          <input class="search" data-table-search="#productsTable" placeholder="搜索菜品名称、分类或状态">
+          <button class="btn" data-toast="新增菜品弹窗后续接入，这里先做静态按钮">新增菜品</button>
+        </div>
+        <div class="table-wrap">
+          <table id="productsTable">
+            <thead><tr><th>菜品名称</th><th>分类</th><th>价格</th><th>销量</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td>橙香美式</td><td>咖啡</td><td>¥15.90</td><td>388</td><td><span class="status green">在售</span></td><td class="mini-actions"><button class="link-btn" data-toast="编辑功能后续接接口">编辑</button><button class="link-btn" data-toast="已模拟下架">下架</button></td></tr>
+              <tr><td>生椰拿铁</td><td>咖啡</td><td>¥17.90</td><td>246</td><td><span class="status green">在售</span></td><td class="mini-actions"><button class="link-btn" data-toast="编辑功能后续接接口">编辑</button><button class="link-btn" data-toast="已模拟下架">下架</button></td></tr>
+              <tr><td>西柚绿茶</td><td>果茶</td><td>¥13.90</td><td>520</td><td><span class="status orange">推荐</span></td><td class="mini-actions"><button class="link-btn" data-toast="编辑功能后续接接口">编辑</button><button class="link-btn" data-toast="已模拟下架">下架</button></td></tr>
+              <tr><td>黑糖珍珠奶茶</td><td>奶茶</td><td>¥14.90</td><td>301</td><td><span class="status green">在售</span></td><td class="mini-actions"><button class="link-btn" data-toast="编辑功能后续接接口">编辑</button><button class="link-btn" data-toast="已模拟下架">下架</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:18px;">
+        <div class="card-header"><h2>新增菜品表单示例</h2><span class="muted">静态演示，不提交后端</span></div>
+        <div class="form-grid">
+          <div class="field"><label>菜品名称</label><input placeholder="例如：香草拿铁"></div>
+          <div class="field"><label>所属分类</label><select><option>咖啡</option><option>果茶</option><option>奶茶</option><option>小食</option></select></div>
+          <div class="field"><label>价格</label><input placeholder="16.90"></div>
+          <div class="field"><label>状态</label><select><option>在售</option><option>下架</option></select></div>
+          <div class="field wide"><label>菜品描述</label><textarea placeholder="填写商品口味、卖点和备注"></textarea></div>
+        </div>
+        <button class="btn" data-toast="已模拟保存，后续接 POST /api/admin/products">保存菜品</button>
+      </section>
+    </main>
+  </div>
+  <script src="js/admin.js"></script>
+</body>
+</html>

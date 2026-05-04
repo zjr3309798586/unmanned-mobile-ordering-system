@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理员登录 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="login-page" data-page="login">
+  <section class="login-card">
+    <div class="login-hero">
+      <div class="brand-badge">
+        <span class="brand-dot">点</span>
+        <span>无人移动点餐系统</span>
+      </div>
+      <h1>后台管理端</h1>
+      <p>用于查看营业数据、管理菜品分类、处理订单和维护优惠活动。当前是课程项目静态演示版本。</p>
+    </div>
+
+    <div class="login-form">
+      <h2>管理员登录</h2>
+      <p>输入任意账号和密码即可进入演示后台。</p>
+      <form id="loginForm">
+        <div class="field">
+          <label for="username">账号</label>
+          <input id="username" type="text" value="admin" autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="password">密码</label>
+          <input id="password" type="password" value="123456" autocomplete="current-password">
+        </div>
+        <button class="btn full" type="submit">进入后台</button>
+      </form>
+      <div class="demo-tip">说明：登录功能暂时只做页面跳转，后续再接 Spring Boot 登录接口。</div>
+    </div>
+  </section>
+  <script src="js/admin.js"></script>
+</body>
+</html>

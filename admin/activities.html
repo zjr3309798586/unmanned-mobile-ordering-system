@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>活动管理 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-page="activities">
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><div class="sidebar-logo">点</div><div><div class="sidebar-title">点餐后台</div><div class="sidebar-subtitle">Management</div></div></div>
+      <nav class="nav-list">
+        <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
+        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
+        <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
+        <a class="nav-item" data-page="users" href="users.html">用户管理</a>
+        <a class="nav-item" data-page="coupons" href="coupons.html">优惠券管理</a>
+        <a class="nav-item" data-page="activities" href="activities.html">活动管理</a>
+        <a class="nav-item" data-page="analytics" href="analytics.html">统计分析</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>活动管理</h1><p>管理首页 Banner、新人券包和集杯任务。</p></div>
+        <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
+      </header>
+      <section class="activity-list">
+        <div class="small-card"><strong>首页主 Banner</strong><p class="muted">宣传新品和省钱卡，状态：展示中</p><button class="link-btn" data-toast="已模拟编辑活动">编辑</button></div>
+        <div class="small-card"><strong>新人券包</strong><p class="muted">新用户注册后领取，状态：启用</p><button class="link-btn" data-toast="已模拟编辑活动">编辑</button></div>
+        <div class="small-card"><strong>集杯任务</strong><p class="muted">购买 5 杯得优惠券，状态：启用</p><button class="link-btn" data-toast="已模拟编辑活动">编辑</button></div>
+      </section>
+      <section class="card" style="margin-top:18px;">
+        <div class="card-header"><h2>活动配置</h2><span class="muted">后续可接活动接口</span></div>
+        <div class="form-grid">
+          <div class="field"><label>活动名称</label><input placeholder="例如：夏日果茶节"></div>
+          <div class="field"><label>活动位置</label><select><option>首页 Banner</option><option>点餐页推荐</option><option>省钱卡页</option></select></div>
+          <div class="field wide"><label>活动说明</label><textarea placeholder="填写活动规则和展示文案"></textarea></div>
+        </div>
+        <button class="btn" data-toast="已模拟保存活动">保存活动</button>
+      </section>
+    </main>
+  </div>
+  <script src="js/admin.js"></script>
+</body>
+</html>

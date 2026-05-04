@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分类管理 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-page="categories">
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><div class="sidebar-logo">点</div><div><div class="sidebar-title">点餐后台</div><div class="sidebar-subtitle">Management</div></div></div>
+      <nav class="nav-list">
+        <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
+        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
+        <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
+        <a class="nav-item" data-page="users" href="users.html">用户管理</a>
+        <a class="nav-item" data-page="coupons" href="coupons.html">优惠券管理</a>
+        <a class="nav-item" data-page="activities" href="activities.html">活动管理</a>
+        <a class="nav-item" data-page="analytics" href="analytics.html">统计分析</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>分类管理</h1><p>控制点餐页左侧分类栏展示顺序。</p></div>
+        <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
+      </header>
+
+      <section class="category-list">
+        <div class="small-card"><strong>咖啡</strong><p class="muted">6 个菜品，排序 1</p><button class="link-btn" data-toast="已模拟编辑分类">编辑</button></div>
+        <div class="small-card"><strong>果茶</strong><p class="muted">8 个菜品，排序 2</p><button class="link-btn" data-toast="已模拟编辑分类">编辑</button></div>
+        <div class="small-card"><strong>奶茶</strong><p class="muted">10 个菜品，排序 3</p><button class="link-btn" data-toast="已模拟编辑分类">编辑</button></div>
+        <div class="small-card"><strong>小食</strong><p class="muted">5 个菜品，排序 4</p><button class="link-btn" data-toast="已模拟编辑分类">编辑</button></div>
+      </section>
+
+      <section class="card" style="margin-top:18px;">
+        <div class="card-header"><h2>新增分类</h2><span class="muted">后续可接分类接口</span></div>
+        <div class="form-grid">
+          <div class="field"><label>分类名称</label><input placeholder="例如：新品专区"></div>
+          <div class="field"><label>排序值</label><input placeholder="5"></div>
+        </div>
+        <button class="btn" data-toast="已模拟新增分类">保存分类</button>
+      </section>
+    </main>
+  </div>
+  <script src="js/admin.js"></script>
+</body>
+</html>
