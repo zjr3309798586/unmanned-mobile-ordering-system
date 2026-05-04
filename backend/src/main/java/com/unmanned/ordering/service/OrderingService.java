@@ -65,7 +65,7 @@ public class OrderingService {
     public Product getProduct(String productId) {
         Product product = productMapper.findEnabledById(productId);
         if (product == null) {
-            throw new BusinessException(404, "Product not found");
+            throw new BusinessException(404, "商品不存在");
         }
         return product;
     }
@@ -81,7 +81,7 @@ public class OrderingService {
     public UserProfile getUserProfile() {
         UserProfile userProfile = storeMapper.findUserProfile();
         if (userProfile == null) {
-            throw new BusinessException(404, "User profile not found");
+            throw new BusinessException(404, "用户资料不存在");
         }
         return userProfile;
     }
@@ -92,7 +92,7 @@ public class OrderingService {
         BigDecimal totalAmount = items.stream()
                 .map(CartItem::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return new CartSummary(items, totalQuantity, totalAmount, "Use coupons at checkout when available.");
+        return new CartSummary(items, totalQuantity, totalAmount, "结算时可选择可用优惠券。");
     }
 
     @Transactional
@@ -112,7 +112,7 @@ public class OrderingService {
     @Transactional
     public CartSummary updateCartItem(String itemId, int quantity) {
         if (cartMapper.updateQuantity(itemId, quantity) == 0) {
-            throw new BusinessException(404, "Cart item not found");
+            throw new BusinessException(404, "购物车商品不存在");
         }
         return getCartSummary();
     }
@@ -120,7 +120,7 @@ public class OrderingService {
     @Transactional
     public CartSummary deleteCartItem(String itemId) {
         if (cartMapper.deleteById(itemId) == 0) {
-            throw new BusinessException(404, "Cart item not found");
+            throw new BusinessException(404, "购物车商品不存在");
         }
         return getCartSummary();
     }
@@ -140,7 +140,7 @@ public class OrderingService {
     public Order getOrder(String orderId) {
         Order order = orderMapper.findOrder(orderId);
         if (order == null) {
-            throw new BusinessException(404, "Order not found");
+            throw new BusinessException(404, "订单不存在");
         }
         return attachOrderItems(order);
     }
@@ -149,7 +149,7 @@ public class OrderingService {
     public Order createOrder(CreateOrderRequest request) {
         List<CartItem> cartItems = cartMapper.listCartItems();
         if (cartItems.isEmpty()) {
-            throw new BusinessException(400, "Cart is empty");
+            throw new BusinessException(400, "购物车为空");
         }
 
         List<OrderItem> orderItems = cartItems.stream()
@@ -189,7 +189,7 @@ public class OrderingService {
     public Order cancelOrder(String orderId) {
         Order order = getOrder(orderId);
         if ("COMPLETED".equals(order.getStatus())) {
-            throw new BusinessException(400, "Completed orders cannot be canceled");
+            throw new BusinessException(400, "已完成订单不能取消");
         }
         orderMapper.updateStatus(orderId, "CANCELED");
         return getOrder(orderId);
@@ -247,7 +247,7 @@ public class OrderingService {
     public Product updateProduct(String productId, ProductRequest request) {
         Product existing = productMapper.findById(productId);
         if (existing == null) {
-            throw new BusinessException(404, "Product not found");
+            throw new BusinessException(404, "商品不存在");
         }
         ensureCategoryExists(request.getCategoryId());
         Product product = new Product(
@@ -269,7 +269,7 @@ public class OrderingService {
     public Product disableProduct(String productId) {
         Product existing = productMapper.findById(productId);
         if (existing == null) {
-            throw new BusinessException(404, "Product not found");
+            throw new BusinessException(404, "商品不存在");
         }
         productMapper.disable(productId);
         return productMapper.findById(productId);
@@ -282,7 +282,7 @@ public class OrderingService {
 
     private void ensureCategoryExists(String categoryId) {
         if (storeMapper.countCategory(categoryId) == 0) {
-            throw new BusinessException(404, "Category not found");
+            throw new BusinessException(404, "分类不存在");
         }
     }
 
@@ -293,12 +293,12 @@ public class OrderingService {
         Coupon coupon = storeMapper.listCoupons().stream()
                 .filter(item -> item.getId().equals(couponId) && item.isAvailable())
                 .findFirst()
-                .orElseThrow(() -> new BusinessException(404, "Coupon not found"));
+                .orElseThrow(() -> new BusinessException(404, "优惠券不存在"));
         return coupon.getDiscountAmount().min(totalAmount);
     }
 
     private String normalizeSpec(String spec) {
-        return StringUtils.hasText(spec) ? spec.trim() : "Regular";
+        return StringUtils.hasText(spec) ? spec.trim() : "标准杯";
     }
 
     private String buildOrderNo() {

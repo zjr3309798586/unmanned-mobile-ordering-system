@@ -31,11 +31,12 @@ class OrderingApiSmokeTest {
 
         ResponseEntity<String> cart = restTemplate.postForEntity(
                 "/api/cart/items",
-                new HttpEntity<>("{\"productId\":\"P-1001\",\"spec\":\"Iced / Regular sugar\",\"quantity\":2}", headers),
+                new HttpEntity<>("{\"productId\":\"P-1001\",\"spec\":\"少冰 / 五分糖\",\"quantity\":2}", headers),
                 String.class
         );
         assertThat(cart.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(cart.getBody()).contains("Orange Americano");
+        assertThat(cart.getBody()).contains("P-1001");
+        assertThat(cart.getBody()).contains("quantity");
 
         ResponseEntity<String> order = restTemplate.postForEntity(
                 "/api/orders",
