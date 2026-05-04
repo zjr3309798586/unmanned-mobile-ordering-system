@@ -196,6 +196,16 @@ public class OrderingService {
     }
 
     @Transactional
+    public Order completeOrder(String orderId) {
+        Order order = getOrder(orderId);
+        if ("CANCELED".equals(order.getStatus())) {
+            throw new BusinessException(400, "已取消订单不能完成");
+        }
+        orderMapper.updateStatus(orderId, "COMPLETED");
+        return getOrder(orderId);
+    }
+
+    @Transactional
     public CartSummary repeatOrder(String orderId) {
         Order order = getOrder(orderId);
         for (OrderItem item : order.getItems()) {

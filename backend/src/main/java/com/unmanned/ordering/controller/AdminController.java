@@ -2,6 +2,7 @@ package com.unmanned.ordering.controller;
 
 import com.unmanned.ordering.common.ApiResponse;
 import com.unmanned.ordering.model.AdminDashboard;
+import com.unmanned.ordering.model.Order;
 import com.unmanned.ordering.model.Product;
 import com.unmanned.ordering.request.ProductRequest;
 import com.unmanned.ordering.service.OrderingService;
@@ -51,5 +52,10 @@ public class AdminController {
     @DeleteMapping("/products/{productId}")
     public ApiResponse<Product> disableProduct(@PathVariable String productId) {
         return ApiResponse.ok(orderingService.disableProduct(productId));
+    }
+
+    @PatchMapping("/orders/{orderId}/complete")
+    public ApiResponse<Order> completeOrder(@PathVariable String orderId) {
+        return ApiResponse.ok(orderingService.completeOrder(orderId));
     }
 }

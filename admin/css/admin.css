@@ -459,6 +459,12 @@ tr:hover td {
   background: #edf4ff;
 }
 
+.table-empty {
+  padding: 28px 18px;
+  color: var(--muted);
+  text-align: center;
+}
+
 .mini-actions {
   display: flex;
   gap: 8px;

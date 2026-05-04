@@ -1,5 +1,8 @@
 window.OrderingApp = (function () {
-  var apiBaseUrl = localStorage.getItem("orderingApiBaseUrl") || "http://127.0.0.1:8080/api";
+  var defaultApiBaseUrl = window.location.protocol === "file:"
+    ? "http://127.0.0.1:8080/api"
+    : window.location.origin + "/api";
+  var apiBaseUrl = localStorage.getItem("orderingApiBaseUrl") || defaultApiBaseUrl;
 
   function request(path, options) {
     var config = options || {};
