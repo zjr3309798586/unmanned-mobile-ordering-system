@@ -69,19 +69,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!couponList) {
       return;
     }
-    var options = coupons.map(function (coupon) {
-      var active = selectedCouponId === coupon.id ? " is-active" : "";
-      return '<button class="coupon-select' + active + '" type="button" data-coupon-id="' + app.escapeHtml(coupon.id) + '">' +
-        '<strong>' + app.escapeHtml(coupon.title) + '</strong><span>' + app.escapeHtml(coupon.conditionText) + '，减 ' + app.money(coupon.discountAmount) + '</span>' +
-      '</button>';
-    }).join("");
     if (coupons.length === 0) {
       couponList.innerHTML = '<button class="coupon-select is-active" type="button" data-coupon-id="">' +
         '<strong>暂无可用优惠券</strong><span>按商品金额结算</span></button>';
       return;
     }
-    options += '<button class="coupon-select' + (!selectedCouponId ? " is-active" : "") + '" type="button" data-coupon-id="">' +
-      '<strong>暂不使用</strong><span>保持原价</span></button>';
+    var options = '<button class="coupon-select' + (!selectedCouponId ? " is-active" : "") + '" type="button" data-coupon-id="">' +
+      '<strong>不使用优惠券</strong><span>保持原价，本次订单不抵扣</span></button>';
+    options += coupons.map(function (coupon) {
+      var active = selectedCouponId === coupon.id ? " is-active" : "";
+      return '<button class="coupon-select' + active + '" type="button" data-coupon-id="' + app.escapeHtml(coupon.id) + '">' +
+        '<strong>' + app.escapeHtml(coupon.title) + '</strong><span>' + app.escapeHtml(coupon.conditionText) + '，选择后减 ' + app.money(coupon.discountAmount) + '</span>' +
+      '</button>';
+    }).join("");
     couponList.innerHTML = options;
   }
 
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
       coupons = (result[1] || []).filter(function (coupon) {
         return coupon.available;
       });
-      selectedCouponId = coupons.length ? coupons[0].id : "";
+      selectedCouponId = "";
       renderStore(result[2]);
       renderAll();
     })

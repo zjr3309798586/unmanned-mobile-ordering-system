@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return item.available;
     });
     tipTextNode.textContent = coupon
-      ? coupon.conditionText + "，提交订单时可减 " + app.money(coupon.discountAmount) + "。"
+      ? coupon.conditionText + "，提交订单时可选择使用，最高可减 " + app.money(coupon.discountAmount) + "。"
       : "当前暂无可用优惠券，提交订单时按商品金额结算。";
   }
 
