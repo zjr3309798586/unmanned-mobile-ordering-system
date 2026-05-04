@@ -1,0 +1,32 @@
+.detail-top-area {
+  padding-bottom: 0;
+}
+
+.detail-hero-card {
+  margin-top: 0;
+  padding: 10px;
+  box-shadow: var(--shadow-card);
+}
+
+.detail-cover {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  background: var(--surface-soft);
+}
+
+.detail-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.quantity-row {
+  align-items: center;
+}
+
+.detail-action-bar .button {
+  min-width: 104px;
+}

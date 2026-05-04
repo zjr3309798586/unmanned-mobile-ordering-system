@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>订单页 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/order.css">
+</head>
+<body data-page="order">
+  <div class="app-shell">
+    <header class="top-area">
+      <section class="store-card compact-store">
+        <div class="store-header">
+          <div>
+            <span class="store-label">订单中心</span>
+            <h1 class="store-name">我的订单</h1>
+          </div>
+          <span class="status-pill is-open">可查看历史订单</span>
+        </div>
+        <p class="store-address">前台移动端订单页已预留全部订单、历史订单、取消 / 退单和再来一单功能区。</p>
+      </section>
+    </header>
+
+    <main class="page-main">
+      <section class="section-card">
+        <div class="order-tabs">
+          <button class="tab-chip is-active" type="button" data-order-filter="all">全部订单</button>
+          <button class="tab-chip" type="button" data-order-filter="current">进行中</button>
+          <button class="tab-chip" type="button" data-order-filter="history">历史订单</button>
+        </div>
+      </section>
+
+      <section class="order-list">
+        <article class="section-card order-card" data-order-type="current">
+          <div class="order-card-head">
+            <div>
+              <h2 class="section-title">浦东世纪广场店</h2>
+              <p class="section-note">订单号：A20260429001 · 2026-04-29 12:36</p>
+            </div>
+            <span class="status-pill is-open">制作中</span>
+          </div>
+          <div class="order-goods">
+            <p>鲜橙气泡饮 × 1</p>
+            <p>鸡腿贝果 × 2</p>
+          </div>
+          <div class="summary-row total-row">
+            <span>实付金额</span>
+            <strong class="accent-price">¥ 44.00</strong>
+          </div>
+          <div class="action-row">
+            <button class="button button-secondary" type="button" data-order-action="cancel">取消订单</button>
+            <a class="button button-primary" href="menu.html">再来一单</a>
+          </div>
+        </article>
+
+        <article class="section-card order-card" data-order-type="history">
+          <div class="order-card-head">
+            <div>
+              <h2 class="section-title">浦东世纪广场店</h2>
+              <p class="section-note">订单号：A20260428017 · 2026-04-28 19:08</p>
+            </div>
+            <span class="status-pill">已完成</span>
+          </div>
+          <div class="order-goods">
+            <p>桂花乌龙奶盖 × 1</p>
+            <p>鸡腿贝果 × 1</p>
+          </div>
+          <div class="summary-row total-row">
+            <span>实付金额</span>
+            <strong class="accent-price">¥ 36.00</strong>
+          </div>
+          <div class="action-row">
+            <button class="button button-secondary" type="button" data-order-action="refund">申请退单</button>
+            <a class="button button-primary" href="menu.html">再来一单</a>
+          </div>
+        </article>
+
+        <article class="section-card order-card" data-order-type="history">
+          <div class="order-card-head">
+            <div>
+              <h2 class="section-title">浦东世纪广场店</h2>
+              <p class="section-note">订单号：A20260426008 · 2026-04-26 08:15</p>
+            </div>
+            <span class="status-pill">已取消</span>
+          </div>
+          <div class="order-goods">
+            <p>青提茉莉轻饮 × 1</p>
+          </div>
+          <div class="summary-row total-row">
+            <span>订单金额</span>
+            <strong class="accent-price">¥ 19.00</strong>
+          </div>
+          <div class="action-row">
+            <a class="button button-primary" href="menu.html">再来一单</a>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="底部导航">
+      <a class="nav-item" data-nav-key="home" href="index.html">
+        <span class="nav-icon">首</span>
+        <span>首页</span>
+      </a>
+      <a class="nav-item" data-nav-key="menu" href="menu.html">
+        <span class="nav-icon">餐</span>
+        <span>点餐</span>
+      </a>
+      <a class="nav-item" data-nav-key="saving-card" href="saving-card.html">
+        <span class="nav-icon">卡</span>
+        <span>省钱卡</span>
+      </a>
+      <a class="nav-item" data-nav-key="order" href="order.html">
+        <span class="nav-icon">单</span>
+        <span>订单</span>
+      </a>
+      <a class="nav-item" data-nav-key="mine" href="mine.html">
+        <span class="nav-icon">我</span>
+        <span>我的</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/order.js"></script>
+</body>
+</html>

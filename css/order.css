@@ -1,0 +1,24 @@
+.order-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.order-goods {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 2px 0 0;
+  color: var(--text-soft);
+  font-size: 12px;
+  line-height: 1.58;
+}
+
+.order-card {
+  padding: 12px;
+  box-shadow: 0 4px 14px rgba(20, 48, 96, 0.04);
+}
+
+.order-card-head {
+  margin-bottom: 10px;
+}

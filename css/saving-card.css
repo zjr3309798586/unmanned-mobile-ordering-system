@@ -1,0 +1,115 @@
+.saving-hero {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  color: var(--text-inverse);
+  background: linear-gradient(135deg, var(--primary-deep) 0%, var(--primary) 62%, #5f8cff 100%);
+  box-shadow: 0 12px 24px rgba(31, 94, 255, 0.2);
+}
+
+.saving-title {
+  margin: 10px 0 0;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.saving-text {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+  line-height: 1.58;
+}
+
+.hero-price-line {
+  margin-top: 12px;
+}
+
+.hero-price {
+  color: #ffffff;
+}
+
+.hero-price-note {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+}
+
+.saving-hero .hero-badge {
+  color: var(--primary);
+  background: #ffffff;
+}
+
+.saving-hero .button-secondary {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  text-align: left;
+  background: var(--surface-soft);
+  border: 1px solid transparent;
+}
+
+.plan-card strong {
+  font-size: 14px;
+}
+
+.plan-card span {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.plan-card small {
+  color: var(--text-soft);
+  font-size: 11px;
+}
+
+.plan-card.is-active {
+  background: var(--primary-soft);
+  border-color: #cfdcff;
+}
+
+.member-coupon {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  border: 1px dashed #ffc99f;
+}
+
+.member-coupon strong,
+.benefit-item strong {
+  display: block;
+}
+
+.member-coupon strong {
+  color: var(--accent);
+}
+
+.member-coupon span {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-soft);
+  font-size: 11px;
+}
+
+.benefit-item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: flex-start;
+}

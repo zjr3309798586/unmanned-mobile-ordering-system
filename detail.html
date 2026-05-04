@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>商品详情页 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/detail.css">
+</head>
+<body data-page="detail" data-unit-price="18">
+  <div class="app-shell">
+    <header class="top-area detail-top-area">
+      <a class="back-link" href="menu.html">返回菜单</a>
+      <h1 class="page-title">商品详情</h1>
+    </header>
+
+    <main class="page-main with-floating-bar">
+      <section class="section-card detail-hero-card">
+        <img class="detail-cover" src="images/food-placeholder.svg" alt="商品大图占位图">
+        <div class="detail-badge-row">
+          <span class="tag">热卖单品</span>
+          <span class="tag muted-tag">支持自定义口味</span>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">鲜橙气泡饮</h2>
+            <p class="section-note">月售 286 杯，好评率 98%</p>
+          </div>
+        </div>
+        <p class="product-desc">鲜橙果香与细密气泡结合，口感清爽，适合搭配轻食与小吃。当前为静态演示内容，后续可接商品详情接口。</p>
+        <div class="detail-price-line">
+          <strong class="price">¥ 18.00</strong>
+          <span class="tiny-note">默认中杯，支持温度、甜度和加料选择</span>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head compact-head">
+          <div>
+            <h2 class="section-title">温度选择</h2>
+            <p class="section-note">单选示例</p>
+          </div>
+        </div>
+        <div class="choice-row" data-choice-group>
+          <button class="choice-chip is-active" type="button" data-choice>冰饮</button>
+          <button class="choice-chip" type="button" data-choice>少冰</button>
+          <button class="choice-chip" type="button" data-choice>常温</button>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head compact-head">
+          <div>
+            <h2 class="section-title">甜度选择</h2>
+            <p class="section-note">单选示例</p>
+          </div>
+        </div>
+        <div class="choice-row" data-choice-group>
+          <button class="choice-chip" type="button" data-choice>无糖</button>
+          <button class="choice-chip" type="button" data-choice>三分糖</button>
+          <button class="choice-chip is-active" type="button" data-choice>五分糖</button>
+          <button class="choice-chip" type="button" data-choice>正常糖</button>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head compact-head">
+          <div>
+            <h2 class="section-title">加料选择</h2>
+            <p class="section-note">多选示例</p>
+          </div>
+        </div>
+        <div class="choice-row" data-choice-group data-multi="true">
+          <button class="choice-chip" type="button" data-choice>珍珠 + ¥ 2</button>
+          <button class="choice-chip is-active" type="button" data-choice>椰果 + ¥ 2</button>
+          <button class="choice-chip" type="button" data-choice>奶盖 + ¥ 3</button>
+        </div>
+      </section>
+
+      <section class="section-card quantity-card">
+        <div class="section-head compact-head">
+          <div>
+            <h2 class="section-title">购买数量</h2>
+            <p class="section-note">支持加减调节</p>
+          </div>
+        </div>
+        <div class="quantity-row">
+          <span class="tiny-note">当前选择会同步到底部金额区域</span>
+          <div class="stepper">
+            <button type="button" data-detail-minus>-</button>
+            <span data-detail-qty>1</span>
+            <button type="button" data-detail-plus>+</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">商品描述</h2>
+            <p class="section-note">详情富文本展示区</p>
+          </div>
+        </div>
+        <div class="text-block">
+          <p>这里可以放商品图文详情、原料说明、口感描述、营养信息和饮用建议。</p>
+          <p>在后端接口接入后，可将返回的富文本说明渲染到本区域。</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="floating-bar detail-action-bar">
+      <div class="floating-summary">
+        <span class="floating-label">合计金额</span>
+        <strong class="floating-price" data-detail-total>¥ 18.00</strong>
+        <span class="floating-label">当前已选 <span data-detail-count>1</span> 杯</span>
+      </div>
+      <div class="floating-actions action-stack">
+        <a class="button button-secondary" href="cart.html">加入购物车</a>
+        <a class="button button-primary" href="submit-order.html">立即购买</a>
+      </div>
+    </div>
+
+    <nav class="bottom-nav" aria-label="底部导航">
+      <a class="nav-item" data-nav-key="home" href="index.html">
+        <span class="nav-icon">首</span>
+        <span>首页</span>
+      </a>
+      <a class="nav-item" data-nav-key="menu" href="menu.html">
+        <span class="nav-icon">餐</span>
+        <span>点餐</span>
+      </a>
+      <a class="nav-item" data-nav-key="saving-card" href="saving-card.html">
+        <span class="nav-icon">卡</span>
+        <span>省钱卡</span>
+      </a>
+      <a class="nav-item" data-nav-key="order" href="order.html">
+        <span class="nav-icon">单</span>
+        <span>订单</span>
+      </a>
+      <a class="nav-item" data-nav-key="mine" href="mine.html">
+        <span class="nav-icon">我</span>
+        <span>我的</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>购物车页 - 无人移动点餐系统</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/cart.css">
+</head>
+<body data-page="cart">
+  <div class="app-shell">
+    <header class="top-area">
+      <section class="store-card compact-store">
+        <div class="store-header">
+          <div>
+            <span class="store-label">当前购物车</span>
+            <h1 class="store-name">浦东世纪广场店</h1>
+          </div>
+          <span class="status-pill">支持继续加购</span>
+        </div>
+        <p class="store-address">已选商品将保存在当前门店购物车中，后续可直接跳转提交订单页。</p>
+      </section>
+    </header>
+
+    <main class="page-main with-floating-bar">
+      <section class="section-card tip-card">
+        <div class="section-head compact-head">
+          <div>
+            <h2 class="section-title">优惠提示</h2>
+            <p class="section-note">当前可用满减券与省钱卡优惠</p>
+          </div>
+        </div>
+        <p class="info-text">满 39 元可减 6 元，开通省钱卡后还可叠加低价商品与专属券包。</p>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">已选商品</h2>
+            <p class="section-note">支持数量修改与删除</p>
+          </div>
+          <a class="section-link" href="menu.html">继续点餐</a>
+        </div>
+        <div class="cart-item-list" data-cart-list>
+          <article class="cart-item" data-cart-item data-price="18" data-qty="1">
+            <img class="cover-thumb" src="images/food-placeholder.svg" alt="鲜橙气泡饮占位图">
+            <div class="cart-item-main">
+              <div class="cart-item-head">
+                <div>
+                  <h3 class="product-name">鲜橙气泡饮</h3>
+                  <p class="product-desc">冰饮 · 五分糖 · 椰果</p>
+                </div>
+                <button class="text-action" type="button" data-delete-item>删除</button>
+              </div>
+              <div class="price-line">
+                <strong class="price small-price" data-line-total>¥ 18.00</strong>
+                <div class="stepper">
+                  <button type="button" data-cart-minus>-</button>
+                  <span data-cart-qty>1</span>
+                  <button type="button" data-cart-plus>+</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="cart-item" data-cart-item data-price="16" data-qty="2">
+            <img class="cover-thumb" src="images/food-placeholder.svg" alt="鸡腿贝果占位图">
+            <div class="cart-item-main">
+              <div class="cart-item-head">
+                <div>
+                  <h3 class="product-name">鸡腿贝果</h3>
+                  <p class="product-desc">标准款 · 现烤出品</p>
+                </div>
+                <button class="text-action" type="button" data-delete-item>删除</button>
+              </div>
+              <div class="price-line">
+                <strong class="price small-price" data-line-total>¥ 32.00</strong>
+                <div class="stepper">
+                  <button type="button" data-cart-minus>-</button>
+                  <span data-cart-qty>2</span>
+                  <button type="button" data-cart-plus>+</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head compact-head">
+          <div>
+            <h2 class="section-title">费用明细</h2>
+            <p class="section-note">当前金额为前端静态演示</p>
+          </div>
+        </div>
+        <div class="summary-list">
+          <div class="summary-row">
+            <span>商品总价</span>
+            <strong data-goods-total>¥ 50.00</strong>
+          </div>
+          <div class="summary-row">
+            <span>包装费</span>
+            <strong data-packaging-fee>¥ 2.00</strong>
+          </div>
+          <div class="summary-row">
+            <span>优惠金额</span>
+            <strong class="discount-price" data-discount-total>- ¥ 6.00</strong>
+          </div>
+          <div class="summary-row total-row">
+            <span>应付金额</span>
+            <strong class="accent-price" data-pay-total>¥ 46.00</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card hidden-card" data-cart-empty>
+        <div class="empty-state">
+          <strong>购物车暂时为空</strong>
+          <p>可以从菜单页继续选择商品，静态页面已预留空状态展示区。</p>
+          <a class="button button-primary" href="menu.html">返回点餐页</a>
+        </div>
+      </section>
+    </main>
+
+    <div class="floating-bar checkout-bar">
+      <div class="floating-summary">
+        <span class="floating-label">待结算金额</span>
+        <strong class="floating-price" data-bar-pay-total>¥ 46.00</strong>
+        <span class="floating-label"><span data-bar-item-count>3</span> 件商品</span>
+      </div>
+      <div class="floating-actions">
+        <a class="button button-primary" href="submit-order.html">去结算</a>
+      </div>
+    </div>
+
+    <nav class="bottom-nav" aria-label="底部导航">
+      <a class="nav-item" data-nav-key="home" href="index.html">
+        <span class="nav-icon">首</span>
+        <span>首页</span>
+      </a>
+      <a class="nav-item" data-nav-key="menu" href="menu.html">
+        <span class="nav-icon">餐</span>
+        <span>点餐</span>
+      </a>
+      <a class="nav-item" data-nav-key="saving-card" href="saving-card.html">
+        <span class="nav-icon">卡</span>
+        <span>省钱卡</span>
+      </a>
+      <a class="nav-item" data-nav-key="order" href="order.html">
+        <span class="nav-icon">单</span>
+        <span>订单</span>
+      </a>
+      <a class="nav-item" data-nav-key="mine" href="mine.html">
+        <span class="nav-icon">我</span>
+        <span>我的</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>

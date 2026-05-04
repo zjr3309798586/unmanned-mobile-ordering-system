@@ -1,0 +1,96 @@
+.profile-hero {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.profile-title {
+  margin: 8px 0 0;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.22;
+  letter-spacing: 0;
+}
+
+.member-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  color: var(--text-inverse);
+  background: linear-gradient(135deg, var(--primary-deep) 0%, var(--primary) 100%);
+}
+
+.member-card .info-text {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.member-card .hero-badge {
+  color: var(--primary);
+  background: #ffffff;
+}
+
+.asset-grid,
+.more-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.asset-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.asset-card {
+  padding: 12px 8px;
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-md);
+  text-align: center;
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgba(20, 48, 96, 0.04);
+}
+
+.asset-card strong {
+  display: block;
+  color: var(--primary);
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.asset-card span {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-soft);
+  font-size: 11px;
+}
+
+.service-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.service-row + .service-row {
+  border-top: 1px solid var(--line-color);
+}
+
+.service-row.is-highlight {
+  color: var(--primary);
+}
+
+.more-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.compact-feature {
+  min-height: 100px;
+  padding: 10px;
+}
