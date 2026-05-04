@@ -1,92 +1,101 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var packagingFee = 2;
-  var discountFee = 6;
+  var app = window.OrderingApp;
   var goodsTotalNode = document.querySelector("[data-goods-total]");
+  var packagingNode = document.querySelector("[data-packaging-fee]");
   var discountNode = document.querySelector("[data-discount-total]");
   var payNode = document.querySelector("[data-pay-total]");
   var barPayNode = document.querySelector("[data-bar-pay-total]");
   var barCountNode = document.querySelector("[data-bar-item-count]");
   var emptyNode = document.querySelector("[data-cart-empty]");
   var listNode = document.querySelector("[data-cart-list]");
+  var checkoutBar = document.querySelector(".checkout-bar");
 
-  function getItems() {
-    return Array.from(document.querySelectorAll("[data-cart-item]"));
-  }
+  function renderCart(summary) {
+    var data = summary || { items: [], totalAmount: 0, totalQuantity: 0 };
+    var items = data.items || [];
 
-  function updateSummary() {
-    var items = getItems();
-    var goodsTotal = 0;
-    var itemCount = 0;
-
-    items.forEach(function (item) {
-      var price = parseFloat(item.dataset.price || "0");
-      var qty = parseInt(item.dataset.qty || "1", 10);
-      var lineTotal = price * qty;
-      goodsTotal += lineTotal;
-      itemCount += qty;
-
-      var lineTotalNode = item.querySelector("[data-line-total]");
-      var qtyNode = item.querySelector("[data-cart-qty]");
-      if (lineTotalNode) {
-        lineTotalNode.textContent = "¥ " + lineTotal.toFixed(2);
-      }
-      if (qtyNode) {
-        qtyNode.textContent = String(qty);
-      }
-    });
-
-    var payable = Math.max(goodsTotal + packagingFee - discountFee, 0);
-    if (goodsTotalNode) {
-      goodsTotalNode.textContent = "¥ " + goodsTotal.toFixed(2);
-    }
-    if (discountNode) {
-      discountNode.textContent = "- ¥ " + discountFee.toFixed(2);
-    }
-    if (payNode) {
-      payNode.textContent = "¥ " + payable.toFixed(2);
-    }
-    if (barPayNode) {
-      barPayNode.textContent = "¥ " + payable.toFixed(2);
-    }
-    if (barCountNode) {
-      barCountNode.textContent = String(itemCount);
-    }
-
-    if (emptyNode && listNode) {
-      emptyNode.style.display = items.length === 0 ? "block" : "none";
+    if (listNode) {
+      listNode.innerHTML = items.map(renderCartItem).join("");
       listNode.style.display = items.length === 0 ? "none" : "flex";
     }
+    if (emptyNode) {
+      emptyNode.style.display = items.length === 0 ? "block" : "none";
+    }
+    if (checkoutBar) {
+      checkoutBar.style.display = items.length === 0 ? "none" : "flex";
+    }
+
+    if (goodsTotalNode) {
+      goodsTotalNode.textContent = app.money(data.totalAmount);
+    }
+    if (packagingNode) {
+      packagingNode.textContent = app.money(0);
+    }
+    if (discountNode) {
+      discountNode.textContent = "- " + app.money(0);
+    }
+    if (payNode) {
+      payNode.textContent = app.money(data.totalAmount);
+    }
+    if (barPayNode) {
+      barPayNode.textContent = app.money(data.totalAmount);
+    }
+    if (barCountNode) {
+      barCountNode.textContent = String(data.totalQuantity || 0);
+    }
+  }
+
+  function renderCartItem(item) {
+    return '<article class="cart-item" data-cart-item data-item-id="' + app.escapeHtml(item.id) + '" data-qty="' + item.quantity + '">' +
+      '<img class="cover-thumb" src="' + app.imageUrl(item.image) + '" alt="' + app.escapeHtml(item.productName) + '" onerror="this.src=\'images/food-placeholder.svg\'">' +
+      '<div class="cart-item-main">' +
+        '<div class="cart-item-head">' +
+          '<div><h3 class="product-name">' + app.escapeHtml(item.productName) + '</h3><p class="product-desc">' + app.escapeHtml(item.spec || "Regular") + '</p></div>' +
+          '<button class="text-action" type="button" data-delete-item>删除</button>' +
+        '</div>' +
+        '<div class="price-line">' +
+          '<strong class="price small-price">' + app.money(item.subtotal || Number(item.price) * item.quantity) + '</strong>' +
+          '<div class="stepper"><button type="button" data-cart-minus>-</button><span data-cart-qty>' + item.quantity + '</span><button type="button" data-cart-plus>+</button></div>' +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function loadCart() {
+    if (listNode) {
+      listNode.innerHTML = '<p class="section-note">正在读取购物车...</p>';
+    }
+    app.get("/cart").then(renderCart).catch(function (error) {
+      app.showMessage(error.message);
+    });
   }
 
   document.addEventListener("click", function (event) {
-    var minus = event.target.closest("[data-cart-minus]");
-    var plus = event.target.closest("[data-cart-plus]");
-    var remove = event.target.closest("[data-delete-item]");
+    var item = event.target.closest("[data-cart-item]");
+    if (!item) {
+      return;
+    }
+    var itemId = item.dataset.itemId;
+    var qty = parseInt(item.dataset.qty || "1", 10);
 
-    if (minus) {
-      var minusItem = minus.closest("[data-cart-item]");
-      var minusQty = parseInt(minusItem.dataset.qty || "1", 10);
-      if (minusQty > 1) {
-        minusItem.dataset.qty = String(minusQty - 1);
-        updateSummary();
-      }
+    if (event.target.closest("[data-cart-minus]") && qty > 1) {
+      app.patch("/cart/items/" + encodeURIComponent(itemId), { quantity: qty - 1 })
+        .then(renderCart)
+        .catch(function (error) { app.showMessage(error.message); });
     }
 
-    if (plus) {
-      var plusItem = plus.closest("[data-cart-item]");
-      var plusQty = parseInt(plusItem.dataset.qty || "1", 10);
-      plusItem.dataset.qty = String(plusQty + 1);
-      updateSummary();
+    if (event.target.closest("[data-cart-plus]")) {
+      app.patch("/cart/items/" + encodeURIComponent(itemId), { quantity: qty + 1 })
+        .then(renderCart)
+        .catch(function (error) { app.showMessage(error.message); });
     }
 
-    if (remove) {
-      var removeItem = remove.closest("[data-cart-item]");
-      if (removeItem) {
-        removeItem.remove();
-        updateSummary();
-      }
+    if (event.target.closest("[data-delete-item]")) {
+      app.del("/cart/items/" + encodeURIComponent(itemId))
+        .then(renderCart)
+        .catch(function (error) { app.showMessage(error.message); });
     }
   });
 
-  updateSummary();
+  loadCart();
 });

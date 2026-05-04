@@ -1,3 +1,100 @@
+window.OrderingApp = (function () {
+  var apiBaseUrl = localStorage.getItem("orderingApiBaseUrl") || "http://127.0.0.1:8080/api";
+
+  function request(path, options) {
+    var config = options || {};
+    config.headers = Object.assign({ "Content-Type": "application/json" }, config.headers || {});
+
+    if (config.body && typeof config.body !== "string") {
+      config.body = JSON.stringify(config.body);
+    }
+
+    return fetch(apiBaseUrl + path, config)
+      .then(function (response) {
+        return response.json().then(function (payload) {
+          if (!response.ok || payload.success === false) {
+            throw new Error(payload.message || "接口请求失败");
+          }
+          return payload.data;
+        });
+      });
+  }
+
+  function money(value) {
+    return "¥ " + Number(value || 0).toFixed(2);
+  }
+
+  function imageUrl(value) {
+    if (!value) {
+      return "images/food-placeholder.svg";
+    }
+    if (value.indexOf("/images/") === 0) {
+      return value.replace("/images/", "images/");
+    }
+    return value;
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function statusText(status) {
+    var map = {
+      WAITING_PICKUP: "待取餐",
+      COMPLETED: "已完成",
+      CANCELED: "已取消"
+    };
+    return map[status] || status || "未知";
+  }
+
+  function showMessage(message) {
+    var node = document.querySelector("[data-page-message]");
+    if (!node) {
+      node = document.createElement("div");
+      node.dataset.pageMessage = "true";
+      node.style.cssText = "position:fixed;left:50%;bottom:92px;z-index:50;max-width:360px;padding:10px 14px;border-radius:999px;color:#fff;background:rgba(37,30,24,.92);font-size:13px;transform:translateX(-50%);box-shadow:0 12px 28px rgba(0,0,0,.16);";
+      document.body.appendChild(node);
+    }
+    node.textContent = message;
+    node.style.display = "block";
+    window.clearTimeout(showMessage.timer);
+    showMessage.timer = window.setTimeout(function () {
+      node.style.display = "none";
+    }, 1800);
+  }
+
+  function queryParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  return {
+    apiBaseUrl: apiBaseUrl,
+    get: function (path) {
+      return request(path);
+    },
+    post: function (path, body) {
+      return request(path, { method: "POST", body: body });
+    },
+    patch: function (path, body) {
+      return request(path, { method: "PATCH", body: body });
+    },
+    del: function (path) {
+      return request(path, { method: "DELETE" });
+    },
+    money: money,
+    imageUrl: imageUrl,
+    escapeHtml: escapeHtml,
+    statusText: statusText,
+    showMessage: showMessage,
+    queryParam: queryParam
+  };
+})();
+
 document.addEventListener("DOMContentLoaded", function () {
   var currentPage = document.body.dataset.page || "";
   var navPageMap = {
