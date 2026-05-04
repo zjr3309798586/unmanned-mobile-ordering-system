@@ -49,6 +49,9 @@ public interface ProductMapper {
     @Select("SELECT COUNT(*) FROM products WHERE enabled = TRUE")
     int countEnabled();
 
+    @Select("SELECT COUNT(*) FROM products WHERE category_id = #{categoryId}")
+    int countByCategory(String categoryId);
+
     @Insert({
             "INSERT INTO products (id, category_id, name, description, image, price, sales, tags, enabled)",
             "VALUES (#{id}, #{categoryId}, #{name}, #{description}, #{image}, #{price}, #{sales},",

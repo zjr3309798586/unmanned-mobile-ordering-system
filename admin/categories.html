@@ -28,19 +28,16 @@
       </header>
 
       <section class="category-list">
-        <div class="small-card"><strong>咖啡</strong><p class="muted">6 个菜品，排序 1</p><button class="link-btn" data-toast="已模拟编辑分类">编辑</button></div>
-        <div class="small-card"><strong>果茶</strong><p class="muted">8 个菜品，排序 2</p><button class="link-btn" data-toast="已模拟编辑分类">编辑</button></div>
-        <div class="small-card"><strong>奶茶</strong><p class="muted">10 个菜品，排序 3</p><button class="link-btn" data-toast="已模拟编辑分类">编辑</button></div>
-        <div class="small-card"><strong>小食</strong><p class="muted">5 个菜品，排序 4</p><button class="link-btn" data-toast="已模拟编辑分类">编辑</button></div>
+        <div class="small-card"><strong>正在读取分类...</strong><p class="muted">数据来自 MySQL</p></div>
       </section>
 
       <section class="card" style="margin-top:18px;">
-        <div class="card-header"><h2>新增分类</h2><span class="muted">当前分类为只读接口，菜品管理会使用这些分类</span></div>
+        <div class="card-header"><h2>新增 / 编辑分类</h2><span class="muted">保存后会写入 MySQL，并同步到前台点餐页</span></div>
         <div class="form-grid">
           <div class="field"><label>分类名称</label><input placeholder="例如：新品专区"></div>
           <div class="field"><label>排序值</label><input placeholder="5"></div>
         </div>
-        <button class="btn" data-toast="已模拟新增分类">保存分类</button>
+        <button class="btn">保存分类</button>
       </section>
     </main>
   </div>

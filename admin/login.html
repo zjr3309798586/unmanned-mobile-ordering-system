@@ -19,7 +19,7 @@
 
     <div class="login-form">
       <h2>管理员登录</h2>
-      <p>输入任意账号和密码即可进入演示后台。</p>
+      <p>请输入后台管理员账号和密码。</p>
       <form id="loginForm">
         <div class="field">
           <label for="username">账号</label>
@@ -27,11 +27,11 @@
         </div>
         <div class="field">
           <label for="password">密码</label>
-          <input id="password" type="password" value="123456" autocomplete="current-password">
+          <input id="password" type="password" placeholder="请输入密码" autocomplete="current-password">
         </div>
         <button class="btn full" type="submit">进入后台</button>
       </form>
-      <div class="demo-tip">说明：课程项目暂未做权限校验，输入任意账号和密码即可进入后台。</div>
+      <div class="login-tip">默认账号：admin，默认密码：admin123。上线前请通过环境变量修改密码。</div>
     </div>
   </section>
   <script src="js/admin.js"></script>

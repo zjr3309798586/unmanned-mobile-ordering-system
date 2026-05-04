@@ -3,12 +3,18 @@ package com.unmanned.ordering.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorsConfig {
+    private final AdminAuthInterceptor adminAuthInterceptor;
+
+    public CorsConfig(AdminAuthInterceptor adminAuthInterceptor) {
+        this.adminAuthInterceptor = adminAuthInterceptor;
+    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -19,6 +25,13 @@ public class CorsConfig {
                         .allowedOrigins("*")
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
+            }
+
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(adminAuthInterceptor)
+                        .addPathPatterns("/api/admin/**")
+                        .excludePathPatterns("/api/admin/login");
             }
 
             @Override

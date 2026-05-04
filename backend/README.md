@@ -4,7 +4,7 @@
 
 ## 先理解代码结构
 
-代码按大二课程项目比较容易讲清楚的方式组织：
+代码按简单的分层方式组织：
 
 ```text
 src/main/java/com/unmanned/ordering
@@ -46,7 +46,7 @@ mysql -u root -p < backend/database.sql
 unmanned_ordering
 ```
 
-项目启动时会自动创建数据表并插入演示数据，SQL 文件在：
+项目启动时会自动创建数据表并插入初始数据，SQL 文件在：
 
 ```text
 src/main/resources/db/schema-mysql.sql

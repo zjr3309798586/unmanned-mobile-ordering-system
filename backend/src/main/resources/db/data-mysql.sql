@@ -1,5 +1,5 @@
 INSERT INTO stores (id, name, address, distance, business_hours, notice)
-VALUES ('STORE-001', '智慧点餐示范店', '教学楼 A 座 1 层', '350m', '09:00-21:30',
+VALUES ('STORE-001', '智慧点餐校区店', '教学楼 A 座 1 层', '350m', '09:00-21:30',
         '当前已连接 MySQL 数据库，商品、购物车和订单数据都会保存到后端。')
 ON DUPLICATE KEY UPDATE
   name = VALUES(name),
@@ -64,10 +64,19 @@ ON DUPLICATE KEY UPDATE
   coupon_count = VALUES(coupon_count),
   saving_amount = VALUES(saving_amount);
 
+DELETE item FROM order_items item
+JOIN orders legacy_order ON item.order_id = legacy_order.id
+WHERE legacy_order.order_no = 'UMO202605040001'
+  AND legacy_order.id <> 'ORDER-SEED-001';
+
+DELETE FROM orders
+WHERE order_no = 'UMO202605040001'
+  AND id <> 'ORDER-SEED-001';
+
 INSERT INTO orders (id, order_no, pickup_type, store_name, table_no, remark, status,
                     total_amount, discount_amount, payable_amount, created_at)
-VALUES ('ORDER-DEMO-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐示范店', 'A12',
-        '演示订单', 'COMPLETED', 29.80, 5.00, 24.80, '2026-05-04 10:30:00')
+VALUES ('ORDER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐校区店', 'A12',
+        '历史订单', 'COMPLETED', 29.80, 5.00, 24.80, '2026-05-04 10:30:00')
 ON DUPLICATE KEY UPDATE
   pickup_type = VALUES(pickup_type),
   store_name = VALUES(store_name),
@@ -80,8 +89,8 @@ ON DUPLICATE KEY UPDATE
   created_at = VALUES(created_at);
 
 INSERT INTO order_items (order_id, product_id, product_name, spec, price, quantity)
-VALUES ('ORDER-DEMO-001', 'P-1001', '橙香美式', '少冰 / 五分糖', 15.90, 1),
-       ('ORDER-DEMO-001', 'P-1003', '满杯西柚绿茶', '标准杯', 13.90, 1)
+VALUES ('ORDER-SEED-001', 'P-1001', '橙香美式', '少冰 / 五分糖', 15.90, 1),
+       ('ORDER-SEED-001', 'P-1003', '满杯西柚绿茶', '标准杯', 13.90, 1)
 ON DUPLICATE KEY UPDATE
   product_name = VALUES(product_name),
   spec = VALUES(spec),
@@ -89,7 +98,7 @@ ON DUPLICATE KEY UPDATE
   quantity = VALUES(quantity);
 
 UPDATE orders
-SET store_name = '智慧点餐示范店'
+SET store_name = '智慧点餐校区店'
 WHERE store_name = 'Campus Smart Pickup Store';
 
 UPDATE order_items item

@@ -13,7 +13,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException exception) {
-        HttpStatus status = exception.getCode() == 404 ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        HttpStatus status;
+        if (exception.getCode() == 401) {
+            status = HttpStatus.UNAUTHORIZED;
+        } else if (exception.getCode() == 404) {
+            status = HttpStatus.NOT_FOUND;
+        } else {
+            status = HttpStatus.BAD_REQUEST;
+        }
         return ResponseEntity.status(status).body(ApiResponse.fail(exception.getCode(), exception.getMessage()));
     }
 

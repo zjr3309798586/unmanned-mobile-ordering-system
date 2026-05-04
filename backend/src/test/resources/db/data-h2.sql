@@ -1,5 +1,5 @@
 MERGE INTO stores KEY(id) VALUES
-('STORE-001', '智慧点餐示范店', '教学楼 A 座 1 层', '350m', '09:00-21:30',
+('STORE-001', '智慧点餐校区店', '教学楼 A 座 1 层', '350m', '09:00-21:30',
  '当前已连接 MySQL 数据库，商品、购物车和订单数据都会保存到后端。');
 
 MERGE INTO categories KEY(id) VALUES
@@ -29,9 +29,9 @@ MERGE INTO user_profiles KEY(user_id) VALUES
 ('USER-001', '访客用户', '银卡会员', 1280, 36.80, 3, 18.50);
 
 MERGE INTO orders KEY(id) VALUES
-('ORDER-DEMO-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐示范店', 'A12',
- '演示订单', 'COMPLETED', 29.80, 5.00, 24.80, '2026-05-04 10:30:00');
+('ORDER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐校区店', 'A12',
+ '历史订单', 'COMPLETED', 29.80, 5.00, 24.80, '2026-05-04 10:30:00');
 
 MERGE INTO order_items (id, order_id, product_id, product_name, spec, price, quantity) KEY(id) VALUES
-(1, 'ORDER-DEMO-001', 'P-1001', '橙香美式', '少冰 / 五分糖', 15.90, 1),
-(2, 'ORDER-DEMO-001', 'P-1003', '满杯西柚绿茶', '标准杯', 13.90, 1);
+(1, 'ORDER-SEED-001', 'P-1001', '橙香美式', '少冰 / 五分糖', 15.90, 1),
+(2, 'ORDER-SEED-001', 'P-1003', '满杯西柚绿茶', '标准杯', 13.90, 1);

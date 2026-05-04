@@ -27,19 +27,17 @@
         <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
       </header>
       <section class="coupon-list">
-        <div class="small-card"><strong>新人立减券</strong><p class="muted">满 20 减 5，有效期 7 天</p><button class="link-btn" data-toast="已模拟发券">发放</button></div>
-        <div class="small-card"><strong>下午茶券</strong><p class="muted">满 30 减 8，14:00-17:00 可用</p><button class="link-btn" data-toast="已模拟发券">发放</button></div>
-        <div class="small-card"><strong>会员专享券</strong><p class="muted">满 15 减 3，省钱卡用户可领</p><button class="link-btn" data-toast="已模拟发券">发放</button></div>
+        <div class="small-card"><strong>正在读取优惠券...</strong><p class="muted">数据来自 MySQL</p></div>
       </section>
       <section class="card" style="margin-top:18px;">
-        <div class="card-header"><h2>新增优惠券</h2><span class="muted">当前优惠券为只读接口，提交订单页会使用这些券</span></div>
+        <div class="card-header"><h2>新增 / 编辑优惠券</h2><span class="muted">保存后会写入 MySQL，并同步到提交订单页</span></div>
         <div class="form-grid">
           <div class="field"><label>券名称</label><input placeholder="例如：周末满减券"></div>
           <div class="field"><label>优惠金额</label><input placeholder="5.00"></div>
           <div class="field"><label>使用门槛</label><input placeholder="满 20 可用"></div>
           <div class="field"><label>状态</label><select><option>启用</option><option>停用</option></select></div>
         </div>
-        <button class="btn" data-toast="已模拟保存优惠券">保存优惠券</button>
+        <button class="btn">保存优惠券</button>
       </section>
     </main>
   </div>

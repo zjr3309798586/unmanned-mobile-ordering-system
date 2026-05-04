@@ -17,6 +17,8 @@ import com.unmanned.ordering.model.SavingCardPlan;
 import com.unmanned.ordering.model.Store;
 import com.unmanned.ordering.model.UserProfile;
 import com.unmanned.ordering.request.AddCartItemRequest;
+import com.unmanned.ordering.request.CategoryRequest;
+import com.unmanned.ordering.request.CouponRequest;
 import com.unmanned.ordering.request.CreateOrderRequest;
 import com.unmanned.ordering.request.ProductRequest;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,7 @@ public class OrderingService {
     public Store getStore() {
         Store store = storeMapper.findStore();
         if (store == null) {
-            throw new BusinessException(404, "Store not found");
+            throw new BusinessException(404, "门店不存在");
         }
         return store;
     }
@@ -72,6 +74,75 @@ public class OrderingService {
 
     public List<Coupon> listCoupons() {
         return storeMapper.listCoupons();
+    }
+
+    public List<Category> listAllCategoriesForAdmin() {
+        return storeMapper.listCategories();
+    }
+
+    @Transactional
+    public Category createCategory(CategoryRequest request) {
+        Category category = new Category(newCategoryId(), request.getName(), request.getSort());
+        storeMapper.insertCategory(category);
+        return category;
+    }
+
+    @Transactional
+    public Category updateCategory(String categoryId, CategoryRequest request) {
+        Category existing = storeMapper.findCategoryById(categoryId);
+        if (existing == null) {
+            throw new BusinessException(404, "分类不存在");
+        }
+        Category category = new Category(categoryId, request.getName(), request.getSort());
+        storeMapper.updateCategory(category);
+        return storeMapper.findCategoryById(categoryId);
+    }
+
+    @Transactional
+    public Category deleteCategory(String categoryId) {
+        Category existing = storeMapper.findCategoryById(categoryId);
+        if (existing == null) {
+            throw new BusinessException(404, "分类不存在");
+        }
+        if (productMapper.countByCategory(categoryId) > 0) {
+            throw new BusinessException(400, "该分类下还有菜品，不能删除");
+        }
+        storeMapper.deleteCategory(categoryId);
+        return existing;
+    }
+
+    public List<Coupon> listAllCouponsForAdmin() {
+        return storeMapper.listCoupons();
+    }
+
+    @Transactional
+    public Coupon createCoupon(CouponRequest request) {
+        Coupon coupon = new Coupon(newCouponId(), request.getTitle(), request.getConditionText(),
+                request.getDiscountAmount(), request.getValidUntil(), request.isAvailable());
+        storeMapper.insertCoupon(coupon);
+        return coupon;
+    }
+
+    @Transactional
+    public Coupon updateCoupon(String couponId, CouponRequest request) {
+        Coupon existing = storeMapper.findCouponById(couponId);
+        if (existing == null) {
+            throw new BusinessException(404, "优惠券不存在");
+        }
+        Coupon coupon = new Coupon(couponId, request.getTitle(), request.getConditionText(),
+                request.getDiscountAmount(), request.getValidUntil(), request.isAvailable());
+        storeMapper.updateCoupon(coupon);
+        return storeMapper.findCouponById(couponId);
+    }
+
+    @Transactional
+    public Coupon disableCoupon(String couponId) {
+        Coupon existing = storeMapper.findCouponById(couponId);
+        if (existing == null) {
+            throw new BusinessException(404, "优惠券不存在");
+        }
+        storeMapper.disableCoupon(couponId);
+        return storeMapper.findCouponById(couponId);
     }
 
     public List<SavingCardPlan> listSavingCardPlans() {
@@ -323,6 +394,16 @@ public class OrderingService {
 
     private String newProductId() {
         return "P-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss"))
+                + UUID.randomUUID().toString().substring(0, 4).toUpperCase(Locale.ROOT);
+    }
+
+    private String newCategoryId() {
+        return "CAT-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss"))
+                + UUID.randomUUID().toString().substring(0, 4).toUpperCase(Locale.ROOT);
+    }
+
+    private String newCouponId() {
+        return "C-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss"))
                 + UUID.randomUUID().toString().substring(0, 4).toUpperCase(Locale.ROOT);
     }
 
