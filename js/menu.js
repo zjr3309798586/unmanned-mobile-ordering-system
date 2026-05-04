@@ -192,6 +192,13 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!button) {
         return;
       }
+      if (!app.isLoggedIn()) {
+        app.showMessage("请先登录后加入购物车");
+        window.setTimeout(function () {
+          window.location.href = "mine.html";
+        }, 700);
+        return;
+      }
       button.disabled = true;
       app.post("/cart/items", {
         productId: button.dataset.addProduct,
@@ -234,7 +241,13 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   renderLoading();
-  Promise.all([app.get("/store"), app.get("/categories"), app.get("/products"), app.get("/cart"), app.get("/coupons")])
+  Promise.all([
+    app.get("/store"),
+    app.get("/categories"),
+    app.get("/products"),
+    app.isLoggedIn() ? app.get("/cart") : Promise.resolve(cartSummary),
+    app.get("/coupons")
+  ])
     .then(function (result) {
       renderStore(result[0]);
       categories = result[1] || [];

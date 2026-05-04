@@ -89,6 +89,24 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function loadCart() {
+    if (!app.isLoggedIn()) {
+      if (listNode) {
+        listNode.style.display = "none";
+      }
+      if (emptyNode) {
+        emptyNode.style.display = "block";
+        emptyNode.innerHTML = '<div class="empty-state">' +
+          '<strong>请先登录</strong>' +
+          '<p>登录后购物车会按你的账号保存，之后可继续提交订单。</p>' +
+          '<a class="button button-primary" href="mine.html">去登录</a>' +
+        '</div>';
+      }
+      if (checkoutBar) {
+        checkoutBar.style.display = "none";
+      }
+      renderCart({ items: [], totalAmount: 0, totalQuantity: 0 });
+      return;
+    }
     if (listNode) {
       listNode.innerHTML = '<p class="section-note">正在读取购物车...</p>';
     }

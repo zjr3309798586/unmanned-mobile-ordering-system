@@ -15,6 +15,20 @@ document.addEventListener("DOMContentLoaded", function () {
   var storeNameNode = document.querySelector("[data-submit-store-name]");
   var storeTextNode = document.querySelector("[data-submit-store-text]");
 
+  function renderLoginRequired() {
+    if (itemList) {
+      itemList.innerHTML = '<div class="submit-item-row"><div><strong class="info-title">请先登录</strong><p class="info-text">登录后才能读取你的购物车并提交订单。</p></div><a class="section-link" href="mine.html">去登录</a></div>';
+    }
+    if (couponList) {
+      couponList.innerHTML = '<button class="coupon-select is-active" type="button"><strong>登录后可查看优惠券</strong><span>当前不可选择</span></button>';
+    }
+    cartSummary = { items: [], totalAmount: 0, totalQuantity: 0 };
+    renderAmount();
+    if (submitButton) {
+      submitButton.classList.add("button-secondary");
+    }
+  }
+
   function selectedDiscount() {
     var coupon = coupons.find(function (item) {
       return item.id === selectedCouponId;
@@ -141,6 +155,12 @@ document.addEventListener("DOMContentLoaded", function () {
         submitButton.removeAttribute("aria-disabled");
       });
     });
+  }
+
+  if (!app.isLoggedIn()) {
+    app.get("/store").then(renderStore).catch(function () {});
+    renderLoginRequired();
+    return;
   }
 
   Promise.all([app.get("/cart"), app.get("/coupons"), app.get("/store")])

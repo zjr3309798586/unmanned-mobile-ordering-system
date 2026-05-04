@@ -77,6 +77,13 @@ document.addEventListener("DOMContentLoaded", function () {
       app.showMessage("商品数据未加载完成");
       return;
     }
+    if (!app.isLoggedIn()) {
+      app.showMessage("请先登录后购买商品");
+      window.setTimeout(function () {
+        window.location.href = "mine.html";
+      }, 700);
+      return;
+    }
     app.post("/cart/items", {
       productId: productId,
       spec: selectedSpec(),

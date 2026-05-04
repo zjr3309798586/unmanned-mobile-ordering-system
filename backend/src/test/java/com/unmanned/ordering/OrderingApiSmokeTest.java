@@ -35,9 +35,26 @@ class OrderingApiSmokeTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+        ResponseEntity<String> blockedCart = restTemplate.getForEntity("/api/cart", String.class);
+        assertThat(blockedCart.getStatusCode().value()).isEqualTo(401);
+
+        ResponseEntity<String> userLogin = restTemplate.postForEntity(
+                "/api/auth/dev-login",
+                new HttpEntity<>("{\"nickname\":\"Test User\"}", headers),
+                String.class
+        );
+        assertThat(userLogin.getStatusCode().is2xxSuccessful()).isTrue();
+        JsonNode userLoginJson = objectMapper.readTree(userLogin.getBody());
+        String userToken = userLoginJson.path("data").path("token").asText();
+        assertThat(userToken).isNotBlank();
+
+        HttpHeaders userHeaders = new HttpHeaders();
+        userHeaders.setContentType(MediaType.APPLICATION_JSON);
+        userHeaders.set("X-User-Token", userToken);
+
         ResponseEntity<String> cart = restTemplate.postForEntity(
                 "/api/cart/items",
-                new HttpEntity<>("{\"productId\":\"P-1001\",\"spec\":\"少冰 / 五分糖\",\"quantity\":2}", headers),
+                new HttpEntity<>("{\"productId\":\"P-1001\",\"spec\":\"少冰 / 五分糖\",\"quantity\":2}", userHeaders),
                 String.class
         );
         assertThat(cart.getStatusCode().is2xxSuccessful()).isTrue();
@@ -46,11 +63,20 @@ class OrderingApiSmokeTest {
 
         ResponseEntity<String> order = restTemplate.postForEntity(
                 "/api/orders",
-                new HttpEntity<>("{\"pickupType\":\"SELF_PICKUP\",\"couponId\":\"C-001\",\"tableNo\":\"A12\"}", headers),
+                new HttpEntity<>("{\"pickupType\":\"SELF_PICKUP\",\"couponId\":\"C-001\",\"tableNo\":\"A12\"}", userHeaders),
                 String.class
         );
         assertThat(order.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(order.getBody()).contains("WAITING_PICKUP");
+
+        ResponseEntity<String> mine = restTemplate.exchange(
+                "/api/mine",
+                HttpMethod.GET,
+                new HttpEntity<>(userHeaders),
+                String.class
+        );
+        assertThat(mine.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(mine.getBody()).contains("Test User");
 
         ResponseEntity<String> blockedAdmin = restTemplate.getForEntity("/api/admin/dashboard", String.class);
         assertThat(blockedAdmin.getStatusCode().value()).isEqualTo(401);
@@ -77,6 +103,15 @@ class OrderingApiSmokeTest {
         );
         assertThat(adminDashboard.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(adminDashboard.getBody()).contains("productCount");
+
+        ResponseEntity<String> adminOrders = restTemplate.exchange(
+                "/api/admin/orders",
+                HttpMethod.GET,
+                new HttpEntity<>(adminHeaders),
+                String.class
+        );
+        assertThat(adminOrders.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(adminOrders.getBody()).contains("WAITING_PICKUP");
 
         ResponseEntity<String> category = restTemplate.exchange(
                 "/api/admin/categories",

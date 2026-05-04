@@ -54,8 +54,15 @@ ON DUPLICATE KEY UPDATE
   description = VALUES(description),
   benefits = VALUES(benefits);
 
+INSERT INTO users (id, openid, nickname, avatar_url, token, created_at, updated_at) VALUES
+('USER-SEED-001', NULL, '历史用户', '', NULL, '2026-05-04 10:00:00', '2026-05-04 10:00:00')
+ON DUPLICATE KEY UPDATE
+  nickname = VALUES(nickname),
+  avatar_url = VALUES(avatar_url),
+  updated_at = VALUES(updated_at);
+
 INSERT INTO user_profiles (user_id, nickname, member_level, points, balance, coupon_count, saving_amount) VALUES
-('USER-001', '访客用户', '银卡会员', 1280, 36.80, 3, 18.50)
+('USER-SEED-001', '历史用户', '银卡会员', 1280, 36.80, 3, 18.50)
 ON DUPLICATE KEY UPDATE
   nickname = VALUES(nickname),
   member_level = VALUES(member_level),
@@ -63,6 +70,9 @@ ON DUPLICATE KEY UPDATE
   balance = VALUES(balance),
   coupon_count = VALUES(coupon_count),
   saving_amount = VALUES(saving_amount);
+
+DELETE FROM user_profiles
+WHERE user_id = 'USER-001';
 
 DELETE item FROM order_items item
 JOIN orders legacy_order ON item.order_id = legacy_order.id
@@ -73,11 +83,12 @@ DELETE FROM orders
 WHERE order_no = 'UMO202605040001'
   AND id <> 'ORDER-SEED-001';
 
-INSERT INTO orders (id, order_no, pickup_type, store_name, table_no, remark, status,
+INSERT INTO orders (id, user_id, order_no, pickup_type, store_name, table_no, remark, status,
                     total_amount, discount_amount, payable_amount, created_at)
-VALUES ('ORDER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐校区店', 'A12',
+VALUES ('ORDER-SEED-001', 'USER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐校区店', 'A12',
         '历史订单', 'COMPLETED', 29.80, 5.00, 24.80, '2026-05-04 10:30:00')
 ON DUPLICATE KEY UPDATE
+  user_id = VALUES(user_id),
   pickup_type = VALUES(pickup_type),
   store_name = VALUES(store_name),
   table_no = VALUES(table_no),

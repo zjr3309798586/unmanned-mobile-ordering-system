@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Order {
     private String id;
+    private String userId;
     private String orderNo;
     private String pickupType;
     private String storeName;
@@ -39,12 +40,28 @@ public class Order {
         this.items = items == null ? new ArrayList<>() : items;
     }
 
+    public Order(String id, String userId, String orderNo, String pickupType, String storeName, String tableNo,
+                 String remark, String status, BigDecimal totalAmount, BigDecimal discountAmount,
+                 BigDecimal payableAmount, LocalDateTime createdAt, List<OrderItem> items) {
+        this(id, orderNo, pickupType, storeName, tableNo, remark, status, totalAmount,
+                discountAmount, payableAmount, createdAt, items);
+        this.userId = userId;
+    }
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getOrderNo() {

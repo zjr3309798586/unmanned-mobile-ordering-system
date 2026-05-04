@@ -7,6 +7,7 @@ import com.unmanned.ordering.model.Category;
 import com.unmanned.ordering.model.Coupon;
 import com.unmanned.ordering.model.Order;
 import com.unmanned.ordering.model.Product;
+import com.unmanned.ordering.model.UserProfile;
 import com.unmanned.ordering.request.AdminLoginRequest;
 import com.unmanned.ordering.request.CategoryRequest;
 import com.unmanned.ordering.request.CouponRequest;
@@ -112,8 +113,23 @@ public class AdminController {
         return ApiResponse.ok(orderingService.disableCoupon(couponId));
     }
 
+    @GetMapping("/orders")
+    public ApiResponse<List<Order>> listOrders() {
+        return ApiResponse.ok(orderingService.listOrdersForAdmin(null));
+    }
+
     @PatchMapping("/orders/{orderId}/complete")
     public ApiResponse<Order> completeOrder(@PathVariable String orderId) {
         return ApiResponse.ok(orderingService.completeOrder(orderId));
+    }
+
+    @PatchMapping("/orders/{orderId}/cancel")
+    public ApiResponse<Order> cancelOrder(@PathVariable String orderId) {
+        return ApiResponse.ok(orderingService.cancelOrderForAdmin(orderId));
+    }
+
+    @GetMapping("/users")
+    public ApiResponse<List<UserProfile>> listUsers() {
+        return ApiResponse.ok(orderingService.listUsersForAdmin());
     }
 }

@@ -5,6 +5,7 @@ import com.unmanned.ordering.mapper.CartMapper;
 import com.unmanned.ordering.mapper.OrderMapper;
 import com.unmanned.ordering.mapper.ProductMapper;
 import com.unmanned.ordering.mapper.StoreMapper;
+import com.unmanned.ordering.mapper.UserMapper;
 import com.unmanned.ordering.model.AdminDashboard;
 import com.unmanned.ordering.model.CartItem;
 import com.unmanned.ordering.model.CartSummary;
@@ -39,13 +40,15 @@ public class OrderingService {
     private final ProductMapper productMapper;
     private final CartMapper cartMapper;
     private final OrderMapper orderMapper;
+    private final UserMapper userMapper;
 
     public OrderingService(StoreMapper storeMapper, ProductMapper productMapper,
-                           CartMapper cartMapper, OrderMapper orderMapper) {
+                           CartMapper cartMapper, OrderMapper orderMapper, UserMapper userMapper) {
         this.storeMapper = storeMapper;
         this.productMapper = productMapper;
         this.cartMapper = cartMapper;
         this.orderMapper = orderMapper;
+        this.userMapper = userMapper;
     }
 
     public Store getStore() {
@@ -149,16 +152,16 @@ public class OrderingService {
         return storeMapper.listSavingCardPlans();
     }
 
-    public UserProfile getUserProfile() {
-        UserProfile userProfile = storeMapper.findUserProfile();
+    public UserProfile getUserProfile(String userId) {
+        UserProfile userProfile = userMapper.findProfileByUserId(userId);
         if (userProfile == null) {
             throw new BusinessException(404, "用户资料不存在");
         }
         return userProfile;
     }
 
-    public CartSummary getCartSummary() {
-        List<CartItem> items = cartMapper.listCartItems();
+    public CartSummary getCartSummary(String userId) {
+        List<CartItem> items = cartMapper.listCartItems(userId);
         int totalQuantity = items.stream().mapToInt(CartItem::getQuantity).sum();
         BigDecimal totalAmount = items.stream()
                 .map(CartItem::getSubtotal)
@@ -167,49 +170,55 @@ public class OrderingService {
     }
 
     @Transactional
-    public CartSummary addCartItem(AddCartItemRequest request) {
+    public CartSummary addCartItem(String userId, AddCartItemRequest request) {
         Product product = getProduct(request.getProductId());
         String spec = normalizeSpec(request.getSpec());
-        CartItem existingItem = cartMapper.findByProductAndSpec(product.getId(), spec);
+        CartItem existingItem = cartMapper.findByProductAndSpec(userId, product.getId(), spec);
 
         if (existingItem != null) {
-            cartMapper.increaseQuantity(existingItem.getId(), request.getQuantity());
+            cartMapper.increaseQuantity(userId, existingItem.getId(), request.getQuantity());
         } else {
-            cartMapper.insert(newId("CART"), product.getId(), spec, request.getQuantity());
+            cartMapper.insertForUser(newId("CART"), userId, product.getId(), spec, request.getQuantity());
         }
-        return getCartSummary();
+        return getCartSummary(userId);
     }
 
     @Transactional
-    public CartSummary updateCartItem(String itemId, int quantity) {
-        if (cartMapper.updateQuantity(itemId, quantity) == 0) {
+    public CartSummary updateCartItem(String userId, String itemId, int quantity) {
+        if (cartMapper.updateQuantity(userId, itemId, quantity) == 0) {
             throw new BusinessException(404, "购物车商品不存在");
         }
-        return getCartSummary();
+        return getCartSummary(userId);
     }
 
     @Transactional
-    public CartSummary deleteCartItem(String itemId) {
-        if (cartMapper.deleteById(itemId) == 0) {
+    public CartSummary deleteCartItem(String userId, String itemId) {
+        if (cartMapper.deleteById(userId, itemId) == 0) {
             throw new BusinessException(404, "购物车商品不存在");
         }
-        return getCartSummary();
+        return getCartSummary(userId);
     }
 
     @Transactional
-    public CartSummary clearCart() {
-        cartMapper.clear();
-        return getCartSummary();
+    public CartSummary clearCart(String userId) {
+        cartMapper.clear(userId);
+        return getCartSummary(userId);
     }
 
-    public List<Order> listOrders(String status) {
-        return orderMapper.listOrders(status).stream()
+    public List<Order> listOrders(String userId, String status) {
+        return orderMapper.listOrders(userId, status).stream()
                 .map(this::attachOrderItems)
                 .collect(Collectors.toList());
     }
 
-    public Order getOrder(String orderId) {
-        Order order = orderMapper.findOrder(orderId);
+    public List<Order> listOrdersForAdmin(String status) {
+        return orderMapper.listOrdersForAdmin(status).stream()
+                .map(this::attachOrderItems)
+                .collect(Collectors.toList());
+    }
+
+    public Order getOrder(String userId, String orderId) {
+        Order order = orderMapper.findOrder(orderId, userId);
         if (order == null) {
             throw new BusinessException(404, "订单不存在");
         }
@@ -217,8 +226,8 @@ public class OrderingService {
     }
 
     @Transactional
-    public Order createOrder(CreateOrderRequest request) {
-        List<CartItem> cartItems = cartMapper.listCartItems();
+    public Order createOrder(String userId, CreateOrderRequest request) {
+        List<CartItem> cartItems = cartMapper.listCartItems(userId);
         if (cartItems.isEmpty()) {
             throw new BusinessException(400, "购物车为空");
         }
@@ -236,6 +245,7 @@ public class OrderingService {
 
         Order order = new Order(
                 newId("ORDER"),
+                userId,
                 buildOrderNo(),
                 request.getPickupType(),
                 getStore().getName(),
@@ -252,41 +262,55 @@ public class OrderingService {
         for (OrderItem item : orderItems) {
             orderMapper.insertOrderItem(order.getId(), item);
         }
-        cartMapper.clear();
+        cartMapper.clear(userId);
         return order;
     }
 
     @Transactional
-    public Order cancelOrder(String orderId) {
-        Order order = getOrder(orderId);
+    public Order cancelOrder(String userId, String orderId) {
+        Order order = getOrder(userId, orderId);
         if ("COMPLETED".equals(order.getStatus())) {
             throw new BusinessException(400, "已完成订单不能取消");
         }
         orderMapper.updateStatus(orderId, "CANCELED");
-        return getOrder(orderId);
+        return getOrder(userId, orderId);
     }
 
     @Transactional
     public Order completeOrder(String orderId) {
-        Order order = getOrder(orderId);
+        Order order = getOrderForAdmin(orderId);
         if ("CANCELED".equals(order.getStatus())) {
             throw new BusinessException(400, "已取消订单不能完成");
         }
         orderMapper.updateStatus(orderId, "COMPLETED");
-        return getOrder(orderId);
+        return getOrderForAdmin(orderId);
     }
 
     @Transactional
-    public CartSummary repeatOrder(String orderId) {
-        Order order = getOrder(orderId);
+    public Order cancelOrderForAdmin(String orderId) {
+        Order order = getOrderForAdmin(orderId);
+        if ("COMPLETED".equals(order.getStatus())) {
+            throw new BusinessException(400, "已完成订单不能取消");
+        }
+        orderMapper.updateStatus(orderId, "CANCELED");
+        return getOrderForAdmin(orderId);
+    }
+
+    @Transactional
+    public CartSummary repeatOrder(String userId, String orderId) {
+        Order order = getOrder(userId, orderId);
         for (OrderItem item : order.getItems()) {
             AddCartItemRequest request = new AddCartItemRequest();
             request.setProductId(item.getProductId());
             request.setSpec(item.getSpec());
             request.setQuantity(item.getQuantity());
-            addCartItem(request);
+            addCartItem(userId, request);
         }
-        return getCartSummary();
+        return getCartSummary(userId);
+    }
+
+    public List<UserProfile> listUsersForAdmin() {
+        return userMapper.listProfiles();
     }
 
     public AdminDashboard getDashboard() {
@@ -359,6 +383,14 @@ public class OrderingService {
     private Order attachOrderItems(Order order) {
         order.setItems(orderMapper.listOrderItems(order.getId()));
         return order;
+    }
+
+    private Order getOrderForAdmin(String orderId) {
+        Order order = orderMapper.findOrder(orderId, null);
+        if (order == null) {
+            throw new BusinessException(404, "订单不存在");
+        }
+        return attachOrderItems(order);
     }
 
     private void ensureCategoryExists(String categoryId) {

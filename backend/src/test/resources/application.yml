@@ -22,3 +22,7 @@ admin:
   username: admin
   password: admin123
   token-secret: test-admin-secret
+
+wechat:
+  app-id:
+  app-secret:

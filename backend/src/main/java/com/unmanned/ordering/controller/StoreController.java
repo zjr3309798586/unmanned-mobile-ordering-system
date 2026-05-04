@@ -7,7 +7,9 @@ import com.unmanned.ordering.model.SavingCardPlan;
 import com.unmanned.ordering.model.Store;
 import com.unmanned.ordering.model.UserProfile;
 import com.unmanned.ordering.service.OrderingService;
+import com.unmanned.ordering.service.UserAuthService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,9 +19,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class StoreController {
     private final OrderingService orderingService;
+    private final UserAuthService userAuthService;
 
-    public StoreController(OrderingService orderingService) {
+    public StoreController(OrderingService orderingService, UserAuthService userAuthService) {
         this.orderingService = orderingService;
+        this.userAuthService = userAuthService;
     }
 
     @GetMapping("/store")
@@ -43,7 +47,7 @@ public class StoreController {
     }
 
     @GetMapping("/mine")
-    public ApiResponse<UserProfile> getMine() {
-        return ApiResponse.ok(orderingService.getUserProfile());
+    public ApiResponse<UserProfile> getMine(@RequestHeader(value = "X-User-Token", required = false) String token) {
+        return ApiResponse.ok(userAuthService.getProfile(token));
     }
 }

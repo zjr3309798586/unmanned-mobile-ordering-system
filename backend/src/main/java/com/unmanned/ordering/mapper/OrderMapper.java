@@ -16,16 +16,38 @@ public interface OrderMapper {
     @Select({
             "<script>",
             "SELECT * FROM orders",
+            "WHERE user_id = #{userId}",
+            "<if test='status != null and status != \"\"'>",
+            "AND status = #{status}",
+            "</if>",
+            "ORDER BY created_at DESC",
+            "</script>"
+    })
+    List<Order> listOrders(@Param("userId") String userId, @Param("status") String status);
+
+    @Select({
+            "<script>",
+            "SELECT * FROM orders",
+            "<where>",
+            "id = #{orderId}",
+            "<if test='userId != null and userId != \"\"'>",
+            "AND user_id = #{userId}",
+            "</if>",
+            "</where>",
+            "</script>"
+    })
+    Order findOrder(@Param("orderId") String orderId, @Param("userId") String userId);
+
+    @Select({
+            "<script>",
+            "SELECT * FROM orders",
             "<if test='status != null and status != \"\"'>",
             "WHERE status = #{status}",
             "</if>",
             "ORDER BY created_at DESC",
             "</script>"
     })
-    List<Order> listOrders(@Param("status") String status);
-
-    @Select("SELECT * FROM orders WHERE id = #{orderId}")
-    Order findOrder(String orderId);
+    List<Order> listOrdersForAdmin(@Param("status") String status);
 
     @Select({
             "SELECT product_id, product_name, spec, price, quantity",
@@ -37,8 +59,9 @@ public interface OrderMapper {
 
     @Insert({
             "INSERT INTO orders (id, order_no, pickup_type, store_name, table_no, remark, status,",
-            "total_amount, discount_amount, payable_amount, created_at)",
+            "user_id, total_amount, discount_amount, payable_amount, created_at)",
             "VALUES (#{id}, #{orderNo}, #{pickupType}, #{storeName}, #{tableNo}, #{remark}, #{status},",
+            "#{userId},",
             "#{totalAmount}, #{discountAmount}, #{payableAmount}, #{createdAt})"
     })
     int insertOrder(Order order);

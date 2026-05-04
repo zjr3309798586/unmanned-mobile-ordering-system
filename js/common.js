@@ -3,10 +3,20 @@ window.OrderingApp = (function () {
     ? "http://127.0.0.1:8080/api"
     : window.location.origin + "/api";
   var apiBaseUrl = localStorage.getItem("orderingApiBaseUrl") || defaultApiBaseUrl;
+  var userToken = localStorage.getItem("orderingUserToken") || "";
+  var userSession = null;
+  try {
+    userSession = JSON.parse(localStorage.getItem("orderingUserSession") || "null");
+  } catch (error) {
+    userSession = null;
+  }
 
   function request(path, options) {
     var config = options || {};
     config.headers = Object.assign({ "Content-Type": "application/json" }, config.headers || {});
+    if (userToken) {
+      config.headers["X-User-Token"] = userToken;
+    }
 
     if (config.body && typeof config.body !== "string") {
       config.body = JSON.stringify(config.body);
@@ -93,6 +103,38 @@ window.OrderingApp = (function () {
     return new URLSearchParams(window.location.search).get(name);
   }
 
+  function setUserSession(session) {
+    userSession = session || null;
+    userToken = session && session.token ? session.token : "";
+    if (userToken) {
+      localStorage.setItem("orderingUserToken", userToken);
+      localStorage.setItem("orderingUserSession", JSON.stringify(userSession));
+    } else {
+      localStorage.removeItem("orderingUserToken");
+      localStorage.removeItem("orderingUserSession");
+    }
+  }
+
+  function devLogin(nickname) {
+    return request("/auth/dev-login", {
+      method: "POST",
+      body: { nickname: nickname || "H5调试用户" }
+    }).then(function (session) {
+      setUserSession(session);
+      return session;
+    });
+  }
+
+  function logout() {
+    return request("/auth/logout", { method: "POST" })
+      .catch(function () {
+        return null;
+      })
+      .then(function () {
+        setUserSession(null);
+      });
+  }
+
   return {
     apiBaseUrl: apiBaseUrl,
     get: function (path) {
@@ -115,7 +157,16 @@ window.OrderingApp = (function () {
     statusText: statusText,
     pickupTypeText: pickupTypeText,
     showMessage: showMessage,
-    queryParam: queryParam
+    queryParam: queryParam,
+    isLoggedIn: function () {
+      return !!userToken;
+    },
+    getUserSession: function () {
+      return userSession;
+    },
+    setUserSession: setUserSession,
+    devLogin: devLogin,
+    logout: logout
   };
 })();
 

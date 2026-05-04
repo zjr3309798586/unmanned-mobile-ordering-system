@@ -52,17 +52,31 @@ CREATE TABLE user_profiles (
   saving_amount DECIMAL(10, 2) NOT NULL DEFAULT 0
 );
 
+CREATE TABLE users (
+  id VARCHAR(40) PRIMARY KEY,
+  openid VARCHAR(100),
+  nickname VARCHAR(80) NOT NULL,
+  avatar_url VARCHAR(300) NOT NULL DEFAULT '',
+  token VARCHAR(80),
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+  UNIQUE (openid),
+  UNIQUE (token)
+);
+
 CREATE TABLE cart_items (
   id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
   product_id VARCHAR(32) NOT NULL,
   spec VARCHAR(200) NOT NULL,
   quantity INT NOT NULL,
   created_at TIMESTAMP NOT NULL,
-  UNIQUE (product_id, spec)
+  UNIQUE (user_id, product_id, spec)
 );
 
 CREATE TABLE orders (
   id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
   order_no VARCHAR(40) NOT NULL UNIQUE,
   pickup_type VARCHAR(40) NOT NULL,
   store_name VARCHAR(100) NOT NULL,

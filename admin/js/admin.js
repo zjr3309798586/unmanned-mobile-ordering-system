@@ -278,7 +278,7 @@
     if (document.body.dataset.page !== "dashboard") {
       return;
     }
-    Promise.all([get("/admin/dashboard"), get("/admin/products"), get("/orders")])
+    Promise.all([get("/admin/dashboard"), get("/admin/products"), get("/admin/orders")])
       .then(function (result) {
         var dashboard = result[0];
         var products = result[1] || [];
@@ -531,7 +531,7 @@
     }
     var tableBody = $("#ordersTable tbody");
     showLoading(tableBody);
-    get("/orders")
+    get("/admin/orders")
       .then(function (orders) {
         state.orders = orders || [];
         renderOrdersTable();
@@ -560,7 +560,7 @@
         : '<button class="link-btn" type="button" data-show-order="' + escapeHtml(order.id) + '">详情</button>';
       return '<tr data-status="' + statusFilter(order.status) + '">' +
         '<td>' + escapeHtml(order.orderNo) + '</td>' +
-        '<td>访客用户</td>' +
+        '<td>未登录用户</td>' +
         '<td>' + escapeHtml(goods) + '</td>' +
         '<td>' + money(order.payableAmount) + '</td>' +
         '<td>' + escapeHtml(pickupText(order.pickupType)) + '</td>' +
@@ -583,7 +583,7 @@
         .catch(function (error) { showToast(error.message); });
     }
     if (cancel) {
-      patch("/orders/" + encodeURIComponent(cancel.dataset.cancelOrder) + "/cancel", {})
+      patch("/admin/orders/" + encodeURIComponent(cancel.dataset.cancelOrder) + "/cancel", {})
         .then(function () {
           showToast("订单已取消，前台订单状态同步变化");
           return reloadOrders();
@@ -593,7 +593,7 @@
   }
 
   function reloadOrders() {
-    return get("/orders").then(function (orders) {
+    return get("/admin/orders").then(function (orders) {
       state.orders = orders || [];
       renderOrdersTable();
     });
@@ -834,25 +834,27 @@
     if (document.body.dataset.page !== "users") {
       return;
     }
-    Promise.all([get("/mine"), get("/orders")])
+    Promise.all([get("/admin/users"), get("/admin/orders")])
       .then(function (result) {
-        var user = result[0];
+        var users = result[0] || [];
         var orders = result[1] || [];
-        var paid = orders.filter(function (order) {
-          return order.status !== "CANCELED";
-        }).reduce(function (sum, order) {
-          return sum + Number(order.payableAmount || 0);
-        }, 0);
         var tableBody = $("#usersTable tbody");
         if (!tableBody) {
           return;
         }
-        tableBody.innerHTML = '<tr><td>' + escapeHtml(user.nickname) + '</td>' +
-          '<td>' + escapeHtml(user.memberLevel) + '</td>' +
-          '<td>' + Number(user.points || 0) + '</td>' +
-          '<td>' + Number(user.couponCount || 0) + ' 张</td>' +
-          '<td>' + money(paid) + '</td>' +
-          '<td><span class="status green">正常</span></td></tr>';
+        tableBody.innerHTML = users.map(function (user) {
+          var paid = orders.filter(function (order) {
+            return order.userId === user.userId && order.status !== "CANCELED";
+          }).reduce(function (sum, order) {
+            return sum + Number(order.payableAmount || 0);
+          }, 0);
+          return '<tr><td>' + escapeHtml(user.nickname) + '</td>' +
+            '<td>' + escapeHtml(user.memberLevel) + '</td>' +
+            '<td>' + Number(user.points || 0) + '</td>' +
+            '<td>' + Number(user.couponCount || 0) + ' 张</td>' +
+            '<td>' + money(paid) + '</td>' +
+            '<td><span class="status green">正常</span></td></tr>';
+        }).join("") || '<tr><td colspan="6" class="muted-cell">暂无用户数据</td></tr>';
       })
       .catch(function (error) { showToast(error.message); });
   }

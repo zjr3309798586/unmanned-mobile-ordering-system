@@ -21,10 +21,10 @@ src/main/java/com/unmanned/ordering
 一次下单流程可以这样讲：
 
 1. 前端请求 `POST /api/cart/items`。
-2. `CartController` 接收请求。
+2. `CartController` 校验 `X-User-Token`，确认当前登录用户。
 3. `OrderingService` 处理业务逻辑。
-4. `CartMapper` 执行 SQL，把商品保存到 `cart_items` 表。
-5. 提交订单时，后端从 `cart_items` 读取数据，写入 `orders` 和 `order_items` 表。
+4. `CartMapper` 执行 SQL，把商品保存到当前用户的 `cart_items` 表记录。
+5. 提交订单时，后端从当前用户的 `cart_items` 读取数据，写入 `orders` 和 `order_items` 表。
 
 ## 数据库
 
@@ -60,6 +60,7 @@ src/main/resources/db/data-mysql.sql
 - `products`：商品信息
 - `coupons`：优惠券
 - `saving_card_plans`：省钱卡方案
+- `users`：用户登录会话
 - `user_profiles`：用户信息
 - `cart_items`：购物车
 - `orders`：订单主表
@@ -112,6 +113,31 @@ GET /api/health
 
 ## 前台接口
 
+用户登录：
+
+```text
+POST   /api/auth/dev-login       H5 浏览器联调用
+POST   /api/auth/wechat-login    微信小程序登录用
+GET    /api/auth/me
+POST   /api/auth/logout
+```
+
+需要用户身份的接口要带请求头：
+
+```text
+X-User-Token: 登录接口返回的 token
+```
+
+微信小程序登录流程：
+
+```text
+1. 小程序端调用 wx.login() 拿到 code。
+2. 小程序端把 code 传给 POST /api/auth/wechat-login。
+3. 后端用 WECHAT_APP_ID 和 WECHAT_APP_SECRET 调微信接口换 openid。
+4. 后端创建或更新用户，返回 token。
+5. 后续购物车、订单、我的页接口都带 X-User-Token。
+```
+
 基础数据：
 
 ```text
@@ -139,7 +165,7 @@ DELETE /api/cart
 ```json
 {
   "productId": "P-1001",
-  "spec": "Iced / Regular sugar",
+  "spec": "标准杯 / 常温 / 正常糖",
   "quantity": 2
 }
 ```
@@ -162,7 +188,7 @@ POST   /api/orders/{orderId}/repeat
   "pickupType": "SELF_PICKUP",
   "couponId": "C-001",
   "tableNo": "A12",
-  "remark": "Less ice"
+  "remark": "少冰"
 }
 ```
 
@@ -174,6 +200,10 @@ GET    /api/admin/products
 POST   /api/admin/products
 PATCH  /api/admin/products/{productId}
 DELETE /api/admin/products/{productId}
+GET    /api/admin/orders
+PATCH  /api/admin/orders/{orderId}/complete
+PATCH  /api/admin/orders/{orderId}/cancel
+GET    /api/admin/users
 ```
 
 新增或修改商品请求示例：
@@ -214,5 +244,7 @@ mvn test
 
 - 健康检查
 - 商品列表
+- 用户登录
 - 加入购物车
 - 提交订单
+- 后台鉴权

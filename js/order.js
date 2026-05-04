@@ -60,6 +60,17 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function loadOrders() {
+    if (!app.isLoggedIn()) {
+      if (orderList) {
+        orderList.innerHTML = '<section class="section-card"><div class="empty-state">' +
+          '<strong>请先登录</strong>' +
+          '<p class="section-note">登录后才能查看你的订单、取消订单或再来一单。</p>' +
+          '<a class="button button-primary" href="mine.html">去登录</a>' +
+        '</div></section>';
+      }
+      app.get("/store").then(renderStore).catch(function () {});
+      return;
+    }
     if (orderList) {
       orderList.innerHTML = '<section class="section-card"><p class="section-note">正在读取订单...</p></section>';
     }

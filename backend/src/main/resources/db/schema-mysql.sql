@@ -53,17 +53,32 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   saving_amount DECIMAL(10, 2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS users (
+  id VARCHAR(40) PRIMARY KEY,
+  openid VARCHAR(100),
+  nickname VARCHAR(80) NOT NULL,
+  avatar_url VARCHAR(300) NOT NULL DEFAULT '',
+  token VARCHAR(80),
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME NOT NULL,
+  UNIQUE KEY uk_users_openid (openid),
+  UNIQUE KEY uk_users_token (token)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS cart_items (
   id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
   product_id VARCHAR(32) NOT NULL,
   spec VARCHAR(200) NOT NULL,
   quantity INT NOT NULL,
   created_at DATETIME NOT NULL,
-  UNIQUE KEY uk_cart_product_spec (product_id, spec)
+  UNIQUE KEY uk_cart_user_product_spec (user_id, product_id, spec),
+  INDEX idx_cart_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS orders (
   id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
   order_no VARCHAR(40) NOT NULL UNIQUE,
   pickup_type VARCHAR(40) NOT NULL,
   store_name VARCHAR(100) NOT NULL,
@@ -73,7 +88,8 @@ CREATE TABLE IF NOT EXISTS orders (
   total_amount DECIMAL(10, 2) NOT NULL,
   discount_amount DECIMAL(10, 2) NOT NULL,
   payable_amount DECIMAL(10, 2) NOT NULL,
-  created_at DATETIME NOT NULL
+  created_at DATETIME NOT NULL,
+  INDEX idx_orders_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS order_items (
@@ -87,3 +103,58 @@ CREATE TABLE IF NOT EXISTS order_items (
   UNIQUE KEY uk_order_item (order_id, product_id, spec),
   INDEX idx_order_items_order_id (order_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET @sql = (
+  SELECT IF(COUNT(*) = 0,
+    'ALTER TABLE cart_items ADD COLUMN user_id VARCHAR(40) NOT NULL DEFAULT ''USER-SEED-001''',
+    'SELECT 1')
+  FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'cart_items' AND COLUMN_NAME = 'user_id'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(COUNT(*) > 0,
+    'ALTER TABLE cart_items DROP INDEX uk_cart_product_spec',
+    'SELECT 1')
+  FROM information_schema.STATISTICS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'cart_items' AND INDEX_NAME = 'uk_cart_product_spec'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(COUNT(*) = 0,
+    'ALTER TABLE cart_items ADD UNIQUE KEY uk_cart_user_product_spec (user_id, product_id, spec)',
+    'SELECT 1')
+  FROM information_schema.STATISTICS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'cart_items' AND INDEX_NAME = 'uk_cart_user_product_spec'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(COUNT(*) = 0,
+    'ALTER TABLE orders ADD COLUMN user_id VARCHAR(40) NOT NULL DEFAULT ''USER-SEED-001'' AFTER id',
+    'SELECT 1')
+  FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND COLUMN_NAME = 'user_id'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(COUNT(*) = 0,
+    'ALTER TABLE orders ADD INDEX idx_orders_user_id (user_id)',
+    'SELECT 1')
+  FROM information_schema.STATISTICS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND INDEX_NAME = 'idx_orders_user_id'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;

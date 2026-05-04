@@ -26,10 +26,13 @@ MERGE INTO saving_card_plans KEY(id) VALUES
  '4 张专属优惠券,指定商品省钱价,会员生日权益');
 
 MERGE INTO user_profiles KEY(user_id) VALUES
-('USER-001', '访客用户', '银卡会员', 1280, 36.80, 3, 18.50);
+('USER-SEED-001', '历史用户', '银卡会员', 1280, 36.80, 3, 18.50);
+
+MERGE INTO users KEY(id) VALUES
+('USER-SEED-001', NULL, '历史用户', '', NULL, '2026-05-04 10:00:00', '2026-05-04 10:00:00');
 
 MERGE INTO orders KEY(id) VALUES
-('ORDER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐校区店', 'A12',
+('ORDER-SEED-001', 'USER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐校区店', 'A12',
  '历史订单', 'COMPLETED', 29.80, 5.00, 24.80, '2026-05-04 10:30:00');
 
 MERGE INTO order_items (id, order_id, product_id, product_name, spec, price, quantity) KEY(id) VALUES

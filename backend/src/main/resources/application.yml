@@ -32,3 +32,7 @@ admin:
   username: ${ADMIN_USERNAME:admin}
   password: ${ADMIN_PASSWORD:admin123}
   token-secret: ${ADMIN_TOKEN_SECRET:local-admin-secret}
+
+wechat:
+  app-id: ${WECHAT_APP_ID:}
+  app-secret: ${WECHAT_APP_SECRET:}
