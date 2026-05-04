@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return coupon.available;
     }).slice(0, 2);
     if (available.length === 0) {
+      couponStrip.innerHTML = '<p class="section-note">当前暂无可领取优惠券。</p>';
       return;
     }
     couponStrip.innerHTML = available.map(function (coupon) {

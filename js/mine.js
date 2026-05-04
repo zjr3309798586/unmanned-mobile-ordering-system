@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
       profileTitle.textContent = user.nickname || "访客用户";
     }
     if (profileText) {
-      profileText.textContent = "已连接后端用户接口，可同步订单、优惠券、会员权益和余额。";
+      profileText.textContent = "订单、优惠券、会员权益和余额会随账户数据更新。";
     }
     if (memberTitle) {
       memberTitle.textContent = user.memberLevel || "普通会员";

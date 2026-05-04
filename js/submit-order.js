@@ -12,12 +12,26 @@ document.addEventListener("DOMContentLoaded", function () {
   var submitButton = document.querySelector(".submit-bar .button-primary");
   var tableInput = document.querySelector(".text-input");
   var remarkInput = document.querySelector(".text-area");
+  var storeNameNode = document.querySelector("[data-submit-store-name]");
+  var storeTextNode = document.querySelector("[data-submit-store-text]");
 
   function selectedDiscount() {
     var coupon = coupons.find(function (item) {
       return item.id === selectedCouponId;
     });
-    return coupon ? Number(coupon.discountAmount || 0) : 0;
+    return coupon ? Math.min(Number(coupon.discountAmount || 0), Number(cartSummary.totalAmount || 0)) : 0;
+  }
+
+  function renderStore(store) {
+    if (!store) {
+      return;
+    }
+    if (storeNameNode) {
+      storeNameNode.textContent = store.name;
+    }
+    if (storeTextNode) {
+      storeTextNode.textContent = store.address + "，预计 12 分钟出餐。";
+    }
   }
 
   function renderItems() {
@@ -31,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     itemList.innerHTML = items.map(function (item) {
       return '<div class="submit-item-row">' +
-        '<div><strong class="info-title">' + app.escapeHtml(item.productName) + ' × ' + item.quantity + '</strong><p class="info-text">' + app.escapeHtml(item.spec || "Regular") + '</p></div>' +
+        '<div><strong class="info-title">' + app.escapeHtml(item.productName) + ' × ' + item.quantity + '</strong><p class="info-text">' + app.escapeHtml(app.specText(item.spec)) + '</p></div>' +
         '<strong>' + app.money(item.subtotal || Number(item.price) * item.quantity) + '</strong>' +
       '</div>';
     }).join("");
@@ -47,6 +61,11 @@ document.addEventListener("DOMContentLoaded", function () {
         '<strong>' + app.escapeHtml(coupon.title) + '</strong><span>' + app.escapeHtml(coupon.conditionText) + '，减 ' + app.money(coupon.discountAmount) + '</span>' +
       '</button>';
     }).join("");
+    if (coupons.length === 0) {
+      couponList.innerHTML = '<button class="coupon-select is-active" type="button" data-coupon-id="">' +
+        '<strong>暂无可用优惠券</strong><span>按商品金额结算</span></button>';
+      return;
+    }
     options += '<button class="coupon-select' + (!selectedCouponId ? " is-active" : "") + '" type="button" data-coupon-id="">' +
       '<strong>暂不使用</strong><span>保持原价</span></button>';
     couponList.innerHTML = options;
@@ -93,18 +112,21 @@ document.addEventListener("DOMContentLoaded", function () {
   if (submitButton) {
     submitButton.addEventListener("click", function (event) {
       event.preventDefault();
+      if (submitButton.getAttribute("aria-disabled") === "true") {
+        return;
+      }
       if (!cartSummary.totalQuantity) {
         app.showMessage("购物车为空，无法提交订单");
         return;
       }
-      var choiceButtons = Array.from(document.querySelectorAll("[data-choice-group] [data-choice]"));
-      var activeChoiceIndex = choiceButtons.findIndex(function (button) {
+      var choiceButtons = Array.from(document.querySelectorAll("[data-pickup-type]"));
+      var activeChoice = choiceButtons.find(function (button) {
         return button.classList.contains("is-active");
       });
-      var pickupTypes = ["SELF_PICKUP", "DINE_IN", "DELIVERY"];
       submitButton.textContent = "提交中...";
+      submitButton.setAttribute("aria-disabled", "true");
       app.post("/orders", {
-        pickupType: pickupTypes[activeChoiceIndex >= 0 ? activeChoiceIndex : 0],
+        pickupType: activeChoice ? activeChoice.dataset.pickupType : "SELF_PICKUP",
         couponId: selectedCouponId || null,
         tableNo: tableInput ? tableInput.value : "",
         remark: remarkInput ? remarkInput.value : ""
@@ -116,17 +138,19 @@ document.addEventListener("DOMContentLoaded", function () {
       }).catch(function (error) {
         app.showMessage(error.message);
         submitButton.textContent = "提交订单";
+        submitButton.removeAttribute("aria-disabled");
       });
     });
   }
 
-  Promise.all([app.get("/cart"), app.get("/coupons")])
+  Promise.all([app.get("/cart"), app.get("/coupons"), app.get("/store")])
     .then(function (result) {
       cartSummary = result[0] || cartSummary;
       coupons = (result[1] || []).filter(function (coupon) {
         return coupon.available;
       });
       selectedCouponId = coupons.length ? coupons[0].id : "";
+      renderStore(result[2]);
       renderAll();
     })
     .catch(function (error) {

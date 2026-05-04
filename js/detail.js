@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var plusButton = document.querySelector("[data-detail-plus]");
   var addCartButton = document.querySelector(".detail-action-bar .button-secondary");
   var buyButton = document.querySelector(".detail-action-bar .button-primary");
+  var textBlockNode = document.querySelector(".text-block");
 
   function render() {
     if (qtyNode) {
@@ -51,6 +52,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (descNode) {
       descNode.textContent = product.description || "";
     }
+    if (textBlockNode) {
+      textBlockNode.innerHTML = '<p>' + app.escapeHtml(product.description || "暂无更多商品说明。") + '</p>' +
+        '<p>当前商品支持温度、甜度和加料选择，加入购物车后会按所选规格保存。</p>';
+    }
     if (priceNode) {
       priceNode.textContent = app.money(price);
     }
@@ -64,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
         specs.push(choice.textContent.trim());
       });
     });
-    return specs.length ? specs.join(" / ") : "Regular";
+    return specs.length ? specs.join(" / ") : app.defaultSpec;
   }
 
   function addToCart(redirectUrl) {

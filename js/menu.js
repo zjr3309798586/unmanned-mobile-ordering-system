@@ -10,13 +10,49 @@ document.addEventListener("DOMContentLoaded", function () {
   var totalNode = document.querySelector("[data-cart-total]");
   var countNode = document.querySelector("[data-cart-count]");
   var settlementBar = document.querySelector("[data-settlement-bar]");
+  var cartPreviewNode = document.querySelector("[data-cart-preview]");
+  var promoNoteNode = document.querySelector("[data-menu-promo-note]");
+  var storeNameNode = document.querySelector(".store-name");
+  var storeMetaNode = document.querySelector(".store-meta");
+  var storeStatusNode = document.querySelector(".status-pill");
+  var previewTimer = null;
+
+  function renderStore(store) {
+    if (!store) {
+      return;
+    }
+    if (storeNameNode) {
+      storeNameNode.textContent = store.name;
+    }
+    if (storeMetaNode) {
+      storeMetaNode.innerHTML = '<span>' + app.escapeHtml(store.distance || "约 350m") + '</span>' +
+        '<span>营业 ' + app.escapeHtml(store.businessHours || "09:00-21:30") + '</span>' +
+        '<span>堂食 / 自取 / 配送</span>';
+    }
+    if (storeStatusNode) {
+      storeStatusNode.textContent = "制作中约 12 分钟";
+      storeStatusNode.classList.add("is-open");
+    }
+  }
+
+  function renderPromotion(coupons) {
+    if (!promoNoteNode) {
+      return;
+    }
+    var coupon = (coupons || []).find(function (item) {
+      return item.available;
+    });
+    promoNoteNode.textContent = coupon
+      ? coupon.conditionText + "，下单可减 " + app.money(coupon.discountAmount)
+      : "当前暂无可用优惠券，下单金额按商品实付计算。";
+  }
 
   function renderLoading() {
     if (categoryList) {
       categoryList.innerHTML = '<button class="category-button is-active" type="button">加载中</button>';
     }
     if (menuContent) {
-      menuContent.innerHTML = '<section class="section-card menu-group"><p class="section-note">正在从后端读取商品...</p></section>';
+      menuContent.innerHTML = '<section class="section-card menu-group"><p class="section-note">正在读取当前门店商品...</p></section>';
     }
   }
 
@@ -68,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
     menuContent.innerHTML = Object.keys(grouped).map(function (categoryId) {
       var title = activeCategory === "all" ? (categoryMap[categoryId] || "其他商品") : (categoryMap[categoryId] || "商品列表");
       return '<section class="section-card menu-group" id="group-' + app.escapeHtml(categoryId) + '">' +
-        '<div class="section-head"><div><h2 class="section-title">' + app.escapeHtml(title) + '</h2><p class="section-note">数据来自 Spring Boot 后端接口</p></div></div>' +
+        '<div class="section-head"><div><h2 class="section-title">' + app.escapeHtml(title) + '</h2><p class="section-note">来自当前门店商品数据</p></div></div>' +
         '<div class="menu-item-list">' + grouped[categoryId].map(renderProductCard).join("") + '</div>' +
       '</section>';
     }).join("");
@@ -115,6 +151,27 @@ document.addEventListener("DOMContentLoaded", function () {
       settlementBar.classList.toggle("is-hidden", !cartSummary.totalQuantity);
       settlementBar.classList.toggle("is-visible", !!cartSummary.totalQuantity);
     }
+    if (cartPreviewNode) {
+      var items = (cartSummary.items || []).slice(0, 4);
+      cartPreviewNode.innerHTML = items.length ? items.map(function (item) {
+        return '<div class="cart-preview-row">' +
+          '<span>' + app.escapeHtml(item.productName) + '</span>' +
+          '<small>' + app.escapeHtml(app.specText(item.spec)) + ' × ' + item.quantity + '</small>' +
+          '<strong>' + app.money(item.subtotal || Number(item.price) * item.quantity) + '</strong>' +
+        '</div>';
+      }).join("") : '<div class="cart-preview-row"><span>还没有选择商品</span><small>点击加号加入购物车</small><strong>¥ 0.00</strong></div>';
+    }
+  }
+
+  function showCartPreview() {
+    if (!settlementBar) {
+      return;
+    }
+    settlementBar.classList.add("is-expanded");
+    window.clearTimeout(previewTimer);
+    previewTimer = window.setTimeout(function () {
+      settlementBar.classList.remove("is-expanded");
+    }, 3200);
   }
 
   if (categoryList) {
@@ -138,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
       button.disabled = true;
       app.post("/cart/items", {
         productId: button.dataset.addProduct,
-        spec: "Regular",
+        spec: app.defaultSpec,
         quantity: 1
       }).then(function (data) {
         cartSummary = data;
@@ -147,6 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
           button.classList.remove("is-bumped");
         }, 180);
         renderCartSummary();
+        showCartPreview();
         app.showMessage("已加入购物车");
       }).catch(function (error) {
         app.showMessage(error.message);
@@ -164,19 +222,32 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.value = app.queryParam("keyword");
   }
 
+  if (settlementBar) {
+    settlementBar.addEventListener("click", function (event) {
+      if (event.target.closest("a")) {
+        return;
+      }
+      if (cartSummary.totalQuantity) {
+        settlementBar.classList.toggle("is-expanded");
+      }
+    });
+  }
+
   renderLoading();
-  Promise.all([app.get("/categories"), app.get("/products"), app.get("/cart")])
+  Promise.all([app.get("/store"), app.get("/categories"), app.get("/products"), app.get("/cart"), app.get("/coupons")])
     .then(function (result) {
-      categories = result[0] || [];
-      products = result[1] || [];
-      cartSummary = result[2] || cartSummary;
+      renderStore(result[0]);
+      categories = result[1] || [];
+      products = result[2] || [];
+      cartSummary = result[3] || cartSummary;
+      renderPromotion(result[4]);
       renderCategories();
       renderProducts();
       renderCartSummary();
     })
     .catch(function (error) {
       if (menuContent) {
-        menuContent.innerHTML = '<section class="section-card menu-group"><p class="section-note">后端接口连接失败：' + app.escapeHtml(error.message) + '</p></section>';
+        menuContent.innerHTML = '<section class="section-card menu-group"><p class="section-note">服务连接失败：' + app.escapeHtml(error.message) + '</p></section>';
       }
     });
 });

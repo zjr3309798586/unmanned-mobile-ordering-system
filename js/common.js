@@ -27,6 +27,15 @@ window.OrderingApp = (function () {
     return "¥ " + Number(value || 0).toFixed(2);
   }
 
+  var defaultSpec = "标准杯 / 常温 / 正常糖";
+
+  function specText(value) {
+    if (!value || value === "Regular") {
+      return defaultSpec;
+    }
+    return value;
+  }
+
   function imageUrl(value) {
     if (!value) {
       return "images/food-placeholder.svg";
@@ -53,6 +62,15 @@ window.OrderingApp = (function () {
       CANCELED: "已取消"
     };
     return map[status] || status || "未知";
+  }
+
+  function pickupTypeText(type) {
+    var map = {
+      SELF_PICKUP: "到店自取",
+      DINE_IN: "堂食",
+      DELIVERY: "平台外送"
+    };
+    return map[type] || type || "到店自取";
   }
 
   function showMessage(message) {
@@ -90,9 +108,12 @@ window.OrderingApp = (function () {
       return request(path, { method: "DELETE" });
     },
     money: money,
+    defaultSpec: defaultSpec,
+    specText: specText,
     imageUrl: imageUrl,
     escapeHtml: escapeHtml,
     statusText: statusText,
+    pickupTypeText: pickupTypeText,
     showMessage: showMessage,
     queryParam: queryParam
   };

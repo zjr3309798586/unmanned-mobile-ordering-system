@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return coupon.available;
     }).slice(0, 3);
     if (available.length === 0) {
+      couponStack.innerHTML = '<p class="section-note">当前暂无专属优惠券。</p>';
       return;
     }
     couponStack.innerHTML = available.map(function (coupon) {
@@ -46,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     var list = (products || []).slice(0, 2);
     if (list.length === 0) {
+      productStack.innerHTML = '<p class="section-note">当前暂无省钱价商品。</p>';
       return;
     }
     productStack.innerHTML = list.map(function (product) {
@@ -56,7 +58,8 @@ document.addEventListener("DOMContentLoaded", function () {
           '<div class="tag-row"><span class="tag">省钱卡价</span><span class="tag muted-tag">会员专享</span></div>' +
           '<h3 class="product-name">' + app.escapeHtml(product.name) + '</h3>' +
           '<p class="product-desc">' + app.escapeHtml(product.description) + '</p>' +
-          '<div class="price-line"><strong class="price">' + app.money(savingPrice) + '</strong><span class="tiny-note">原价 ' + app.money(product.price) + '</span></div>' +
+          '<div class="price-line"><strong class="price">' + app.money(savingPrice) + '</strong><a class="mini-link" href="detail.html?id=' + encodeURIComponent(product.id) + '">去购买</a></div>' +
+          '<span class="tiny-note">原价 ' + app.money(product.price) + '</span>' +
         '</div>' +
       '</article>';
     }).join("");

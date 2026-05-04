@@ -139,6 +139,57 @@
   box-shadow: 0 10px 20px rgba(31, 94, 255, 0.28);
 }
 
+.settlement-bar {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.settlement-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cart-preview {
+  display: none;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.settlement-bar.is-expanded .cart-preview {
+  display: flex;
+}
+
+.cart-preview-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 8px;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.cart-preview-row span,
+.cart-preview-row small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cart-preview-row small {
+  grid-column: 1 / 2;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.cart-preview-row strong {
+  grid-row: 1 / span 2;
+  grid-column: 2 / 3;
+  align-self: center;
+}
+
 .settlement-bar .floating-actions {
   justify-content: flex-end;
 }

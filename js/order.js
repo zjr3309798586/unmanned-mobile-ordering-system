@@ -2,7 +2,14 @@ document.addEventListener("DOMContentLoaded", function () {
   var app = window.OrderingApp;
   var tabs = document.querySelectorAll("[data-order-filter]");
   var orderList = document.querySelector(".order-list");
+  var storeAddressNode = document.querySelector(".store-address");
   var activeFilter = "all";
+
+  function renderStore(store) {
+    if (storeAddressNode && store) {
+      storeAddressNode.textContent = store.name + "订单会保存在这里，支持查看进度、取消订单和再来一单。";
+    }
+  }
 
   function orderType(order) {
     return order.status === "WAITING_PICKUP" ? "current" : "history";
@@ -26,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function renderOrderCard(order) {
     var goods = (order.items || []).map(function (item) {
-      return '<p>' + app.escapeHtml(item.productName) + ' × ' + item.quantity + ' · ' + app.escapeHtml(item.spec || "Regular") + '</p>';
+      return '<p>' + app.escapeHtml(item.productName) + ' × ' + item.quantity + ' · ' + app.escapeHtml(app.specText(item.spec)) + '</p>';
     }).join("");
     var statusClass = order.status === "WAITING_PICKUP" ? " is-open" : "";
     var actions = order.status === "WAITING_PICKUP"
@@ -56,7 +63,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (orderList) {
       orderList.innerHTML = '<section class="section-card"><p class="section-note">正在读取订单...</p></section>';
     }
-    app.get("/orders").then(renderOrders).catch(function (error) {
+    Promise.all([app.get("/store"), app.get("/orders")]).then(function (result) {
+      renderStore(result[0]);
+      renderOrders(result[1]);
+    }).catch(function (error) {
       if (orderList) {
         orderList.innerHTML = '<section class="section-card"><p class="section-note">订单接口连接失败：' + app.escapeHtml(error.message) + '</p></section>';
       }

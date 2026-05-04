@@ -15,9 +15,9 @@
         <div class="store-header">
           <div>
             <span class="store-label">点餐门店</span>
-            <h1 class="store-name">浦东世纪广场店</h1>
+            <h1 class="store-name">正在读取门店</h1>
           </div>
-          <span class="status-pill is-open">制作中约 12 分钟</span>
+          <span class="status-pill is-open">读取中</span>
         </div>
         <div class="store-meta">
           <span>堂食</span>
@@ -37,7 +37,7 @@
         <div class="section-head compact-head">
           <div>
             <h2 class="section-title">今日点餐优惠</h2>
-            <p class="section-note">满 39 元可用 8 元券，学生用户可叠加新人券包。</p>
+            <p class="section-note" data-menu-promo-note>正在读取当前可用优惠券...</p>
           </div>
         </div>
       </section>
@@ -45,208 +45,30 @@
       <section class="menu-layout">
         <aside class="section-card category-panel">
           <div class="category-list">
-            <button class="category-button is-active" type="button" data-category="popular" data-target-id="popular">人气推荐</button>
-            <button class="category-button" type="button" data-category="fruit-tea" data-target-id="fruit-tea">鲜果茶饮</button>
-            <button class="category-button" type="button" data-category="milk-special" data-target-id="milk-special">奶香特调</button>
-            <button class="category-button" type="button" data-category="snack" data-target-id="snack">轻食小吃</button>
-            <button class="category-button" type="button" data-category="combo" data-target-id="combo">组合套餐</button>
+            <button class="category-button is-active" type="button">加载中</button>
           </div>
         </aside>
 
         <div class="menu-content">
-          <section class="section-card menu-group" id="popular">
-            <div class="section-head">
-              <div>
-                <h2 class="section-title">人气推荐</h2>
-                <p class="section-note">门店销量较高的热卖商品</p>
-              </div>
-            </div>
-            <div class="menu-item-list">
-              <article class="menu-item-card">
-                <img class="cover-thumb" src="images/food-placeholder.svg" alt="鲜橙气泡饮占位图">
-                <div class="product-body">
-                  <div class="tag-row">
-                    <span class="tag">热销</span>
-                    <span class="tag muted-tag">可少糖</span>
-                  </div>
-                  <h3 class="product-name">鲜橙气泡饮</h3>
-                  <p class="product-desc">鲜橙果香搭配气泡口感，适合夏季饮用。</p>
-                  <div class="price-line">
-                    <strong class="price">¥ 18.00</strong>
-                    <div class="menu-item-action">
-                      <span class="item-counter" data-count-for="orange-fizz">0</span>
-                      <button class="add-button" type="button" data-add-item="orange-fizz" data-price="18">+</button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-              <article class="menu-item-card">
-                <img class="cover-thumb" src="images/food-placeholder.svg" alt="桂花乌龙奶盖占位图">
-                <div class="product-body">
-                  <div class="tag-row">
-                    <span class="tag">招牌</span>
-                    <span class="tag muted-tag">可加奶盖</span>
-                  </div>
-                  <h3 class="product-name">桂花乌龙奶盖</h3>
-                  <p class="product-desc">乌龙茶底清香顺口，支持冷热切换和甜度调节。</p>
-                  <div class="price-line">
-                    <strong class="price">¥ 20.00</strong>
-                    <div class="menu-item-action">
-                      <span class="item-counter" data-count-for="oolong-milk">0</span>
-                      <button class="add-button" type="button" data-add-item="oolong-milk" data-price="20">+</button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <section class="section-card menu-group" id="fruit-tea">
-            <div class="section-head">
-              <div>
-                <h2 class="section-title">鲜果茶饮</h2>
-                <p class="section-note">适合做搜索和分类筛选展示</p>
-              </div>
-            </div>
-            <div class="menu-item-list">
-              <article class="menu-item-card">
-                <img class="cover-thumb" src="images/food-placeholder.svg" alt="杨枝甘露冰饮占位图">
-                <div class="product-body">
-                  <div class="tag-row">
-                    <span class="tag">果香</span>
-                    <span class="tag muted-tag">大杯推荐</span>
-                  </div>
-                  <h3 class="product-name">杨枝甘露冰饮</h3>
-                  <p class="product-desc">芒果果肉与西米搭配，适合做多规格展示。</p>
-                  <div class="price-line">
-                    <strong class="price">¥ 22.00</strong>
-                    <div class="menu-item-action">
-                      <span class="item-counter" data-count-for="mango-drink">0</span>
-                      <button class="add-button" type="button" data-add-item="mango-drink" data-price="22">+</button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-              <article class="menu-item-card">
-                <img class="cover-thumb" src="images/food-placeholder.svg" alt="青提茉莉轻饮占位图">
-                <div class="product-body">
-                  <div class="tag-row">
-                    <span class="tag">清爽</span>
-                    <span class="tag muted-tag">新品</span>
-                  </div>
-                  <h3 class="product-name">青提茉莉轻饮</h3>
-                  <p class="product-desc">青提果香轻盈，适合主 Banner 和推荐位展示。</p>
-                  <div class="price-line">
-                    <strong class="price">¥ 19.00</strong>
-                    <div class="menu-item-action">
-                      <span class="item-counter" data-count-for="grape-jasmine">0</span>
-                      <button class="add-button" type="button" data-add-item="grape-jasmine" data-price="19">+</button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <section class="section-card menu-group" id="milk-special">
-            <div class="section-head">
-              <div>
-                <h2 class="section-title">奶香特调</h2>
-                <p class="section-note">预留冷热、甜度和加料参数</p>
-              </div>
-            </div>
-            <div class="menu-item-list">
-              <article class="menu-item-card">
-                <img class="cover-thumb" src="images/food-placeholder.svg" alt="黑糖珍珠奶茶占位图">
-                <div class="product-body">
-                  <div class="tag-row">
-                    <span class="tag">经典</span>
-                    <span class="tag muted-tag">可热饮</span>
-                  </div>
-                  <h3 class="product-name">黑糖珍珠奶茶</h3>
-                  <p class="product-desc">支持热饮、少糖和珍珠加量等多种选择。</p>
-                  <div class="price-line">
-                    <strong class="price">¥ 17.00</strong>
-                    <div class="menu-item-action">
-                      <span class="item-counter" data-count-for="brown-sugar">0</span>
-                      <button class="add-button" type="button" data-add-item="brown-sugar" data-price="17">+</button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <section class="section-card menu-group" id="snack">
-            <div class="section-head">
-              <div>
-                <h2 class="section-title">轻食小吃</h2>
-                <p class="section-note">可作为加购区或搭配推荐</p>
-              </div>
-            </div>
-            <div class="menu-item-list">
-              <article class="menu-item-card">
-                <img class="cover-thumb" src="images/food-placeholder.svg" alt="鸡腿贝果占位图">
-                <div class="product-body">
-                  <div class="tag-row">
-                    <span class="tag">轻食</span>
-                    <span class="tag muted-tag">现烤</span>
-                  </div>
-                  <h3 class="product-name">鸡腿贝果</h3>
-                  <p class="product-desc">适合作为早餐与午后加餐，支持搭配饮品。</p>
-                  <div class="price-line">
-                    <strong class="price">¥ 16.00</strong>
-                    <div class="menu-item-action">
-                      <span class="item-counter" data-count-for="bagel">0</span>
-                      <button class="add-button" type="button" data-add-item="bagel" data-price="16">+</button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <section class="section-card menu-group" id="combo">
-            <div class="section-head">
-              <div>
-                <h2 class="section-title">组合套餐</h2>
-                <p class="section-note">适合首页推荐和活动促销位</p>
-              </div>
-            </div>
-            <div class="menu-item-list">
-              <article class="menu-item-card">
-                <img class="cover-thumb" src="images/food-placeholder.svg" alt="工作日能量套餐占位图">
-                <div class="product-body">
-                  <div class="tag-row">
-                    <span class="tag">套餐</span>
-                    <span class="tag muted-tag">工作日推荐</span>
-                  </div>
-                  <h3 class="product-name">工作日能量套餐</h3>
-                  <p class="product-desc">鲜果饮 + 贝果 + 小食，适合展示套餐结构。</p>
-                  <div class="price-line">
-                    <strong class="price">¥ 34.00</strong>
-                    <div class="menu-item-action">
-                      <span class="item-counter" data-count-for="combo-set">0</span>
-                      <button class="add-button" type="button" data-add-item="combo-set" data-price="34">+</button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </div>
+          <section class="section-card menu-group">
+            <p class="section-note">正在读取当前门店商品...</p>
           </section>
         </div>
       </section>
     </main>
 
     <div class="floating-bar settlement-bar is-hidden" data-settlement-bar>
-      <div class="floating-summary">
-        <span class="floating-label">已选商品</span>
-        <strong class="floating-price" data-cart-total>¥ 0.00</strong>
-        <span class="floating-label"><span data-cart-count>0</span> 件商品</span>
-      </div>
-      <div class="floating-actions">
-        <a class="button button-secondary" href="cart.html">购物车</a>
-        <a class="button button-primary" href="cart.html">去结算</a>
+      <div class="cart-preview" data-cart-preview></div>
+      <div class="settlement-main">
+        <div class="floating-summary">
+          <span class="floating-label">已选商品</span>
+          <strong class="floating-price" data-cart-total>¥ 0.00</strong>
+          <span class="floating-label"><span data-cart-count>0</span> 件商品</span>
+        </div>
+        <div class="floating-actions">
+          <a class="button button-secondary" href="cart.html">购物车</a>
+          <a class="button button-primary" href="cart.html">去结算</a>
+        </div>
       </div>
     </div>
 
