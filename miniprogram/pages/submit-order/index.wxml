@@ -1,0 +1,89 @@
+<view class="page submit-page with-bar">
+  <view class="title">提交订单</view>
+  <view class="muted mt">请确认取餐方式、商品和优惠券。</view>
+
+  <view class="card">
+    <view class="section-title">取餐方式</view>
+    <view class="pickup-list">
+      <view class="pickup-card {{item.active ? 'active' : ''}}" wx:for="{{pickupTypes}}" wx:key="id" data-id="{{item.id}}" bindtap="selectPickup">
+        <view class="pickup-name">{{item.name}}</view>
+        <view class="muted">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{store}}">
+    <view class="section-title">门店信息</view>
+    <view class="store-name mt">{{store.name}}</view>
+    <view class="muted">{{store.address}}</view>
+    <view class="muted">营业时间 {{store.businessHours}}</view>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <view class="section-title">商品清单</view>
+      <text class="muted" bindtap="goCart">返回修改</text>
+    </view>
+    <view class="order-line" wx:for="{{cart.items}}" wx:key="id">
+      <image class="line-img" src="{{item.imageUrl}}" mode="aspectFill" />
+      <view class="line-main">
+        <view class="row">
+          <view class="product-name">{{item.productName}}</view>
+          <text class="muted">× {{item.quantity}}</text>
+        </view>
+        <view class="muted mt">{{item.specText}}</view>
+        <view class="price small">{{item.subtotalText}}</view>
+      </view>
+    </view>
+    <view class="empty" wx:if="{{cart.isEmpty}}">
+      <view class="empty-title">购物车为空</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">优惠券</view>
+    <view class="coupon-option {{selectedCouponId === '' ? 'active' : ''}}" data-id="" bindtap="selectCoupon">
+      <view>
+        <view class="coupon-title">不使用优惠券</view>
+        <view class="muted">保持原价结算</view>
+      </view>
+      <text class="coupon-check">✓</text>
+    </view>
+    <view class="coupon-option {{item.active ? 'active' : ''}}" wx:for="{{coupons}}" wx:key="id" data-id="{{item.id}}" bindtap="selectCoupon">
+      <view>
+        <view class="coupon-title">{{item.title}}</view>
+        <view class="muted">{{item.conditionText}} · 有效期至 {{item.validUntil}}</view>
+      </view>
+      <text class="coupon-value">-{{item.discountText}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">取餐信息</view>
+    <input class="field mt" placeholder="桌号 / 取餐号，可不填" value="{{tableNo}}" bindinput="onTableInput" />
+    <textarea class="field remark-field" placeholder="备注口味、打包要求等，可不填" value="{{remark}}" bindinput="onRemarkInput" />
+  </view>
+
+  <view class="card amount-card">
+    <view class="amount-row">
+      <text>商品总价</text>
+      <text>{{cart.totalText}}</text>
+    </view>
+    <view class="amount-row">
+      <text>优惠金额</text>
+      <text>-{{discountText}}</text>
+    </view>
+    <view class="amount-row total">
+      <text>实付金额</text>
+      <text>{{payableText}}</text>
+    </view>
+  </view>
+
+  <view class="floating-bar">
+    <view>
+      <view class="muted">实付</view>
+      <view class="bar-price">{{payableText}}</view>
+    </view>
+    <button class="button primary" bindtap="submitOrder">提交订单</button>
+  </view>
+</view>

@@ -1,0 +1,48 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/menu/index",
+    "pages/detail/index",
+    "pages/cart/index",
+    "pages/submit-order/index",
+    "pages/order/index",
+    "pages/mine/index",
+    "pages/saving-card/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "无人移动点餐系统",
+    "navigationBarBackgroundColor": "#f6f7fb",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f6f7fb"
+  },
+  "tabBar": {
+    "color": "#8a94a6",
+    "selectedColor": "#ff7a1a",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/menu/index",
+        "text": "点餐"
+      },
+      {
+        "pagePath": "pages/saving-card/index",
+        "text": "省钱卡"
+      },
+      {
+        "pagePath": "pages/order/index",
+        "text": "订单"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

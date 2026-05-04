@@ -1,0 +1,58 @@
+<view class="page cart-page with-bar">
+  <view class="cart-head">
+    <view>
+      <view class="title">购物车</view>
+      <view class="muted mt">确认商品规格和数量后去结算。</view>
+    </view>
+    <button class="clear-btn" wx:if="{{loggedIn && !cart.isEmpty}}" bindtap="clearCart">清空</button>
+  </view>
+
+  <view class="login-card card" wx:if="{{needsLogin}}">
+    <view class="section-title">请先登录</view>
+    <view class="muted mt">登录后购物车、订单和会员资产会保存到你的账号。</view>
+    <button class="button primary login-button" bindtap="login">微信登录</button>
+  </view>
+
+  <view class="empty card" wx:if="{{loggedIn && cart.isEmpty}}">
+    <view class="empty-title">购物车还是空的</view>
+    <view class="muted mt">去点餐页选择你喜欢的商品。</view>
+    <button class="button primary empty-action" bindtap="goMenu">去点餐</button>
+  </view>
+
+  <view wx:if="{{loggedIn && !cart.isEmpty}}">
+    <view class="cart-item card" wx:for="{{cart.items}}" wx:key="id">
+      <image class="cart-img" src="{{item.imageUrl}}" mode="aspectFill" />
+      <view class="cart-info">
+        <view class="row">
+          <view class="product-name">{{item.productName}}</view>
+          <button class="delete-btn" data-id="{{item.id}}" bindtap="removeItem">删除</button>
+        </view>
+        <view class="muted mt">{{item.specText}}</view>
+        <view class="row mt">
+          <view>
+            <view class="price">{{item.priceText}}</view>
+            <view class="muted">小计 {{item.subtotalText}}</view>
+          </view>
+          <view class="stepper">
+            <button data-id="{{item.id}}" data-quantity="{{item.quantity}}" data-delta="-1" bindtap="changeQuantity">-</button>
+            <text>{{item.quantity}}</text>
+            <button data-id="{{item.id}}" data-quantity="{{item.quantity}}" data-delta="1" bindtap="changeQuantity">+</button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="coupon-tip card">
+      <view class="section-title">优惠提示</view>
+      <view class="muted mt">{{cart.discountHint}}</view>
+    </view>
+  </view>
+
+  <view class="floating-bar" wx:if="{{loggedIn && !cart.isEmpty}}">
+    <view>
+      <view class="muted">共 {{cart.totalQuantity}} 件，合计</view>
+      <view class="bar-price">{{cart.totalText}}</view>
+    </view>
+    <button class="button primary" bindtap="goSubmit">去结算</button>
+  </view>
+</view>

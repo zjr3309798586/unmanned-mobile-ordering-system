@@ -1,0 +1,98 @@
+.pickup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-top: 18rpx;
+}
+
+.pickup-card,
+.coupon-option {
+  padding: 20rpx;
+  border: 1rpx solid #e7ebf2;
+  border-radius: 20rpx;
+  background: #f8fafc;
+}
+
+.pickup-card.active,
+.coupon-option.active {
+  border-color: #ffb680;
+  background: #fff7f0;
+}
+
+.pickup-name,
+.store-name,
+.coupon-title {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.order-line {
+  display: flex;
+  gap: 18rpx;
+  margin-top: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #edf1f6;
+}
+
+.order-line:last-child {
+  border-bottom: 0;
+}
+
+.line-img {
+  width: 118rpx;
+  height: 118rpx;
+  flex: none;
+  border-radius: 18rpx;
+  background: #f0f3f8;
+}
+
+.line-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.price.small {
+  margin-top: 12rpx;
+  font-size: 28rpx;
+}
+
+.coupon-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  margin-top: 16rpx;
+}
+
+.coupon-check,
+.coupon-value {
+  color: #ff7a1a;
+  font-weight: 900;
+}
+
+.remark-field {
+  min-height: 140rpx;
+  margin-top: 16rpx;
+}
+
+.amount-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56rpx;
+  color: #737f91;
+  font-size: 26rpx;
+}
+
+.amount-row.total {
+  margin-top: 12rpx;
+  color: #182033;
+  font-size: 32rpx;
+  font-weight: 900;
+}
+
+.bar-price {
+  color: #ffffff;
+  font-size: 36rpx;
+  font-weight: 900;
+}

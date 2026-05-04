@@ -1,0 +1,58 @@
+<view class="page with-bar" wx:if="{{product}}">
+  <image class="detail-image" src="{{product.imageUrl}}" mode="aspectFill" />
+
+  <view class="card">
+    <view class="row">
+      <view>
+        <view class="title">{{product.name}}</view>
+        <view class="muted mt">月售 {{product.sales}} 件</view>
+      </view>
+      <text class="price">{{product.priceText}}</text>
+    </view>
+    <view class="muted mt">{{product.description}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">温度选择</view>
+    <view class="choice-row">
+      <button class="choice {{item.active ? 'active' : ''}}" wx:for="{{temperatureOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="chooseTemperature">{{item.value}}</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">甜度选择</view>
+    <view class="choice-row">
+      <button class="choice {{item.active ? 'active' : ''}}" wx:for="{{sugarOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="chooseSugar">{{item.value}}</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">加料选择</view>
+    <view class="choice-row">
+      <button class="choice {{item.active ? 'active' : ''}}" wx:for="{{toppingOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="toggleTopping">{{item.value}}</button>
+    </view>
+  </view>
+
+  <view class="card row">
+    <view>
+      <view class="section-title">购买数量</view>
+      <view class="muted">当前选择会保存到购物车</view>
+    </view>
+    <view class="stepper">
+      <button data-delta="-1" bindtap="changeQuantity">-</button>
+      <text>{{quantity}}</text>
+      <button data-delta="1" bindtap="changeQuantity">+</button>
+    </view>
+  </view>
+
+  <view class="floating-bar">
+    <view>
+      <view class="muted">合计</view>
+      <view class="bar-price">{{totalText}}</view>
+    </view>
+    <view class="actions">
+      <button class="button secondary" bindtap="addToCart">加入购物车</button>
+      <button class="button primary" data-buy="true" bindtap="addToCart">立即购买</button>
+    </view>
+  </view>
+</view>

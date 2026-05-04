@@ -1,0 +1,55 @@
+<view class="page saving-page">
+  <view class="saving-hero">
+    <text class="hero-badge">会员权益</text>
+    <view class="saving-title">开通省钱卡</view>
+    <view class="saving-text">领取专属优惠券，指定商品享受省钱价。</view>
+    <button class="button primary hero-button" bindtap="openCard">{{openButtonText}}</button>
+  </view>
+
+  <view class="card" wx:for="{{plans}}" wx:key="id">
+    <view class="row">
+      <view>
+        <view class="section-title">{{item.name}}</view>
+        <view class="muted mt">{{item.description}}</view>
+      </view>
+      <text class="price">{{item.priceText}}</text>
+    </view>
+    <view class="benefit-list">
+      <view class="benefit" wx:for="{{item.benefits}}" wx:for-item="benefit" wx:key="*this">✓ {{benefit}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">专属优惠券</view>
+    <view class="coupon-line" wx:for="{{coupons}}" wx:key="id">
+      <view>
+        <view class="coupon-title">{{item.title}}</view>
+        <view class="muted">{{item.conditionText}} · {{item.validUntil}} 前可用</view>
+      </view>
+      <text class="coupon-value">-{{item.discountText}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <view class="section-title">省钱价商品</view>
+      <text class="muted" bindtap="goMenu">去点餐</text>
+    </view>
+    <view class="saving-product" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+      <image class="saving-img" src="{{item.imageUrl}}" mode="aspectFill" />
+      <view class="saving-info">
+        <view class="product-name">{{item.name}}</view>
+        <view class="product-desc">{{item.description}}</view>
+        <view class="row mt">
+          <text class="price">{{item.savingPriceText}}</text>
+          <text class="old-price">{{item.priceText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">会员权益说明</view>
+    <view class="muted mt">省钱卡权益与当前登录账号绑定。后续接入微信支付后，可将“立即开通”改为真实支付开通。</view>
+  </view>
+</view>

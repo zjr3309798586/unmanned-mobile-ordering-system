@@ -25,6 +25,44 @@
 - `js/`：前台页面脚本
 - `images/`：图片资源
 
+## 微信小程序端
+
+小程序端位于 `miniprogram/`，使用微信原生小程序语法，不使用 Vue、React。页面已接入当前 Spring Boot 后端，覆盖登录、点餐、购物车、提交订单、订单、我的和省钱卡流程。
+
+页面包括：
+- `pages/home/index`：首页
+- `pages/menu/index`：点餐页
+- `pages/detail/index`：商品详情页
+- `pages/cart/index`：购物车页
+- `pages/submit-order/index`：提交订单页
+- `pages/order/index`：订单页
+- `pages/mine/index`：我的页
+- `pages/saving-card/index`：省钱卡页
+
+在微信开发者工具中打开：
+
+```text
+导入项目时选择 miniprogram 目录
+AppID 可先使用测试号
+后端保持运行：http://127.0.0.1:8080
+```
+
+小程序接口地址在 `miniprogram/utils/config.js`：
+
+```js
+apiBaseUrl: "http://127.0.0.1:8080/api"
+```
+
+开发者工具里可以直接用 `127.0.0.1` 调试。真机预览时不能继续用 `127.0.0.1`，需要改成本机局域网 IP 或部署后的 HTTPS 域名，并在微信后台配置合法域名。
+
+当前小程序默认启用开发登录：
+
+```js
+useDevLogin: true
+```
+
+这样可以先完整跑通购物车和订单流程。正式微信登录时，把它改为 `false`，并配置后端环境变量 `WECHAT_APP_ID` 和 `WECHAT_APP_SECRET`。
+
 ## 后台管理端
 
 后台位于 `admin/`，同样使用原生 HTML、CSS、JavaScript 实现。数据看板、菜品管理、订单管理、分类、优惠券和用户页会读取后端接口。

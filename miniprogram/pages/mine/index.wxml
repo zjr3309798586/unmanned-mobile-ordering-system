@@ -1,0 +1,41 @@
+<view class="page mine-page">
+  <view class="profile-card">
+    <view class="avatar">{{avatarText}}</view>
+    <view class="profile-main">
+      <view class="profile-name">{{profile.nickname}}</view>
+      <view class="profile-level">{{profile.memberLevel}}</view>
+      <button class="login-link" wx:if="{{!loggedIn}}" bindtap="login">登录 / 注册</button>
+      <button class="login-link" wx:if="{{loggedIn}}" bindtap="logout">退出登录</button>
+    </view>
+  </view>
+
+  <view class="asset-grid">
+    <view class="asset-card">
+      <view class="asset-value">{{profile.balanceText}}</view>
+      <view class="muted">余额</view>
+    </view>
+    <view class="asset-card">
+      <view class="asset-value">{{profile.couponCount}}</view>
+      <view class="muted">优惠券</view>
+    </view>
+    <view class="asset-card">
+      <view class="asset-value">{{profile.points}}</view>
+      <view class="muted">积分</view>
+    </view>
+    <view class="asset-card">
+      <view class="asset-value">{{profile.savingAmountText}}</view>
+      <view class="muted">累计省钱</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">更多服务</view>
+    <view class="service-line" wx:for="{{services}}" wx:key="target" data-target="{{item.target}}" bindtap="goTarget">
+      <view>
+        <view class="service-name">{{item.name}}</view>
+        <view class="muted">{{item.desc}}</view>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+</view>

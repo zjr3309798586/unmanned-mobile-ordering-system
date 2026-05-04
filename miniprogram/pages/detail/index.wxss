@@ -1,0 +1,67 @@
+.detail-image {
+  width: 100%;
+  height: 470rpx;
+  border-radius: 28rpx;
+  background: #f0f3f8;
+}
+
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 18rpx;
+}
+
+.choice {
+  min-height: 64rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  color: #737f91;
+  font-size: 25rpx;
+  font-weight: 800;
+  background: #f0f3f8;
+}
+
+.choice.active {
+  color: #ff7a1a;
+  background: #fff1e6;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 8rpx;
+  border-radius: 999rpx;
+  background: #f0f3f8;
+}
+
+.stepper button,
+.stepper text {
+  width: 54rpx;
+  height: 54rpx;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: 900;
+  line-height: 54rpx;
+}
+
+.stepper button {
+  color: #ff7a1a;
+  background: #ffffff;
+}
+
+.bar-price {
+  color: #ffffff;
+  font-size: 36rpx;
+  font-weight: 900;
+}
+
+.actions {
+  display: flex;
+  gap: 14rpx;
+}
+
+.actions .button {
+  min-width: 160rpx;
+}

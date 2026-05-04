@@ -138,6 +138,14 @@ X-User-Token: 登录接口返回的 token
 5. 后续购物车、订单、我的页接口都带 X-User-Token。
 ```
 
+当前仓库已提供微信小程序端，目录是：
+
+```text
+../miniprogram
+```
+
+开发者工具联调时，小程序默认通过 `POST /api/auth/dev-login` 获取用户 token。正式接微信登录时，再把 `miniprogram/utils/config.js` 里的 `useDevLogin` 改为 `false`。
+
 基础数据：
 
 ```text

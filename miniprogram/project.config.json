@@ -1,0 +1,13 @@
+{
+  "description": "无人移动点餐系统微信小程序",
+  "appid": "touristappid",
+  "projectname": "unmanned-mobile-ordering-system",
+  "miniprogramRoot": "./",
+  "compileType": "miniprogram",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true
+  }
+}

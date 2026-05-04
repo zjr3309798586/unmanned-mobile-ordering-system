@@ -1,0 +1,217 @@
+page {
+  min-height: 100vh;
+  color: #182033;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f6f7fb;
+}
+
+view,
+text,
+button,
+input,
+textarea,
+image {
+  box-sizing: border-box;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  line-height: 1.2;
+  background: transparent;
+}
+
+button::after {
+  border: 0;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 20rpx 24rpx 40rpx;
+}
+
+.page.with-bar {
+  padding-bottom: 160rpx;
+}
+
+.card {
+  margin-top: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid #e7ebf2;
+  border-radius: 26rpx;
+  background: #ffffff;
+  box-shadow: 0 10rpx 28rpx rgba(20, 48, 96, 0.06);
+}
+
+.title {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #182033;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #182033;
+}
+
+.muted {
+  color: #737f91;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.tag {
+  min-height: 38rpx;
+  padding: 0 14rpx;
+  border-radius: 999rpx;
+  color: #ff7a1a;
+  font-size: 21rpx;
+  font-weight: 700;
+  line-height: 38rpx;
+  background: #fff1e6;
+}
+
+.tag.blue {
+  color: #1f5eff;
+  background: #eaf1ff;
+}
+
+.price {
+  color: #ff7a1a;
+  font-size: 36rpx;
+  font-weight: 900;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 76rpx;
+  padding: 0 28rpx;
+  border-radius: 18rpx;
+  font-size: 26rpx;
+  font-weight: 800;
+}
+
+.button.primary {
+  color: #ffffff;
+  background: #ff7a1a;
+}
+
+.button.secondary {
+  color: #ff7a1a;
+  background: #fff1e6;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  min-height: 78rpx;
+  margin-top: 18rpx;
+  padding: 0 22rpx;
+  border: 1rpx solid #e7ebf2;
+  border-radius: 20rpx;
+  background: #ffffff;
+}
+
+.search input {
+  flex: 1;
+  font-size: 26rpx;
+}
+
+.product-card {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx;
+  border: 1rpx solid #e7ebf2;
+  border-radius: 22rpx;
+  background: #ffffff;
+}
+
+.product-img {
+  width: 150rpx;
+  height: 150rpx;
+  flex: none;
+  border-radius: 20rpx;
+  background: #f0f3f8;
+}
+
+.product-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.product-name {
+  margin-top: 8rpx;
+  font-size: 29rpx;
+  font-weight: 800;
+}
+
+.product-desc {
+  margin-top: 8rpx;
+  color: #737f91;
+  font-size: 23rpx;
+  line-height: 1.45;
+}
+
+.empty {
+  padding: 44rpx 20rpx;
+  text-align: center;
+}
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.floating-bar {
+  position: fixed;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: calc(24rpx + env(safe-area-inset-bottom));
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 18rpx;
+  border-radius: 26rpx;
+  color: #ffffff;
+  background: #101828;
+  box-shadow: 0 22rpx 42rpx rgba(14, 33, 68, 0.22);
+}
+
+.floating-bar .muted {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.field {
+  width: 100%;
+  min-height: 78rpx;
+  padding: 18rpx 20rpx;
+  border: 1rpx solid #e7ebf2;
+  border-radius: 18rpx;
+  color: #182033;
+  font-size: 26rpx;
+  background: #f8fafc;
+}
+
+.mt {
+  margin-top: 18rpx;
+}
