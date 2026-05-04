@@ -79,7 +79,7 @@ Page({
   goTarget(event) {
     const target = event.currentTarget.dataset.target;
     if (target === "order") {
-      wx.switchTab({ url: "/pages/order/index" });
+      wx.redirectTo({ url: "/pages/order/index" });
       return;
     }
     if (target === "cart") {
@@ -87,7 +87,7 @@ Page({
       return;
     }
     if (target === "saving") {
-      wx.switchTab({ url: "/pages/saving-card/index" });
+      wx.redirectTo({ url: "/pages/saving-card/index" });
       return;
     }
     wx.showToast({ title: "门店电话：400-100-2026", icon: "none" });

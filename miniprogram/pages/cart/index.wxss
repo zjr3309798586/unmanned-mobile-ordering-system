@@ -1,76 +1,29 @@
-.cart-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20rpx;
-  padding-top: 8rpx;
+.tip-card {
+  margin-top: 0;
+  border-color: #cfdcff;
+  background: #eaf1ff;
+  box-shadow: none;
 }
 
-.clear-btn,
-.delete-btn {
-  min-height: 48rpx;
-  padding: 0 18rpx;
-  border-radius: 999rpx;
-  color: #737f91;
-  font-size: 23rpx;
-  background: #eef2f7;
-}
-
-.login-button,
-.empty-action {
-  width: 100%;
-  margin-top: 24rpx;
+.tip-card .section-title {
+  color: #1f5eff;
 }
 
 .cart-item {
+  align-items: center;
+  box-shadow: 0 8rpx 28rpx rgba(20, 48, 96, 0.04);
+}
+
+.cart-item-main {
   display: flex;
+  flex-direction: column;
   gap: 20rpx;
 }
 
-.cart-img {
-  width: 150rpx;
-  height: 150rpx;
-  flex: none;
-  border-radius: 22rpx;
-  background: #f0f3f8;
+.cart-item-head {
+  align-items: flex-start;
 }
 
-.cart-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.coupon-tip {
-  border-color: #ffd8bc;
-  background: #fff7f0;
-}
-
-.stepper {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  padding: 8rpx;
-  border-radius: 999rpx;
-  background: #f0f3f8;
-}
-
-.stepper button,
-.stepper text {
-  width: 52rpx;
-  height: 52rpx;
-  border-radius: 50%;
-  text-align: center;
-  font-weight: 900;
-  line-height: 52rpx;
-}
-
-.stepper button {
-  color: #ff7a1a;
-  background: #ffffff;
-}
-
-.bar-price {
-  color: #ffffff;
-  font-size: 36rpx;
-  font-weight: 900;
+.checkout-bar .button-primary {
+  min-width: 224rpx;
 }

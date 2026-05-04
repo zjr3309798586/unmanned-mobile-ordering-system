@@ -1,64 +1,105 @@
-<view class="page menu-page with-bar">
-  <view class="card" wx:if="{{store}}">
-    <view class="row">
-      <view>
-        <text class="tag blue">点餐门店</text>
-        <view class="title mt">{{store.name}}</view>
+<view class="app-shell">
+  <view class="top-area">
+    <view class="store-card compact-store" wx:if="{{store}}">
+      <view class="store-header">
+        <view>
+          <text class="store-label">点餐门店</text>
+          <view class="store-name">{{store.name}}</view>
+        </view>
+        <text class="status-pill is-open">制作中约 12 分钟</text>
       </view>
-      <text class="tag">制作中约12分钟</text>
+      <view class="store-meta">
+        <text>{{store.distance}}</text>
+        <text>营业 {{store.businessHours}}</text>
+        <text>堂食 / 自取 / 配送</text>
+      </view>
     </view>
-    <view class="muted mt">{{store.distance}} · {{store.businessHours}}</view>
+
+    <view class="search-bar">
+      <text class="search-icon">搜</text>
+      <input class="search-input" placeholder="搜索商品、口味、套餐" value="{{keyword}}" bindinput="onKeywordInput" />
+    </view>
   </view>
 
-  <view class="search">
-    <text>搜</text>
-    <input placeholder="搜索商品、口味、套餐" value="{{keyword}}" bindinput="onKeywordInput" />
-  </view>
+  <view class="page-main with-floating-bar">
+    <view class="section-card promo-tip-card">
+      <view class="section-head compact-head">
+        <view>
+          <view class="section-title">今日点餐优惠</view>
+          <view class="section-note">{{promoNote}}</view>
+        </view>
+      </view>
+    </view>
 
-  <view class="menu-layout">
-    <scroll-view class="category-panel" scroll-y>
-      <view class="category {{activeCategory === 'all' ? 'active' : ''}}" data-id="all" bindtap="selectCategory">全部商品</view>
-      <view class="category {{activeCategory === item.id ? 'active' : ''}}" wx:for="{{categories}}" wx:key="id" data-id="{{item.id}}" bindtap="selectCategory">{{item.name}}</view>
-    </scroll-view>
+    <view class="menu-layout">
+      <view class="section-card category-panel">
+        <view class="category-list">
+          <button class="category-button {{activeCategory === 'all' ? 'is-active' : ''}}" data-id="all" bindtap="selectCategory">全部商品</button>
+          <button class="category-button {{activeCategory === item.id ? 'is-active' : ''}}" wx:for="{{categories}}" wx:key="id" data-id="{{item.id}}" bindtap="selectCategory">{{item.name}}</button>
+        </view>
+      </view>
 
-    <scroll-view class="product-panel" scroll-y>
-      <view class="product-card" wx:for="{{visibleProducts}}" wx:key="id">
-        <image class="product-img" src="{{item.imageUrl}}" mode="aspectFill" data-id="{{item.id}}" bindtap="goDetail" />
-        <view class="product-info">
-          <view class="tag-row">
-            <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+      <view class="menu-content">
+        <view class="section-card menu-group" wx:for="{{groupedProducts}}" wx:key="id">
+          <view class="section-head">
+            <view>
+              <view class="section-title">{{item.name}}</view>
+              <view class="section-note">来自当前门店商品数据</view>
+            </view>
           </view>
-          <view class="product-name" data-id="{{item.id}}" bindtap="goDetail">{{item.name}}</view>
-          <view class="product-desc">{{item.description}}</view>
-          <view class="row mt">
-            <text class="price">{{item.priceText}}</text>
-            <view class="add-area">
-              <text class="count">{{item.selectedCount}}</text>
-              <button class="add-btn" data-id="{{item.id}}" bindtap="addToCart">+</button>
+          <view class="menu-item-list">
+            <view class="menu-item-card" wx:for="{{item.products}}" wx:for-item="product" wx:key="id">
+              <image class="cover-thumb" src="{{product.imageUrl}}" mode="aspectFill" data-id="{{product.id}}" bindtap="goDetail" />
+              <view class="product-body">
+                <view class="tag-row">
+                  <text class="tag" wx:for="{{product.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+                </view>
+                <view class="product-name" data-id="{{product.id}}" bindtap="goDetail">{{product.name}}</view>
+                <view class="product-desc">{{product.description}}</view>
+                <view class="price-line">
+                  <text class="price">{{product.priceText}}</text>
+                  <view class="menu-item-action">
+                    <text class="item-counter">{{product.selectedCount}}</text>
+                    <button class="add-button" data-id="{{product.id}}" bindtap="addToCart">+</button>
+                  </view>
+                </view>
+              </view>
             </view>
           </view>
         </view>
+        <view class="section-card menu-group" wx:if="{{visibleProducts.length === 0}}">
+          <view class="section-note">暂无匹配商品，请换个关键词试试。</view>
+        </view>
       </view>
-      <view class="empty" wx:if="{{visibleProducts.length === 0}}">
-        <view class="empty-title">暂无匹配商品</view>
-        <view class="muted">换个关键词试试。</view>
-      </view>
-    </scroll-view>
+    </view>
   </view>
 
-  <view class="floating-bar cart-bar {{cartExpanded ? 'expanded' : ''}}" wx:if="{{cartSummary.totalQuantity}}" bindtap="toggleCart">
+  <view class="floating-bar settlement-bar {{cartExpanded ? 'is-expanded' : ''}} {{cartSummary.totalQuantity ? 'is-visible' : 'is-hidden'}}" bindtap="toggleCart">
     <view class="cart-preview" wx:if="{{cartExpanded}}">
-      <view class="cart-row" wx:for="{{cartSummary.items}}" wx:key="id">
-        <text>{{item.productName}} × {{item.quantity}}</text>
-        <text>{{item.spec}}</text>
+      <view class="cart-preview-row" wx:for="{{cartSummary.items}}" wx:key="id">
+        <text>{{item.productName}}</text>
+        <text class="preview-spec">{{item.spec}} × {{item.quantity}}</text>
+        <text class="preview-price">{{item.subtotalText}}</text>
       </view>
     </view>
-    <view class="row cart-main">
-      <view>
-        <view class="muted">已选 {{cartSummary.totalQuantity}} 件</view>
-        <view class="bar-price">{{cartSummary.totalText}}</view>
+    <view class="settlement-main">
+      <view class="floating-summary">
+        <text class="floating-label">已选商品</text>
+        <text class="floating-price">{{cartSummary.totalText}}</text>
+        <text class="floating-label">{{cartSummary.totalQuantity}} 件商品</text>
       </view>
-      <button class="button primary" catchtap="goCart">去结算</button>
+      <view class="floating-actions">
+        <navigator class="button button-secondary" url="/pages/cart/index" open-type="redirect">购物车</navigator>
+        <navigator class="button button-primary" url="/pages/cart/index" open-type="redirect">去结算</navigator>
+      </view>
     </view>
+  </view>
+
+  <view class="bottom-nav">
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><text class="nav-icon">首</text><text>首页</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/menu/index" open-type="redirect"><text class="nav-icon">餐</text><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><text class="nav-icon">卡</text><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><text class="nav-icon">单</text><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><text class="nav-icon">我</text><text>我的</text></navigator>
   </view>
 </view>

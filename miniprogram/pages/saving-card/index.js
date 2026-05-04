@@ -7,6 +7,7 @@ Page({
     loggedIn: false,
     opened: false,
     openButtonText: "立即开通",
+    heroPriceText: "¥ 0.00",
     plans: [],
     coupons: [],
     products: []
@@ -27,11 +28,13 @@ Page({
       api.get("/coupons"),
       api.get("/products")
     ]).then(([plans, coupons, products]) => {
-      this.setData({
-        plans: (plans || []).map((plan) => ({
+      const decoratedPlans = (plans || []).map((plan) => ({
           ...plan,
           priceText: format.money(plan.price)
-        })),
+        }));
+      this.setData({
+        plans: decoratedPlans,
+        heroPriceText: decoratedPlans.length ? decoratedPlans[0].priceText : "¥ 0.00",
         coupons: (coupons || []).filter((coupon) => coupon.available).map((coupon) => ({
           ...coupon,
           discountText: format.money(coupon.discountAmount)
@@ -51,7 +54,7 @@ Page({
   openCard() {
     if (!auth.isLoggedIn()) {
       wx.showToast({ title: "请先登录", icon: "none" });
-      wx.switchTab({ url: "/pages/mine/index" });
+      wx.redirectTo({ url: "/pages/mine/index" });
       return;
     }
     wx.setStorageSync("savingCardOpened", true);
@@ -60,7 +63,7 @@ Page({
   },
 
   goMenu() {
-    wx.switchTab({ url: "/pages/menu/index" });
+    wx.redirectTo({ url: "/pages/menu/index" });
   },
 
   goDetail(event) {

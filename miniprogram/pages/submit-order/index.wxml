@@ -1,89 +1,126 @@
-<view class="page submit-page with-bar">
-  <view class="title">提交订单</view>
-  <view class="muted mt">请确认取餐方式、商品和优惠券。</view>
-
-  <view class="card">
-    <view class="section-title">取餐方式</view>
-    <view class="pickup-list">
-      <view class="pickup-card {{item.active ? 'active' : ''}}" wx:for="{{pickupTypes}}" wx:key="id" data-id="{{item.id}}" bindtap="selectPickup">
-        <view class="pickup-name">{{item.name}}</view>
-        <view class="muted">{{item.desc}}</view>
-      </view>
-    </view>
+<view class="app-shell">
+  <view class="top-area submit-top-area">
+    <text class="back-link" bindtap="goCart">返回购物车</text>
+    <view class="page-title">提交订单</view>
   </view>
 
-  <view class="card" wx:if="{{store}}">
-    <view class="section-title">门店信息</view>
-    <view class="store-name mt">{{store.name}}</view>
-    <view class="muted">{{store.address}}</view>
-    <view class="muted">营业时间 {{store.businessHours}}</view>
-  </view>
-
-  <view class="card">
-    <view class="row">
-      <view class="section-title">商品清单</view>
-      <text class="muted" bindtap="goCart">返回修改</text>
-    </view>
-    <view class="order-line" wx:for="{{cart.items}}" wx:key="id">
-      <image class="line-img" src="{{item.imageUrl}}" mode="aspectFill" />
-      <view class="line-main">
-        <view class="row">
-          <view class="product-name">{{item.productName}}</view>
-          <text class="muted">× {{item.quantity}}</text>
+  <view class="page-main with-floating-bar">
+    <view class="section-card">
+      <view class="section-head compact-head">
+        <view>
+          <view class="section-title">取餐方式</view>
+          <view class="section-note">选择后会随订单一起提交</view>
         </view>
-        <view class="muted mt">{{item.specText}}</view>
-        <view class="price small">{{item.subtotalText}}</view>
+      </view>
+      <view class="choice-row">
+        <button class="choice-chip {{item.active ? 'is-active' : ''}}" wx:for="{{pickupTypes}}" wx:key="id" data-id="{{item.id}}" bindtap="selectPickup">{{item.name}}</button>
       </view>
     </view>
-    <view class="empty" wx:if="{{cart.isEmpty}}">
-      <view class="empty-title">购物车为空</view>
-    </view>
-  </view>
 
-  <view class="card">
-    <view class="section-title">优惠券</view>
-    <view class="coupon-option {{selectedCouponId === '' ? 'active' : ''}}" data-id="" bindtap="selectCoupon">
-      <view>
-        <view class="coupon-title">不使用优惠券</view>
-        <view class="muted">保持原价结算</view>
+    <view class="section-card" wx:if="{{store}}">
+      <view class="section-head compact-head">
+        <view>
+          <view class="section-title">门店信息</view>
+          <view class="section-note">当前订单所属门店</view>
+        </view>
       </view>
-      <text class="coupon-check">✓</text>
-    </view>
-    <view class="coupon-option {{item.active ? 'active' : ''}}" wx:for="{{coupons}}" wx:key="id" data-id="{{item.id}}" bindtap="selectCoupon">
-      <view>
-        <view class="coupon-title">{{item.title}}</view>
-        <view class="muted">{{item.conditionText}} · 有效期至 {{item.validUntil}}</view>
+      <view class="info-row no-divider">
+        <view>
+          <view class="info-title">{{store.name}}</view>
+          <view class="info-text">{{store.address}}</view>
+        </view>
       </view>
-      <text class="coupon-value">-{{item.discountText}}</text>
+    </view>
+
+    <view class="section-card">
+      <view class="section-head">
+        <view>
+          <view class="section-title">商品清单</view>
+          <view class="section-note">与购物车页保持结构一致</view>
+        </view>
+      </view>
+      <view class="submit-item-list">
+        <view class="submit-item-row" wx:for="{{cart.items}}" wx:key="id">
+          <view>
+            <view class="info-title">{{item.productName}}</view>
+            <view class="info-text">{{item.specText}} × {{item.quantity}}</view>
+          </view>
+          <text>{{item.subtotalText}}</text>
+        </view>
+      </view>
+      <view class="empty-state" wx:if="{{cart.isEmpty}}">
+        <view class="empty-title">购物车为空</view>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-head compact-head">
+        <view>
+          <view class="section-title">优惠券选择</view>
+          <view class="section-note">默认不使用，点击优惠券后才抵扣</view>
+        </view>
+      </view>
+      <view class="coupon-select-list">
+        <button class="coupon-select {{selectedCouponId === '' ? 'is-active' : ''}}" data-id="" bindtap="selectCoupon">
+          <view><view class="coupon-title">不使用优惠券</view><view class="coupon-note">保持原价结算</view></view>
+          <text>当前选择</text>
+        </button>
+        <button class="coupon-select {{item.active ? 'is-active' : ''}}" wx:for="{{coupons}}" wx:key="id" data-id="{{item.id}}" bindtap="selectCoupon">
+          <view><view class="coupon-title">{{item.title}}</view><view class="coupon-note">{{item.conditionText}} · 有效期至 {{item.validUntil}}</view></view>
+          <text>-{{item.discountText}}</text>
+        </button>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-head compact-head">
+        <view>
+          <view class="section-title">桌号 / 取餐号</view>
+          <view class="section-note">根据取餐方式灵活切换</view>
+        </view>
+      </view>
+      <input class="text-input" placeholder="例如：A08 桌 / 到店取餐" value="{{tableNo}}" bindinput="onTableInput" />
+    </view>
+
+    <view class="section-card">
+      <view class="section-head compact-head">
+        <view>
+          <view class="section-title">备注</view>
+          <view class="section-note">会随订单备注提交保存</view>
+        </view>
+      </view>
+      <textarea class="text-area" placeholder="例如：少冰、不要吸管、尽快出餐" value="{{remark}}" bindinput="onRemarkInput" />
+    </view>
+
+    <view class="section-card">
+      <view class="section-head compact-head">
+        <view>
+          <view class="section-title">金额明细</view>
+          <view class="section-note">金额可根据优惠券切换</view>
+        </view>
+      </view>
+      <view class="summary-list">
+        <view class="summary-row"><text>商品总价</text><text>{{cart.totalText}}</text></view>
+        <view class="summary-row"><text>优惠金额</text><text class="discount-price">- {{discountText}}</text></view>
+        <view class="summary-row total-row"><text>实付金额</text><text class="accent-price">{{payableText}}</text></view>
+      </view>
     </view>
   </view>
 
-  <view class="card">
-    <view class="section-title">取餐信息</view>
-    <input class="field mt" placeholder="桌号 / 取餐号，可不填" value="{{tableNo}}" bindinput="onTableInput" />
-    <textarea class="field remark-field" placeholder="备注口味、打包要求等，可不填" value="{{remark}}" bindinput="onRemarkInput" />
+  <view class="floating-bar submit-bar">
+    <view class="floating-summary">
+      <text class="floating-label">待支付</text>
+      <text class="floating-price">{{payableText}}</text>
+      <text class="floating-label">提交后生成取餐订单</text>
+    </view>
+    <button class="button button-primary" bindtap="submitOrder">提交订单</button>
   </view>
 
-  <view class="card amount-card">
-    <view class="amount-row">
-      <text>商品总价</text>
-      <text>{{cart.totalText}}</text>
-    </view>
-    <view class="amount-row">
-      <text>优惠金额</text>
-      <text>-{{discountText}}</text>
-    </view>
-    <view class="amount-row total">
-      <text>实付金额</text>
-      <text>{{payableText}}</text>
-    </view>
-  </view>
-
-  <view class="floating-bar">
-    <view>
-      <view class="muted">实付</view>
-      <view class="bar-price">{{payableText}}</view>
-    </view>
-    <button class="button primary" bindtap="submitOrder">提交订单</button>
+  <view class="bottom-nav">
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><text class="nav-icon">首</text><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><text class="nav-icon">餐</text><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><text class="nav-icon">卡</text><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><text class="nav-icon">单</text><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><text class="nav-icon">我</text><text>我的</text></navigator>
   </view>
 </view>

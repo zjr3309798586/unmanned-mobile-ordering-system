@@ -1,84 +1,186 @@
-<view class="page home-page">
-  <view class="hero">
-    <view>
+<view class="app-shell">
+  <view class="home-banner home-top-banner">
+    <view class="banner-content">
       <text class="hero-badge">限时活动</text>
-      <view class="hero-title">
+      <view class="banner-title">
         <view>今日鲜果饮</view>
         <view>第二杯半价</view>
       </view>
-      <view class="hero-text">新人下单可领优惠券，支持到店自取和平台外送。</view>
+      <view class="banner-text">新人下单再领 3 张优惠券，支持到店自取和平台外送。</view>
+      <view class="banner-offer-row">
+        <text class="banner-offer">满 25 减 6</text>
+        <text class="banner-offer">省钱卡专享价</text>
+      </view>
       <view class="hero-actions">
-        <button class="button primary" bindtap="goMenu">去点餐</button>
-        <button class="button secondary" bindtap="goSavingCard">领优惠</button>
+        <button class="button button-primary" bindtap="goMenu">去点餐</button>
+        <button class="button button-secondary" bindtap="goSavingCard">领优惠</button>
       </view>
     </view>
+    <view class="banner-visual">
+      <image class="banner-image" src="{{bannerImageUrl}}" mode="aspectFill" />
+    </view>
   </view>
 
-  <view class="card" wx:if="{{store}}">
-    <view class="row">
-      <view>
-        <text class="tag blue">当前门店</text>
-        <view class="title mt">{{store.name}}</view>
+  <view class="top-area home-top-tools">
+    <view class="store-card" wx:if="{{store}}">
+      <view class="store-header">
+        <view>
+          <text class="store-label">当前门店</text>
+          <view class="store-name">{{store.name}}</view>
+        </view>
+        <text class="status-pill is-open">营业中</text>
       </view>
-      <text class="tag">营业中</text>
+      <view class="store-meta">
+        <text>距你 {{store.distance}}</text>
+        <text>营业 {{store.businessHours}}</text>
+        <text>支持堂食 / 自取 / 配送</text>
+      </view>
+      <view class="store-address">{{store.address}}</view>
     </view>
-    <view class="muted mt">{{store.distance}} · 营业 {{store.businessHours}}</view>
-    <view class="muted">{{store.address}}</view>
-  </view>
 
-  <view class="search">
-    <text>搜</text>
-    <input placeholder="搜索饮品、小食、套餐" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="goMenu" />
-  </view>
-
-  <view class="service-grid">
-    <view class="service-card active">
-      <text class="service-icon">取</text>
-      <view class="section-title">到店自取</view>
-      <view class="muted">提前下单，到店凭订单取餐。</view>
-    </view>
-    <view class="service-card">
-      <text class="service-icon">送</text>
-      <view class="section-title">平台外送</view>
-      <view class="muted">适合办公室和宿舍场景。</view>
+    <view class="search-bar">
+      <text class="search-icon">搜</text>
+      <input class="search-input" placeholder="搜索饮品、小食、套餐、活动" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="goMenu" />
     </view>
   </view>
 
-  <view class="card">
-    <view class="row">
-      <view class="section-title">热门推荐</view>
-      <text class="muted" bindtap="goMenu">查看全部</text>
+  <view class="page-main home-main">
+    <view class="section-card">
+      <view class="section-head">
+        <view>
+          <view class="section-title">服务入口</view>
+          <view class="section-note">支持不同就餐方式</view>
+        </view>
+      </view>
+      <view class="service-grid">
+        <button class="service-card is-active">
+          <text class="service-icon">取</text>
+          <text class="service-strong">到店自取</text>
+          <text class="service-copy">提前下单，到店后凭取餐号快速取餐。</text>
+        </button>
+        <button class="service-card">
+          <text class="service-icon">送</text>
+          <text class="service-strong">平台外送</text>
+          <text class="service-copy">平台配送接单后送达，适合办公室和宿舍场景。</text>
+        </button>
+      </view>
     </view>
-    <view class="product-list">
-      <view class="product-card" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
-        <image class="product-img" src="{{item.imageUrl}}" mode="aspectFill" />
-        <view class="product-info">
-          <view class="tag-row">
-            <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+
+    <view class="section-card">
+      <view class="section-head">
+        <view>
+          <view class="section-title">快捷功能</view>
+          <view class="section-note">常用操作快速进入</view>
+        </view>
+      </view>
+      <view class="feature-grid">
+        <navigator class="feature-card" url="/pages/menu/index" open-type="redirect">
+          <text class="feature-icon">餐</text>
+          <text class="feature-strong">开始点餐</text>
+        </navigator>
+        <navigator class="feature-card" url="/pages/cart/index" open-type="redirect">
+          <text class="feature-icon">车</text>
+          <text class="feature-strong">购物车</text>
+        </navigator>
+        <navigator class="feature-card" url="/pages/saving-card/index" open-type="redirect">
+          <text class="feature-icon">卡</text>
+          <text class="feature-strong">省钱卡</text>
+        </navigator>
+        <navigator class="feature-card" url="/pages/order/index" open-type="redirect">
+          <text class="feature-icon">单</text>
+          <text class="feature-strong">我的订单</text>
+        </navigator>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-head">
+        <view>
+          <view class="section-title">热门推荐商品</view>
+          <view class="section-note">来自当前门店商品数据</view>
+        </view>
+        <text class="section-link" bindtap="goMenu">查看全部</text>
+      </view>
+      <view class="product-stack">
+        <view class="product-card" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+          <image class="cover-thumb" src="{{item.imageUrl}}" mode="aspectFill" />
+          <view class="product-body">
+            <view class="tag-row">
+              <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+            </view>
+            <view class="product-name">{{item.name}}</view>
+            <view class="product-desc">{{item.description}}</view>
+            <view class="price-line">
+              <text class="price">{{item.priceText}}</text>
+              <text class="mini-link">查看详情</text>
+            </view>
           </view>
-          <view class="product-name">{{item.name}}</view>
-          <view class="product-desc">{{item.description}}</view>
-          <view class="row mt">
-            <text class="price">{{item.priceText}}</text>
-            <text class="muted">查看详情</text>
+        </view>
+        <view class="section-note" wx:if="{{products.length === 0}}">暂无推荐商品。</view>
+      </view>
+    </view>
+
+    <view class="promo-cluster">
+      <view class="section-card promo-card">
+        <view class="section-head compact-head">
+          <view>
+            <view class="section-title">新人券包</view>
+            <view class="section-note">新用户可领 3 张券</view>
+          </view>
+          <text class="hero-badge warm-badge">限时</text>
+        </view>
+        <view class="coupon-strip">
+          <view class="coupon-item" wx:for="{{coupons}}" wx:key="id">
+            <text class="coupon-title">{{item.title}}</text>
+            <text class="coupon-desc">{{item.conditionText}} · 减 {{item.discountText}}</text>
           </view>
         </view>
       </view>
-      <view class="empty" wx:if="{{products.length === 0}}">
-        <view class="empty-title">暂无推荐商品</view>
+
+      <view class="section-card task-card">
+        <view class="section-head compact-head">
+          <view>
+            <view class="section-title">集杯任务</view>
+            <view class="section-note">已完成 4 / 8 杯</view>
+          </view>
+          <navigator class="section-link" url="/pages/saving-card/index" open-type="redirect">查看权益</navigator>
+        </view>
+        <view class="task-progress">
+          <view class="progress-track"><view class="progress-fill"></view></view>
+          <view class="task-footnote">再买 4 杯即可领取饮品兑换券。</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-head">
+        <view>
+          <view class="section-title">门店公告</view>
+          <view class="section-note">当前门店通知</view>
+        </view>
+      </view>
+      <view class="announcement-list">
+        <view class="info-row">
+          <view>
+            <view class="info-title">门店公告</view>
+            <view class="info-text">{{notice}}</view>
+          </view>
+        </view>
+        <view class="info-row" wx:if="{{store}}">
+          <view>
+            <view class="info-title">营业时间</view>
+            <view class="info-text">{{store.businessHours}}</view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
 
-  <view class="coupon-grid">
-    <view class="coupon-card" wx:for="{{coupons}}" wx:key="id">
-      <view class="section-title">{{item.title}}</view>
-      <view class="muted">{{item.conditionText}} · 最高减 {{item.discountText}}</view>
-    </view>
-  </view>
-
-  <view class="card">
-    <view class="section-title">门店公告</view>
-    <view class="muted mt">{{notice}}</view>
+  <view class="bottom-nav">
+    <navigator class="nav-item is-active" url="/pages/home/index" open-type="redirect"><text class="nav-icon">首</text><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><text class="nav-icon">餐</text><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><text class="nav-icon">卡</text><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><text class="nav-icon">单</text><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><text class="nav-icon">我</text><text>我的</text></navigator>
   </view>
 </view>

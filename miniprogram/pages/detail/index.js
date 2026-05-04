@@ -7,9 +7,9 @@ Page({
     productId: "",
     product: null,
     quantity: 1,
-    temperature: "常温",
-    sugar: "正常糖",
-    toppings: [],
+    temperature: "冰饮",
+    sugar: "五分糖",
+    toppings: ["椰果 + ¥ 2"],
     temperatureOptions: [],
     sugarOptions: [],
     toppingOptions: [],
@@ -52,11 +52,11 @@ Page({
         value,
         active: value === this.data.temperature
       })),
-      sugarOptions: ["无糖", "三分糖", "正常糖"].map((value) => ({
+      sugarOptions: ["无糖", "三分糖", "五分糖", "正常糖"].map((value) => ({
         value,
         active: value === this.data.sugar
       })),
-      toppingOptions: ["珍珠", "椰果", "奶盖"].map((value) => ({
+      toppingOptions: ["珍珠 + ¥ 2", "椰果 + ¥ 2", "奶盖 + ¥ 3"].map((value) => ({
         value,
         active: this.data.toppings.indexOf(value) >= 0
       }))
@@ -100,7 +100,7 @@ Page({
   addToCart(event) {
     if (!auth.isLoggedIn()) {
       wx.showToast({ title: "请先登录", icon: "none" });
-      wx.switchTab({ url: "/pages/mine/index" });
+      wx.redirectTo({ url: "/pages/mine/index" });
       return;
     }
     api.post("/cart/items", {

@@ -46,7 +46,7 @@ Page({
     this.updatePickupTypes();
     if (!auth.isLoggedIn()) {
       wx.showToast({ title: "请先登录", icon: "none" });
-      wx.switchTab({ url: "/pages/mine/index" });
+      wx.redirectTo({ url: "/pages/mine/index" });
       return;
     }
     this.loadData();
@@ -142,7 +142,7 @@ Page({
       wx.setStorageSync("latestOrderId", order.id);
       wx.showToast({ title: "订单已提交", icon: "success" });
       setTimeout(() => {
-        wx.switchTab({ url: "/pages/order/index" });
+        wx.redirectTo({ url: "/pages/order/index" });
       }, 500);
     }).catch((error) => {
       wx.showToast({ title: error.message, icon: "none" });
@@ -152,6 +152,6 @@ Page({
   },
 
   goCart() {
-    wx.navigateBack();
+    wx.redirectTo({ url: "/pages/cart/index" });
   }
 });

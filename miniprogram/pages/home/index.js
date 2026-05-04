@@ -6,6 +6,7 @@ Page({
     store: null,
     products: [],
     coupons: [],
+    bannerImageUrl: api.imageUrl("/images/food-placeholder.svg"),
     notice: "",
     keyword: ""
   },
@@ -50,11 +51,11 @@ Page({
     if (this.data.keyword) {
       wx.setStorageSync("menuKeyword", this.data.keyword);
     }
-    wx.switchTab({ url: "/pages/menu/index" });
+    wx.redirectTo({ url: "/pages/menu/index" });
   },
 
   goSavingCard() {
-    wx.switchTab({ url: "/pages/saving-card/index" });
+    wx.redirectTo({ url: "/pages/saving-card/index" });
   },
 
   goDetail(event) {

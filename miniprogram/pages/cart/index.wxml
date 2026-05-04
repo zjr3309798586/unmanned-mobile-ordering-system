@@ -1,58 +1,105 @@
-<view class="page cart-page with-bar">
-  <view class="cart-head">
-    <view>
-      <view class="title">购物车</view>
-      <view class="muted mt">确认商品规格和数量后去结算。</view>
+<view class="app-shell">
+  <view class="top-area">
+    <view class="store-card compact-store">
+      <view class="store-header">
+        <view>
+          <text class="store-label">当前购物车</text>
+          <view class="store-name">{{store ? store.name : "正在读取门店"}}</view>
+        </view>
+        <text class="status-pill">支持继续加购</text>
+      </view>
+      <view class="store-address">已选商品将保存在当前门店购物车中，可直接跳转提交订单页。</view>
     </view>
-    <button class="clear-btn" wx:if="{{loggedIn && !cart.isEmpty}}" bindtap="clearCart">清空</button>
   </view>
 
-  <view class="login-card card" wx:if="{{needsLogin}}">
-    <view class="section-title">请先登录</view>
-    <view class="muted mt">登录后购物车、订单和会员资产会保存到你的账号。</view>
-    <button class="button primary login-button" bindtap="login">微信登录</button>
-  </view>
-
-  <view class="empty card" wx:if="{{loggedIn && cart.isEmpty}}">
-    <view class="empty-title">购物车还是空的</view>
-    <view class="muted mt">去点餐页选择你喜欢的商品。</view>
-    <button class="button primary empty-action" bindtap="goMenu">去点餐</button>
-  </view>
-
-  <view wx:if="{{loggedIn && !cart.isEmpty}}">
-    <view class="cart-item card" wx:for="{{cart.items}}" wx:key="id">
-      <image class="cart-img" src="{{item.imageUrl}}" mode="aspectFill" />
-      <view class="cart-info">
-        <view class="row">
-          <view class="product-name">{{item.productName}}</view>
-          <button class="delete-btn" data-id="{{item.id}}" bindtap="removeItem">删除</button>
+  <view class="page-main with-floating-bar">
+    <view class="section-card tip-card">
+      <view class="section-head compact-head">
+        <view>
+          <view class="section-title">优惠提示</view>
+          <view class="section-note">当前可用满减券与省钱卡优惠</view>
         </view>
-        <view class="muted mt">{{item.specText}}</view>
-        <view class="row mt">
-          <view>
-            <view class="price">{{item.priceText}}</view>
-            <view class="muted">小计 {{item.subtotalText}}</view>
-          </view>
-          <view class="stepper">
-            <button data-id="{{item.id}}" data-quantity="{{item.quantity}}" data-delta="-1" bindtap="changeQuantity">-</button>
-            <text>{{item.quantity}}</text>
-            <button data-id="{{item.id}}" data-quantity="{{item.quantity}}" data-delta="1" bindtap="changeQuantity">+</button>
-          </view>
-        </view>
+      </view>
+      <view class="info-text">{{tipText}}</view>
+    </view>
+
+    <view class="section-card" wx:if="{{needsLogin}}">
+      <view class="empty-state">
+        <view class="empty-title">请先登录</view>
+        <view class="section-note">登录后购物车会按你的账号保存，之后可继续提交订单。</view>
+        <button class="button button-primary" bindtap="login">去登录</button>
       </view>
     </view>
 
-    <view class="coupon-tip card">
-      <view class="section-title">优惠提示</view>
-      <view class="muted mt">{{cart.discountHint}}</view>
+    <view wx:if="{{loggedIn}}">
+      <view class="section-card">
+        <view class="section-head">
+          <view>
+            <view class="section-title">已选商品</view>
+            <view class="section-note">支持数量修改与删除</view>
+          </view>
+          <navigator class="section-link" url="/pages/menu/index" open-type="redirect">继续点餐</navigator>
+        </view>
+        <view class="cart-item-list" wx:if="{{!cart.isEmpty}}">
+          <view class="cart-item" wx:for="{{cart.items}}" wx:key="id">
+            <image class="cover-thumb" src="{{item.imageUrl}}" mode="aspectFill" />
+            <view class="cart-item-main">
+              <view class="cart-item-head">
+                <view>
+                  <view class="product-name">{{item.productName}}</view>
+                  <view class="product-desc">{{item.specText}}</view>
+                </view>
+                <button class="text-action" data-id="{{item.id}}" bindtap="removeItem">删除</button>
+              </view>
+              <view class="price-line">
+                <text class="price small-price">{{item.subtotalText}}</text>
+                <view class="stepper">
+                  <button data-id="{{item.id}}" data-quantity="{{item.quantity}}" data-delta="-1" bindtap="changeQuantity">-</button>
+                  <text>{{item.quantity}}</text>
+                  <button data-id="{{item.id}}" data-quantity="{{item.quantity}}" data-delta="1" bindtap="changeQuantity">+</button>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="empty-state" wx:if="{{cart.isEmpty}}">
+          <view class="empty-title">购物车暂时为空</view>
+          <view class="section-note">可以从菜单页继续选择商品，加入后会显示在这里。</view>
+          <button class="button button-primary" bindtap="goMenu">返回点餐页</button>
+        </view>
+      </view>
+
+      <view class="section-card">
+        <view class="section-head compact-head">
+          <view>
+            <view class="section-title">费用明细</view>
+            <view class="section-note">当前金额来自购物车已选商品</view>
+          </view>
+        </view>
+        <view class="summary-list">
+          <view class="summary-row"><text>商品总价</text><text>{{cart.totalText}}</text></view>
+          <view class="summary-row"><text>包装费</text><text>¥ 0.00</text></view>
+          <view class="summary-row"><text>优惠金额</text><text class="discount-price">- ¥ 0.00</text></view>
+          <view class="summary-row total-row"><text>应付金额</text><text class="accent-price">{{cart.totalText}}</text></view>
+        </view>
+      </view>
     </view>
   </view>
 
-  <view class="floating-bar" wx:if="{{loggedIn && !cart.isEmpty}}">
-    <view>
-      <view class="muted">共 {{cart.totalQuantity}} 件，合计</view>
-      <view class="bar-price">{{cart.totalText}}</view>
+  <view class="floating-bar checkout-bar" wx:if="{{loggedIn && !cart.isEmpty}}">
+    <view class="floating-summary">
+      <text class="floating-label">待结算金额</text>
+      <text class="floating-price">{{cart.totalText}}</text>
+      <text class="floating-label">{{cart.totalQuantity}} 件商品</text>
     </view>
-    <button class="button primary" bindtap="goSubmit">去结算</button>
+    <navigator class="button button-primary" url="/pages/submit-order/index" open-type="redirect">去结算</navigator>
+  </view>
+
+  <view class="bottom-nav">
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><text class="nav-icon">首</text><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><text class="nav-icon">餐</text><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><text class="nav-icon">卡</text><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><text class="nav-icon">单</text><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><text class="nav-icon">我</text><text>我的</text></navigator>
   </view>
 </view>

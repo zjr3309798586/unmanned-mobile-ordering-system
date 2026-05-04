@@ -1,93 +1,121 @@
-.profile-card {
-  display: flex;
-  align-items: center;
-  gap: 24rpx;
-  padding: 34rpx;
-  border-radius: 32rpx;
-  color: #ffffff;
-  background: linear-gradient(135deg, #ff7a1a 0%, #ffaf63 100%);
-  box-shadow: 0 18rpx 38rpx rgba(255, 122, 26, 0.22);
-}
-
-.avatar {
-  display: flex;
-  width: 116rpx;
-  height: 116rpx;
-  align-items: center;
-  justify-content: center;
-  border-radius: 34rpx;
-  color: #ff7a1a;
-  font-size: 38rpx;
-  font-weight: 900;
-  background: #ffffff;
-}
-
-.profile-main {
-  flex: 1;
-  min-width: 0;
-}
-
-.profile-name {
-  font-size: 36rpx;
-  font-weight: 900;
-}
-
-.profile-level {
-  margin-top: 8rpx;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 24rpx;
-}
-
-.login-link {
-  display: inline-flex;
-  margin-top: 18rpx;
-  padding: 10rpx 18rpx;
-  border-radius: 999rpx;
-  color: #ff7a1a;
-  font-size: 24rpx;
-  font-weight: 800;
-  background: #ffffff;
-}
-
-.asset-grid {
+.profile-hero {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18rpx;
-  margin-top: 20rpx;
-}
-
-.asset-card {
-  padding: 24rpx;
+  grid-template-columns: 152rpx minmax(0, 1fr);
+  gap: 24rpx;
+  padding: 28rpx;
+  border: 1rpx solid #e5eaf1;
   border-radius: 24rpx;
   background: #ffffff;
-  box-shadow: 0 10rpx 28rpx rgba(20, 48, 96, 0.06);
+  box-shadow: 0 12rpx 36rpx rgba(20, 48, 96, 0.06);
 }
 
-.asset-value {
-  color: #182033;
-  font-size: 34rpx;
+.avatar-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1f5eff;
+  font-size: 44rpx;
   font-weight: 900;
+  background: #eaf1ff;
 }
 
-.service-line {
+.profile-title {
+  margin-top: 16rpx;
+  font-size: 40rpx;
+  font-weight: 900;
+  line-height: 1.22;
+}
+
+.member-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20rpx;
-  padding: 22rpx 0;
-  border-bottom: 1rpx solid #edf1f6;
+  padding: 24rpx;
+  border-radius: 20rpx;
+  color: #ffffff;
+  background: linear-gradient(135deg, #123f9c 0%, #1f5eff 100%);
 }
 
-.service-line:last-child {
-  border-bottom: 0;
+.member-card .info-text {
+  color: rgba(255, 255, 255, 0.76);
 }
 
-.service-name {
+.member-card .hero-badge {
+  color: #1f5eff;
+  background: #ffffff;
+}
+
+.asset-grid,
+.more-grid {
+  display: grid;
+  gap: 16rpx;
+}
+
+.asset-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.asset-card {
+  padding: 24rpx 16rpx;
+  border: 1rpx solid #e5eaf1;
+  border-radius: 20rpx;
+  text-align: center;
+  background: #ffffff;
+  box-shadow: 0 8rpx 28rpx rgba(20, 48, 96, 0.04);
+}
+
+.asset-card text:first-child {
+  display: block;
+  color: #1f5eff;
+  font-size: 36rpx;
+  font-weight: 900;
+}
+
+.asset-card text:last-child {
+  display: block;
+  margin-top: 6rpx;
+  color: #6d7788;
+  font-size: 22rpx;
+}
+
+.service-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 20rpx 0;
+}
+
+.service-row + .service-row {
+  border-top: 1rpx solid #e5eaf1;
+}
+
+.more-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.compact-feature {
+  min-height: 200rpx;
+  padding: 20rpx;
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+  border: 1rpx solid #e5eaf1;
+  border-radius: 20rpx;
+  background: #ffffff;
+}
+
+.feature-strong {
   font-size: 28rpx;
   font-weight: 800;
 }
 
-.arrow {
-  color: #a3adba;
-  font-size: 42rpx;
+.feature-copy {
+  color: #6d7788;
+  font-size: 22rpx;
+  line-height: 1.5;
 }

@@ -32,6 +32,7 @@ Page({
     needsLogin: true,
     tabs: [
       { id: "all", name: "全部订单", active: true },
+      { id: "current", name: "进行中", active: false },
       { id: "history", name: "历史订单", active: false }
     ],
     activeTab: "all",
@@ -81,9 +82,15 @@ Page({
   },
 
   filterOrders() {
-    const visibleOrders = this.data.activeTab === "history"
-      ? this.data.orders.filter((order) => order.status === "COMPLETED" || order.status === "CANCELED")
-      : this.data.orders;
+    const visibleOrders = this.data.orders.filter((order) => {
+      if (this.data.activeTab === "history") {
+        return order.status === "COMPLETED" || order.status === "CANCELED";
+      }
+      if (this.data.activeTab === "current") {
+        return order.status === "WAITING_PICKUP";
+      }
+      return true;
+    });
     this.setData({
       visibleOrders,
       empty: visibleOrders.length === 0
@@ -121,6 +128,6 @@ Page({
   },
 
   goMenu() {
-    wx.switchTab({ url: "/pages/menu/index" });
+    wx.redirectTo({ url: "/pages/menu/index" });
   }
 });

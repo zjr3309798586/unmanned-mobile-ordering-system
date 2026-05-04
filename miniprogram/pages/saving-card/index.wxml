@@ -1,55 +1,95 @@
-<view class="page saving-page">
-  <view class="saving-hero">
-    <text class="hero-badge">会员权益</text>
-    <view class="saving-title">开通省钱卡</view>
-    <view class="saving-text">领取专属优惠券，指定商品享受省钱价。</view>
-    <button class="button primary hero-button" bindtap="openCard">{{openButtonText}}</button>
-  </view>
-
-  <view class="card" wx:for="{{plans}}" wx:key="id">
-    <view class="row">
-      <view>
-        <view class="section-title">{{item.name}}</view>
-        <view class="muted mt">{{item.description}}</view>
+<view class="app-shell">
+  <view class="top-area">
+    <view class="saving-hero">
+      <text class="hero-badge">会员专享</text>
+      <view class="saving-title">省钱卡</view>
+      <view class="saving-text">开通后可领取专属优惠券、购买省钱价商品，并获得会员日额外权益。</view>
+      <view class="hero-price-line">
+        <text class="hero-price">{{heroPriceText}}</text>
+        <text class="hero-price-note">/ 月卡 · 预计月省 28 元</text>
       </view>
-      <text class="price">{{item.priceText}}</text>
-    </view>
-    <view class="benefit-list">
-      <view class="benefit" wx:for="{{item.benefits}}" wx:for-item="benefit" wx:key="*this">✓ {{benefit}}</view>
-    </view>
-  </view>
-
-  <view class="card">
-    <view class="section-title">专属优惠券</view>
-    <view class="coupon-line" wx:for="{{coupons}}" wx:key="id">
-      <view>
-        <view class="coupon-title">{{item.title}}</view>
-        <view class="muted">{{item.conditionText}} · {{item.validUntil}} 前可用</view>
+      <view class="action-row">
+        <button class="button button-primary" bindtap="openCard">{{openButtonText}}</button>
+        <button class="button button-secondary" bindtap="goMenu">先去点餐</button>
       </view>
-      <text class="coupon-value">-{{item.discountText}}</text>
     </view>
   </view>
 
-  <view class="card">
-    <view class="row">
-      <view class="section-title">省钱价商品</view>
-      <text class="muted" bindtap="goMenu">去点餐</text>
+  <view class="page-main">
+    <view class="section-card">
+      <view class="section-head compact-head">
+        <view>
+          <view class="section-title">开通方案</view>
+          <view class="section-note">切换后会同步更新顶部价格文案</view>
+        </view>
+      </view>
+      <view class="plan-grid">
+        <button class="plan-card is-active" wx:for="{{plans}}" wx:key="id">
+          <text class="plan-name">{{item.name}}</text>
+          <text class="plan-price">{{item.priceText}}</text>
+          <text class="plan-note">{{item.description}}</text>
+        </button>
+      </view>
     </view>
-    <view class="saving-product" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
-      <image class="saving-img" src="{{item.imageUrl}}" mode="aspectFill" />
-      <view class="saving-info">
-        <view class="product-name">{{item.name}}</view>
-        <view class="product-desc">{{item.description}}</view>
-        <view class="row mt">
-          <text class="price">{{item.savingPriceText}}</text>
-          <text class="old-price">{{item.priceText}}</text>
+
+    <view class="section-card">
+      <view class="section-head">
+        <view>
+          <view class="section-title">专属优惠券</view>
+          <view class="section-note">开卡后自动到账</view>
+        </view>
+      </view>
+      <view class="coupon-stack">
+        <view class="member-coupon" wx:for="{{coupons}}" wx:key="id">
+          <text class="member-coupon-title">{{item.title}}</text>
+          <text class="member-coupon-desc">{{item.conditionText}} · 减 {{item.discountText}}</text>
         </view>
       </view>
     </view>
+
+    <view class="section-card">
+      <view class="section-head">
+        <view>
+          <view class="section-title">省钱价商品</view>
+          <view class="section-note">仅省钱卡用户可享优惠价</view>
+        </view>
+        <text class="section-link" bindtap="goMenu">去点餐</text>
+      </view>
+      <view class="product-stack">
+        <view class="product-card" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+          <image class="cover-thumb" src="{{item.imageUrl}}" mode="aspectFill" />
+          <view class="product-body">
+            <view class="product-name">{{item.name}}</view>
+            <view class="product-desc">{{item.description}}</view>
+            <view class="price-line">
+              <text class="price">{{item.savingPriceText}}</text>
+              <text class="old-price">{{item.priceText}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-head">
+        <view>
+          <view class="section-title">会员权益说明</view>
+          <view class="section-note">开通后可领取专属券并享受指定商品优惠</view>
+        </view>
+      </view>
+      <view class="benefit-list">
+        <view class="benefit-item"><text class="benefit-icon">券</text><view><view class="info-title">专属优惠券</view><view class="info-text">每周固定领取饮品券和套餐券，可与日常活动叠加。</view></view></view>
+        <view class="benefit-item"><text class="benefit-icon">价</text><view><view class="info-title">省钱价商品</view><view class="info-text">指定商品开放专属低价，适合与热门推荐商品联动。</view></view></view>
+        <view class="benefit-item"><text class="benefit-icon">日</text><view><view class="info-title">会员日加码</view><view class="info-text">每周三会员日可额外领取一张高面额优惠券。</view></view></view>
+      </view>
+    </view>
   </view>
 
-  <view class="card">
-    <view class="section-title">会员权益说明</view>
-    <view class="muted mt">省钱卡权益与当前登录账号绑定。后续接入微信支付后，可将“立即开通”改为真实支付开通。</view>
+  <view class="bottom-nav">
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><text class="nav-icon">首</text><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><text class="nav-icon">餐</text><text>点餐</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/saving-card/index" open-type="redirect"><text class="nav-icon">卡</text><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><text class="nav-icon">单</text><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><text class="nav-icon">我</text><text>我的</text></navigator>
   </view>
 </view>

@@ -1,90 +1,262 @@
-.hero {
-  min-height: 330rpx;
-  padding: 36rpx 30rpx;
-  border-radius: 0 0 38rpx 38rpx;
-  color: #ffffff;
-  background: linear-gradient(135deg, #ff7a1a 0%, #ff9f45 55%, #ffd0a1 100%);
-  box-shadow: 0 18rpx 38rpx rgba(255, 122, 26, 0.22);
+.home-top-banner {
+  min-height: 516rpx;
+  padding: 44rpx 32rpx 36rpx;
+  border-radius: 0 0 40rpx 40rpx;
+  box-shadow: 0 28rpx 52rpx rgba(31, 94, 255, 0.2);
 }
 
-.hero-badge {
-  display: inline-flex;
-  padding: 8rpx 16rpx;
-  border-radius: 999rpx;
-  color: #ff7a1a;
-  font-size: 22rpx;
-  font-weight: 800;
+.home-banner {
+  position: relative;
+  display: block;
+  color: #ffffff;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(16, 48, 130, 0.98) 0%, rgba(31, 94, 255, 0.96) 56%, rgba(87, 136, 255, 0.92) 100%);
+}
+
+.home-banner::before {
+  content: "";
+  position: absolute;
+  right: -96rpx;
+  bottom: -128rpx;
+  width: 420rpx;
+  height: 420rpx;
+  border: 52rpx solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+  width: 66%;
+}
+
+.home-banner .hero-badge {
+  color: #123f9c;
   background: #ffffff;
 }
 
-.hero-title {
+.banner-title {
   margin-top: 20rpx;
-  white-space: pre-line;
-  font-size: 54rpx;
+  max-width: 456rpx;
+  font-size: 60rpx;
   font-weight: 900;
-  line-height: 1.14;
+  line-height: 1.12;
 }
 
-.hero-text {
-  margin-top: 16rpx;
-  max-width: 520rpx;
-  color: rgba(255, 255, 255, 0.88);
+.banner-text {
+  margin-top: 20rpx;
+  max-width: 440rpx;
+  color: rgba(255, 255, 255, 0.82);
   font-size: 26rpx;
-  line-height: 1.55;
+  line-height: 1.65;
 }
 
-.hero-actions {
+.banner-offer-row {
   display: flex;
-  gap: 16rpx;
-  margin-top: 26rpx;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 28rpx;
 }
 
-.hero .button.primary {
-  color: #ff7a1a;
-  background: #ffffff;
-}
-
-.hero .button.secondary {
+.banner-offer {
+  min-height: 52rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.18);
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 52rpx;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.home-banner .hero-actions {
+  margin-top: 28rpx;
+}
+
+.home-banner .button-primary {
+  color: #123f9c;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.home-banner .button-secondary {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.banner-visual {
+  position: absolute;
+  right: -28rpx;
+  bottom: -20rpx;
+  z-index: 1;
+  width: 320rpx;
+  height: 320rpx;
+  border-radius: 56rpx;
+  transform: rotate(-5deg);
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 48rpx;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 40rpx 72rpx rgba(10, 28, 70, 0.24);
+}
+
+.home-top-tools {
+  position: static;
+  padding: 20rpx 24rpx 16rpx;
+  background: transparent;
+}
+
+.home-top-tools .store-card {
+  padding: 20rpx 24rpx;
+  border-radius: 20rpx;
+  box-shadow: none;
+}
+
+.home-top-tools .store-name {
+  margin-top: 8rpx;
+  font-size: 36rpx;
+}
+
+.home-top-tools .store-address {
+  display: none;
+}
+
+.home-main {
+  padding-top: 4rpx;
+}
+
+.home-main .section-card {
+  box-shadow: none;
 }
 
 .service-grid,
-.coupon-grid {
+.feature-grid {
   display: grid;
+  gap: 16rpx;
+}
+
+.service-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18rpx;
-  margin-top: 20rpx;
 }
 
 .service-card,
-.coupon-card {
-  padding: 22rpx;
-  border: 1rpx solid #e7ebf2;
-  border-radius: 24rpx;
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding: 24rpx;
+  border: 1rpx solid #e5eaf1;
+  border-radius: 20rpx;
+  text-align: left;
   background: #ffffff;
 }
 
-.service-card.active {
-  border-color: #ffd8bc;
-  background: #fff7f0;
+.service-card.is-active {
+  border-color: #cfdcff;
+  background: #eaf1ff;
 }
 
-.service-icon {
-  display: inline-flex;
-  width: 54rpx;
-  height: 54rpx;
+.service-strong,
+.feature-strong {
+  font-size: 28rpx;
+  font-weight: 800;
+  line-height: 1.32;
+}
+
+.service-copy {
+  color: #6d7788;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.feature-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.feature-card {
   align-items: center;
-  justify-content: center;
+  min-height: 172rpx;
+  padding: 20rpx 12rpx;
+  text-align: center;
+}
+
+.feature-icon {
+  width: 64rpx;
+  height: 64rpx;
+}
+
+.promo-cluster {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.promo-card,
+.task-card {
+  margin-top: 0;
+  box-shadow: none;
+}
+
+.task-card {
+  color: #ffffff;
+  border-color: #1e2f57;
+  background: linear-gradient(135deg, #101828 0%, #1e2f57 100%);
+}
+
+.task-card .section-title,
+.task-card .section-note,
+.task-card .task-footnote {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.task-card .section-link {
+  color: #bcd0ff;
+}
+
+.coupon-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.coupon-item {
+  padding: 20rpx;
+  border: 1rpx dashed #ffc99f;
   border-radius: 16rpx;
-  color: #ff7a1a;
-  font-weight: 900;
   background: #fff1e6;
 }
 
-.product-list {
-  display: flex;
-  flex-direction: column;
-  gap: 18rpx;
-  margin-top: 18rpx;
+.coupon-title {
+  display: block;
+  color: #ff7a1a;
+  font-size: 26rpx;
+  font-weight: 800;
+}
+
+.coupon-desc,
+.task-footnote {
+  display: block;
+  margin-top: 6rpx;
+  color: #6d7788;
+  font-size: 22rpx;
+}
+
+.progress-track {
+  height: 16rpx;
+  overflow: hidden;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.progress-fill {
+  display: block;
+  width: 50%;
+  height: 100%;
+  border-radius: inherit;
+  background: #ffffff;
 }

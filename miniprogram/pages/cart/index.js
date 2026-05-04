@@ -23,6 +23,8 @@ Page({
   data: {
     loggedIn: false,
     needsLogin: true,
+    store: null,
+    tipText: "正在读取当前可用优惠...",
     cart: decorateCart(),
     loading: false
   },
@@ -48,13 +50,28 @@ Page({
 
   loadCart() {
     this.setData({ loading: true });
-    api.get("/cart").then((cartSummary) => {
-      this.setData({ cart: decorateCart(cartSummary) });
+    Promise.all([
+      api.get("/store"),
+      api.get("/cart"),
+      api.get("/coupons")
+    ]).then(([store, cartSummary, coupons]) => {
+      this.setData({
+        store,
+        tipText: this.couponTip(coupons || []),
+        cart: decorateCart(cartSummary)
+      });
     }).catch((error) => {
       wx.showToast({ title: error.message, icon: "none" });
     }).finally(() => {
       this.setData({ loading: false });
     });
+  },
+
+  couponTip(coupons) {
+    const coupon = coupons.find((item) => item.available);
+    return coupon
+      ? coupon.conditionText + "，提交订单时可选择使用，最高可减 " + format.money(coupon.discountAmount) + "。"
+      : "当前暂无可用优惠券，提交订单时按商品金额结算。";
   },
 
   changeQuantity(event) {
@@ -108,7 +125,7 @@ Page({
   },
 
   goMenu() {
-    wx.switchTab({ url: "/pages/menu/index" });
+    wx.redirectTo({ url: "/pages/menu/index" });
   },
 
   goSubmit() {

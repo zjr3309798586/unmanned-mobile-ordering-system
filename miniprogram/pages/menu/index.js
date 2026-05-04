@@ -8,8 +8,10 @@ Page({
     categories: [],
     products: [],
     visibleProducts: [],
+    groupedProducts: [],
     activeCategory: "all",
     keyword: "",
+    promoNote: "正在读取当前可用优惠券...",
     cartSummary: { items: [], totalAmount: 0, totalQuantity: 0, totalText: "¥ 0.00" },
     productCounts: {},
     cartExpanded: false
@@ -29,12 +31,14 @@ Page({
       api.get("/store"),
       api.get("/categories"),
       api.get("/products"),
+      api.get("/coupons"),
       auth.isLoggedIn() ? api.get("/cart") : Promise.resolve({ items: [], totalAmount: 0, totalQuantity: 0 })
-    ]).then(([store, categories, products, cartSummary]) => {
+    ]).then(([store, categories, products, coupons, cartSummary]) => {
       this.setData({
         store,
         categories: categories || [],
         products: (products || []).map(this.decorateProduct),
+        promoNote: this.promoText(coupons || []),
         cartSummary
       }, () => {
         this.updateProductCounts();
@@ -50,6 +54,13 @@ Page({
       imageUrl: api.imageUrl(product.image),
       priceText: format.money(product.price)
     };
+  },
+
+  promoText(coupons) {
+    const coupon = coupons.find((item) => item.available);
+    return coupon
+      ? coupon.conditionText + "，下单可减 " + format.money(coupon.discountAmount)
+      : "当前暂无可用优惠券，下单金额按商品实付计算。";
   },
 
   onKeywordInput(event) {
@@ -74,7 +85,32 @@ Page({
       ...product,
       selectedCount: this.data.productCounts[product.id] || 0
     }));
-    this.setData({ visibleProducts });
+    this.setData({
+      visibleProducts,
+      groupedProducts: this.groupProducts(visibleProducts)
+    });
+  },
+
+  groupProducts(products) {
+    const categoryNameMap = {};
+    this.data.categories.forEach((category) => {
+      categoryNameMap[category.id] = category.name;
+    });
+    const groups = [];
+    const groupMap = {};
+    products.forEach((product) => {
+      const key = product.categoryId || "other";
+      if (!groupMap[key]) {
+        groupMap[key] = {
+          id: key,
+          name: this.data.activeCategory === "all" ? (categoryNameMap[key] || "其他商品") : (categoryNameMap[key] || "商品列表"),
+          products: []
+        };
+        groups.push(groupMap[key]);
+      }
+      groupMap[key].products.push(product);
+    });
+    return groups;
   },
 
   updateProductCounts() {
@@ -86,6 +122,11 @@ Page({
       productCounts,
       cartSummary: {
         ...this.data.cartSummary,
+        items: (this.data.cartSummary.items || []).map((item) => ({
+          ...item,
+          spec: format.specText(item.spec),
+          subtotalText: format.money(Number(item.price || 0) * Number(item.quantity || 0))
+        })),
         totalText: format.money(this.data.cartSummary.totalAmount)
       }
     }, () => {
@@ -96,7 +137,7 @@ Page({
   addToCart(event) {
     if (!auth.isLoggedIn()) {
       wx.showToast({ title: "请先登录", icon: "none" });
-      wx.switchTab({ url: "/pages/mine/index" });
+      wx.redirectTo({ url: "/pages/mine/index" });
       return;
     }
     api.post("/cart/items", {
