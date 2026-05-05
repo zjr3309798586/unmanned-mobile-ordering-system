@@ -18,8 +18,6 @@
 }
 
 .category-panel {
-  position: sticky;
-  top: 236rpx;
   padding: 16rpx;
   border-radius: 20rpx;
   box-shadow: none;
@@ -44,19 +42,8 @@
 
 .category-button.is-active {
   color: #1f5eff;
+  border-left: 6rpx solid #1f5eff;
   background: #eaf1ff;
-}
-
-.category-button.is-active::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 6rpx;
-  height: 36rpx;
-  border-radius: 999rpx;
-  background: #1f5eff;
-  transform: translateY(-50%);
 }
 
 .menu-content {

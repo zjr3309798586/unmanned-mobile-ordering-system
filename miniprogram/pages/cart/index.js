@@ -24,6 +24,7 @@ Page({
     loggedIn: false,
     needsLogin: true,
     store: null,
+    storeName: "正在读取门店",
     tipText: "正在读取当前可用优惠...",
     cart: decorateCart(),
     loading: false
@@ -57,6 +58,7 @@ Page({
     ]).then(([store, cartSummary, coupons]) => {
       this.setData({
         store,
+        storeName: store && store.name ? store.name : "正在读取门店",
         tipText: this.couponTip(coupons || []),
         cart: decorateCart(cartSummary)
       });

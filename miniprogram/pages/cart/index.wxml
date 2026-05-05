@@ -4,7 +4,7 @@
       <view class="store-header">
         <view>
           <text class="store-label">当前购物车</text>
-          <view class="store-name">{{store ? store.name : "正在读取门店"}}</view>
+          <view class="store-name">{{storeName}}</view>
         </view>
         <text class="status-pill">支持继续加购</text>
       </view>

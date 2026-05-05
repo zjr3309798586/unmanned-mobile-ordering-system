@@ -9,7 +9,7 @@
 
 .detail-cover {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 500rpx;
   border-radius: 20rpx;
   background: #f7f9fd;
 }
