@@ -36,11 +36,15 @@ function request(path, options = {}) {
 }
 
 function imageUrl(value) {
+  const localFallback = "/images/food-placeholder.svg";
   if (!value) {
-    return config.assetBaseUrl + "/images/food-placeholder.svg";
+    return localFallback;
   }
   if (value.indexOf("/images/") === 0) {
-    return config.assetBaseUrl + value;
+    return localFallback;
+  }
+  if (value.indexOf("http://") === 0 || value.indexOf("https://") === 0) {
+    return localFallback;
   }
   return value;
 }
