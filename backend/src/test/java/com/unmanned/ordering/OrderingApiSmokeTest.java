@@ -61,6 +61,79 @@ class OrderingApiSmokeTest {
         assertThat(cart.getBody()).contains("P-1001");
         assertThat(cart.getBody()).contains("quantity");
 
+        ResponseEntity<String> blockedClaim = restTemplate.exchange(
+                "/api/user/coupons/C-001/claim",
+                HttpMethod.POST,
+                new HttpEntity<>("{}", userHeaders),
+                String.class
+        );
+        assertThat(blockedClaim.getStatusCode().value()).isEqualTo(400);
+        assertThat(blockedClaim.getBody()).contains("请先开通省钱卡");
+
+        ResponseEntity<String> savingCard = restTemplate.exchange(
+                "/api/saving-card/open",
+                HttpMethod.POST,
+                new HttpEntity<>("{}", userHeaders),
+                String.class
+        );
+        assertThat(savingCard.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(savingCard.getBody()).contains("省钱卡会员");
+
+        ResponseEntity<String> claimedCoupon = restTemplate.exchange(
+                "/api/user/coupons/C-001/claim",
+                HttpMethod.POST,
+                new HttpEntity<>("{}", userHeaders),
+                String.class
+        );
+        assertThat(claimedCoupon.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(claimedCoupon.getBody()).contains("AVAILABLE");
+
+        ResponseEntity<String> lowAmountLogin = restTemplate.postForEntity(
+                "/api/auth/dev-login",
+                new HttpEntity<>("{\"nickname\":\"Low Amount User\"}", headers),
+                String.class
+        );
+        assertThat(lowAmountLogin.getStatusCode().is2xxSuccessful()).isTrue();
+        String lowAmountToken = objectMapper.readTree(lowAmountLogin.getBody()).path("data").path("token").asText();
+        HttpHeaders lowAmountHeaders = new HttpHeaders();
+        lowAmountHeaders.setContentType(MediaType.APPLICATION_JSON);
+        lowAmountHeaders.set("X-User-Token", lowAmountToken);
+
+        ResponseEntity<String> lowAmountCart = restTemplate.postForEntity(
+                "/api/cart/items",
+                new HttpEntity<>("{\"productId\":\"P-1001\",\"spec\":\"standard\",\"quantity\":1}", lowAmountHeaders),
+                String.class
+        );
+        assertThat(lowAmountCart.getStatusCode().is2xxSuccessful()).isTrue();
+        restTemplate.exchange(
+                "/api/saving-card/open",
+                HttpMethod.POST,
+                new HttpEntity<>("{}", lowAmountHeaders),
+                String.class
+        );
+        ResponseEntity<String> lowAmountClaim = restTemplate.exchange(
+                "/api/user/coupons/C-001/claim",
+                HttpMethod.POST,
+                new HttpEntity<>("{}", lowAmountHeaders),
+                String.class
+        );
+        assertThat(lowAmountClaim.getStatusCode().is2xxSuccessful()).isTrue();
+        ResponseEntity<String> lowAmountOrder = restTemplate.postForEntity(
+                "/api/orders",
+                new HttpEntity<>("{\"pickupType\":\"SELF_PICKUP\",\"couponId\":\"C-001\",\"tableNo\":\"B01\"}", lowAmountHeaders),
+                String.class
+        );
+        assertThat(lowAmountOrder.getStatusCode().value()).isEqualTo(400);
+
+        ResponseEntity<String> userCoupons = restTemplate.exchange(
+                "/api/user/coupons",
+                HttpMethod.GET,
+                new HttpEntity<>(userHeaders),
+                String.class
+        );
+        assertThat(userCoupons.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(userCoupons.getBody()).contains("C-001");
+
         ResponseEntity<String> order = restTemplate.postForEntity(
                 "/api/orders",
                 new HttpEntity<>("{\"pickupType\":\"SELF_PICKUP\",\"couponId\":\"C-001\",\"tableNo\":\"A12\"}", userHeaders),
@@ -125,10 +198,20 @@ class OrderingApiSmokeTest {
         ResponseEntity<String> coupon = restTemplate.exchange(
                 "/api/admin/coupons",
                 HttpMethod.POST,
-                new HttpEntity<>("{\"title\":\"Test Coupon\",\"conditionText\":\"Over 20\",\"discountAmount\":2.00,\"validUntil\":\"2026-12-31\",\"available\":true}", adminHeaders),
+                new HttpEntity<>("{\"title\":\"Test Coupon\",\"conditionText\":\"Over 20\",\"minAmount\":20.00,\"discountAmount\":2.00,\"validUntil\":\"2026-12-31\",\"available\":true}", adminHeaders),
                 String.class
         );
         assertThat(coupon.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(coupon.getBody()).contains("\"code\":201");
+
+        ResponseEntity<String> banner = restTemplate.exchange(
+                "/api/admin/banners",
+                HttpMethod.POST,
+                new HttpEntity<>("{\"title\":\"Test Banner\",\"subtitle\":\"Banner subtitle\",\"tagText\":\"New\",\"image\":\"/images/test-banner.svg\",\"linkText\":\"Open\",\"linkUrl\":\"menu.html\",\"sort\":3,\"enabled\":true}", adminHeaders),
+                String.class
+        );
+        assertThat(banner.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(banner.getBody()).contains("\"code\":201");
+        assertThat(banner.getBody()).contains("/images/test-banner.svg");
     }
 }

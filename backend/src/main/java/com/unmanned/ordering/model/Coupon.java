@@ -6,6 +6,7 @@ public class Coupon {
     private String id;
     private String title;
     private String conditionText;
+    private BigDecimal minAmount;
     private BigDecimal discountAmount;
     private String validUntil;
     private boolean available;
@@ -13,11 +14,12 @@ public class Coupon {
     public Coupon() {
     }
 
-    public Coupon(String id, String title, String conditionText, BigDecimal discountAmount,
+    public Coupon(String id, String title, String conditionText, BigDecimal minAmount, BigDecimal discountAmount,
                   String validUntil, boolean available) {
         this.id = id;
         this.title = title;
         this.conditionText = conditionText;
+        this.minAmount = minAmount;
         this.discountAmount = discountAmount;
         this.validUntil = validUntil;
         this.available = available;
@@ -45,6 +47,14 @@ public class Coupon {
 
     public void setConditionText(String conditionText) {
         this.conditionText = conditionText;
+    }
+
+    public BigDecimal getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(BigDecimal minAmount) {
+        this.minAmount = minAmount;
     }
 
     public BigDecimal getDiscountAmount() {

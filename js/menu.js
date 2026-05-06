@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var storeNameNode = document.querySelector(".store-name");
   var storeMetaNode = document.querySelector(".store-meta");
   var storeStatusNode = document.querySelector(".status-pill");
+  var modeButtons = document.querySelectorAll(".mode-pill");
   var previewTimer = null;
 
   function renderStore(store) {
@@ -52,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
       categoryList.innerHTML = '<button class="category-button is-active" type="button">加载中</button>';
     }
     if (menuContent) {
-      menuContent.innerHTML = '<section class="section-card menu-group"><p class="section-note">正在读取当前门店商品...</p></section>';
+      menuContent.innerHTML = '<section class="menu-group"><p class="section-note">正在读取当前门店商品...</p></section>';
     }
   }
 
@@ -85,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     var visible = getVisibleProducts();
     if (visible.length === 0) {
-      menuContent.innerHTML = '<section class="section-card menu-group"><p class="section-note">暂无匹配商品，请换个关键词试试。</p></section>';
+      menuContent.innerHTML = '<section class="menu-group"><p class="section-note">暂无匹配商品，请换个关键词试试。</p></section>';
       return;
     }
 
@@ -103,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     menuContent.innerHTML = Object.keys(grouped).map(function (categoryId) {
       var title = activeCategory === "all" ? (categoryMap[categoryId] || "其他商品") : (categoryMap[categoryId] || "商品列表");
-      return '<section class="section-card menu-group" id="group-' + app.escapeHtml(categoryId) + '">' +
+      return '<section class="menu-group" id="group-' + app.escapeHtml(categoryId) + '">' +
         '<div class="section-head"><div><h2 class="section-title">' + app.escapeHtml(title) + '</h2><p class="section-note">来自当前门店商品数据</p></div></div>' +
         '<div class="menu-item-list">' + grouped[categoryId].map(renderProductCard).join("") + '</div>' +
       '</section>';
@@ -116,11 +117,14 @@ document.addEventListener("DOMContentLoaded", function () {
       return '<span class="tag">' + app.escapeHtml(tag) + '</span>';
     }).join("");
     return '<article class="menu-item-card">' +
-      '<img class="cover-thumb" src="' + app.imageUrl(product.image) + '" alt="' + app.escapeHtml(product.name) + '" onerror="this.src=\'images/food-placeholder.svg\'">' +
+      '<a class="menu-cover-link" href="detail.html?id=' + encodeURIComponent(product.id) + '">' +
+        '<img class="cover-thumb" src="' + app.imageUrl(product.image) + '" alt="' + app.escapeHtml(product.name) + '" onerror="this.src=\'images/food-placeholder.svg\'">' +
+      '</a>' +
       '<div class="product-body">' +
         '<div class="tag-row">' + tags + '</div>' +
         '<h3 class="product-name"><a class="plain-link" href="detail.html?id=' + encodeURIComponent(product.id) + '">' + app.escapeHtml(product.name) + '</a></h3>' +
         '<p class="product-desc">' + app.escapeHtml(product.description) + '</p>' +
+        '<span class="sales-line">月售 ' + Number(product.sales || 0) + ' · 可选温度 / 甜度 / 加料</span>' +
         '<div class="price-line">' +
           '<strong class="price">' + app.money(product.price) + '</strong>' +
           '<div class="menu-item-action">' +
@@ -229,6 +233,15 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.value = app.queryParam("keyword");
   }
 
+  modeButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      modeButtons.forEach(function (item) {
+        item.classList.remove("is-active");
+      });
+      button.classList.add("is-active");
+    });
+  });
+
   if (settlementBar) {
     settlementBar.addEventListener("click", function (event) {
       if (event.target.closest("a")) {
@@ -260,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .catch(function (error) {
       if (menuContent) {
-        menuContent.innerHTML = '<section class="section-card menu-group"><p class="section-note">服务连接失败：' + app.escapeHtml(error.message) + '</p></section>';
+        menuContent.innerHTML = '<section class="menu-group"><p class="section-note">服务连接失败：' + app.escapeHtml(error.message) + '</p></section>';
       }
     });
 });

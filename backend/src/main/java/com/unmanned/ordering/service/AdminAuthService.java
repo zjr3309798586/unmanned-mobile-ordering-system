@@ -10,6 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+// 后台管理员登录服务。
+// 这个项目为了简单易懂，后台账号密码先放在 application.yml 里，没有单独建 admin 表。
 @Service
 public class AdminAuthService {
     private final String username;
@@ -25,6 +27,7 @@ public class AdminAuthService {
         this.tokenSecret = tokenSecret;
     }
 
+    // 后台登录：账号密码正确就返回管理员 token，后台页面之后会把 token 放到 X-Admin-Token 请求头。
     public AdminSession login(AdminLoginRequest request) {
         if (!username.equals(request.getUsername()) || !password.equals(request.getPassword())) {
             throw new BusinessException(401, "账号或密码错误");
@@ -32,6 +35,7 @@ public class AdminAuthService {
         return new AdminSession(username, buildToken());
     }
 
+    // 后台接口保护：没有 token 或 token 不正确，就不允许访问后台管理接口。
     public void requireValidToken(String token) {
         if (!isValidToken(token)) {
             throw new BusinessException(401, "请先登录后台");
@@ -44,9 +48,11 @@ public class AdminAuthService {
         }
         byte[] expected = buildToken().getBytes(StandardCharsets.UTF_8);
         byte[] actual = token.trim().getBytes(StandardCharsets.UTF_8);
+        // MessageDigest.isEqual 比普通字符串 equals 更适合比较 token。
         return MessageDigest.isEqual(expected, actual);
     }
 
+    // token 不直接等于密码，而是把账号、密码、密钥组合后做 SHA-256。
     private String buildToken() {
         return sha256(username + ":" + password + ":" + tokenSecret);
     }

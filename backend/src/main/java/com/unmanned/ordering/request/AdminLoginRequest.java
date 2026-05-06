@@ -2,10 +2,13 @@ package com.unmanned.ordering.request;
 
 import javax.validation.constraints.NotBlank;
 
+// 后台管理员登录表单。
 public class AdminLoginRequest {
+    // 管理员账号，配置在 application.yml 的 admin.username。
     @NotBlank
     private String username;
 
+    // 管理员密码，配置在 application.yml 的 admin.password。
     @NotBlank
     private String password;
 

@@ -5,7 +5,7 @@ const format = require("../../utils/format");
 const PICKUP_TYPES = [
   { id: "SELF_PICKUP", name: "到店自取", desc: "下单后凭取餐号到店取餐" },
   { id: "DINE_IN", name: "堂食", desc: "填写桌号后送到指定座位" },
-  { id: "DELIVERY", name: "平台外送", desc: "外送信息后续接平台配送" }
+  { id: "DELIVERY", name: "平台外送", desc: "外送信息由平台配送处理" }
 ];
 
 function decorateCart(cartSummary) {
@@ -56,14 +56,17 @@ Page({
     Promise.all([
       api.get("/store"),
       api.get("/cart"),
-      api.get("/coupons")
+      api.get("/user/coupons")
     ]).then(([store, cartSummary, coupons]) => {
       const cart = decorateCart(cartSummary);
       this.setData({
         store,
         cart,
-        coupons: (coupons || []).filter((coupon) => coupon.available).map((coupon) => ({
+        coupons: (coupons || []).filter((coupon) => (
+          coupon.status === "AVAILABLE" && coupon.couponAvailable !== false
+        )).map((coupon) => ({
           ...coupon,
+          id: coupon.couponId || coupon.id,
           discountText: format.money(coupon.discountAmount),
           active: false
         })),
@@ -93,6 +96,10 @@ Page({
   selectCoupon(event) {
     const couponId = event.currentTarget.dataset.id || "";
     const selectedCoupon = this.data.coupons.find((coupon) => coupon.id === couponId) || null;
+    if (selectedCoupon && Number(this.data.cart.totalAmount || 0) < Number(selectedCoupon.minAmount || 0)) {
+      wx.showToast({ title: "当前金额未达到使用门槛", icon: "none" });
+      return;
+    }
     this.setData({
       selectedCouponId: couponId,
       selectedCoupon,
@@ -107,7 +114,9 @@ Page({
   updateAmount() {
     const totalAmount = Number(this.data.cart.totalAmount || 0);
     const discountAmount = this.data.selectedCoupon
-      ? Math.min(Number(this.data.selectedCoupon.discountAmount || 0), totalAmount)
+      ? (totalAmount >= Number(this.data.selectedCoupon.minAmount || 0)
+        ? Math.min(Number(this.data.selectedCoupon.discountAmount || 0), totalAmount)
+        : 0)
       : 0;
     const payableAmount = Math.max(totalAmount - discountAmount, 0);
     this.setData({
@@ -153,5 +162,9 @@ Page({
 
   goCart() {
     wx.redirectTo({ url: "/pages/cart/index" });
+  },
+
+  goSavingCard() {
+    wx.redirectTo({ url: "/pages/saving-card/index" });
   }
 });

@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>数据看板 - 无人移动点餐系统</title>
+  <title>数据看板 - 云豹小点后台管理</title>
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body data-page="dashboard">
   <div class="admin-shell">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
-        <div class="sidebar-logo">点</div>
+        <div class="sidebar-logo"><img src="../images/mascot-yunbao-144.png" alt="云豹小点"></div>
         <div>
-          <div class="sidebar-title">点餐后台</div>
-          <div class="sidebar-subtitle">Management</div>
+          <div class="sidebar-title">云豹小点后台</div>
+          <div class="sidebar-subtitle">后台管理</div>
         </div>
       </div>
       <nav class="nav-list">
         <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
-        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="products" href="products.html">商品管理</a>
         <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
         <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
         <a class="nav-item" data-page="users" href="users.html">用户管理</a>
@@ -33,19 +33,26 @@
         <div>
           <button class="btn ghost menu-toggle" id="menuToggle">菜单</button>
           <h1>数据看板</h1>
-          <p>今天是 <span class="js-date"></span>，数据来自 Spring Boot + MySQL。</p>
+          <p>今天是 <span class="js-date"></span>，下方为门店经营汇总。</p>
         </div>
         <div class="top-actions">
-          <div class="admin-user"><span class="avatar">A</span> 管理员</div>
+          <div class="admin-user"><span class="avatar">J</span><span>管理员</span></div>
           <button class="btn ghost" id="logoutBtn">退出</button>
         </div>
       </header>
 
       <section class="grid stats-grid">
-        <div class="card stat-card"><div class="stat-label">今日营业额</div><div class="stat-value">¥ 1,286</div><div class="stat-change">较昨日 +12%</div></div>
-        <div class="card stat-card"><div class="stat-label">今日订单</div><div class="stat-value">86</div><div class="stat-change">堂食自取 64 单</div></div>
-        <div class="card stat-card"><div class="stat-label">在售菜品</div><div class="stat-value">38</div><div class="stat-change">热销商品 8 个</div></div>
-        <div class="card stat-card"><div class="stat-label">新增用户</div><div class="stat-value">24</div><div class="stat-change">会员转化 31%</div></div>
+        <div class="card stat-card"><div class="stat-label">营业额</div><div class="stat-value">加载中</div><div class="stat-change">统计订单实付金额</div></div>
+        <div class="card stat-card"><div class="stat-label">订单总数</div><div class="stat-value">加载中</div><div class="stat-change">包含前台提交订单</div></div>
+        <div class="card stat-card"><div class="stat-label">在售商品</div><div class="stat-value">加载中</div><div class="stat-change">来自商品管理</div></div>
+        <div class="card stat-card"><div class="stat-label">购物车商品</div><div class="stat-value">加载中</div><div class="stat-change">统计未结算商品</div></div>
+      </section>
+
+      <section class="quick-action-grid">
+        <a class="quick-action" href="orders.html"><span>订单处理</span><strong>查看待取餐订单</strong></a>
+        <a class="quick-action" href="products.html"><span>商品维护</span><strong>新增饮品 / 调整图片</strong></a>
+        <a class="quick-action" href="activities.html"><span>首页活动</span><strong>配置 Banner 宣传位</strong></a>
+        <a class="quick-action" href="coupons.html"><span>优惠配置</span><strong>设置满减券和门槛</strong></a>
       </section>
 
       <section class="grid content-grid" style="margin-top:18px;">
@@ -53,31 +60,28 @@
           <div class="card-header">
             <div>
               <h2>近七日订单趋势</h2>
-              <p class="muted">用于答辩展示的数据分析模块。</p>
+              <p class="muted">按日期统计订单数量。</p>
             </div>
           </div>
           <div class="chart-bars">
-            <div class="bar-row"><span>周一</span><div class="bar"><span style="width:64%;"></span></div><strong>64</strong></div>
-            <div class="bar-row"><span>周二</span><div class="bar"><span style="width:72%;"></span></div><strong>72</strong></div>
-            <div class="bar-row"><span>周三</span><div class="bar"><span style="width:68%;"></span></div><strong>68</strong></div>
-            <div class="bar-row"><span>周四</span><div class="bar"><span style="width:81%;"></span></div><strong>81</strong></div>
-            <div class="bar-row"><span>周五</span><div class="bar"><span style="width:92%;"></span></div><strong>92</strong></div>
-            <div class="bar-row"><span>周六</span><div class="bar"><span style="width:78%;"></span></div><strong>78</strong></div>
-            <div class="bar-row"><span>周日</span><div class="bar"><span style="width:86%;"></span></div><strong>86</strong></div>
+            <div class="bar-row"><span>周一</span><div class="bar"><span style="width:8%;"></span></div><strong>0</strong></div>
+            <div class="bar-row"><span>周二</span><div class="bar"><span style="width:8%;"></span></div><strong>0</strong></div>
+            <div class="bar-row"><span>周三</span><div class="bar"><span style="width:8%;"></span></div><strong>0</strong></div>
+            <div class="bar-row"><span>周四</span><div class="bar"><span style="width:8%;"></span></div><strong>0</strong></div>
+            <div class="bar-row"><span>周五</span><div class="bar"><span style="width:8%;"></span></div><strong>0</strong></div>
+            <div class="bar-row"><span>周六</span><div class="bar"><span style="width:8%;"></span></div><strong>0</strong></div>
+            <div class="bar-row"><span>周日</span><div class="bar"><span style="width:8%;"></span></div><strong>0</strong></div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <h2>热销排行</h2>
-            <button class="link-btn" data-toast="热销排行已读取后端菜品销量">刷新</button>
+            <h2>热销商品</h2>
+            <a class="link-btn" href="dashboard.html">刷新</a>
           </div>
-          <table>
+          <table class="rank-table">
             <tbody>
-              <tr><td>橙香美式</td><td>388 杯</td></tr>
-              <tr><td>西柚绿茶</td><td>356 杯</td></tr>
-              <tr><td>黑糖珍珠奶茶</td><td>301 杯</td></tr>
-              <tr><td>生椰拿铁</td><td>246 杯</td></tr>
+              <tr><td colspan="2" class="table-empty">正在加载排行...</td></tr>
             </tbody>
           </table>
         </div>

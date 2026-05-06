@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>分类管理 - 无人移动点餐系统</title>
+  <title>分类管理 - 云豹小点后台管理</title>
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body data-page="categories">
   <div class="admin-shell">
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand"><div class="sidebar-logo">点</div><div><div class="sidebar-title">点餐后台</div><div class="sidebar-subtitle">Management</div></div></div>
+      <div class="sidebar-brand"><div class="sidebar-logo"><img src="../images/mascot-yunbao-144.png" alt="云豹小点"></div><div><div class="sidebar-title">云豹小点后台</div><div class="sidebar-subtitle">后台管理</div></div></div>
       <nav class="nav-list">
         <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
-        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="products" href="products.html">商品管理</a>
         <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
         <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
         <a class="nav-item" data-page="users" href="users.html">用户管理</a>
@@ -23,18 +23,18 @@
     </aside>
     <main class="main">
       <header class="topbar">
-        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>分类管理</h1><p>控制点餐页左侧分类栏展示顺序。</p></div>
-        <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
+        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>分类管理</h1><p>设置点餐页分类名称和排序。</p></div>
+        <div class="top-actions"><div class="admin-user"><span class="avatar">J</span><span>管理员</span></div><button class="btn ghost" id="logoutBtn">退出</button></div>
       </header>
 
       <section class="category-list">
-        <div class="small-card"><strong>正在读取分类...</strong><p class="muted">数据来自 MySQL</p></div>
+        <div class="small-card"><strong>正在加载分类...</strong><p class="muted">请稍候</p></div>
       </section>
 
       <section class="card" style="margin-top:18px;">
-        <div class="card-header"><h2>新增 / 编辑分类</h2><span class="muted">保存后会写入 MySQL，并同步到前台点餐页</span></div>
+        <div class="card-header"><h2>新增 / 编辑分类</h2><span class="muted">保存后前台点餐页同步更新</span></div>
         <div class="form-grid">
-          <div class="field"><label>分类名称</label><input placeholder="例如：新品专区"></div>
+          <div class="field"><label>分类名称</label><input placeholder="新品专区"></div>
           <div class="field"><label>排序值</label><input placeholder="5"></div>
         </div>
         <button class="btn">保存分类</button>

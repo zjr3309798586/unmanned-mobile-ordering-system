@@ -11,6 +11,7 @@ import java.util.Map;
 @RestController
 public class HealthController {
 
+    // 健康检查接口。能访问 /api/health 并返回 UP，说明后端服务已经启动成功。
     @GetMapping("/api/health")
     public ApiResponse<Map<String, Object>> health() {
         Map<String, Object> data = new LinkedHashMap<>();

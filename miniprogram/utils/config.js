@@ -2,7 +2,7 @@ module.exports = {
   apiBaseUrl: "http://127.0.0.1:8080/api",
   assetBaseUrl: "http://127.0.0.1:8080",
 
-  // 开发者工具联调先用后端 dev-login。换成真实微信登录时改为 false，并配置后端 WECHAT_APP_ID / WECHAT_APP_SECRET。
+  // 微信登录配置完成前，工具内先使用游客账号。
   useDevLogin: true,
-  devNickname: "微信开发工具用户"
+  devNickname: "游客用户"
 };

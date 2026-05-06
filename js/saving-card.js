@@ -6,6 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var couponStack = document.querySelector(".coupon-stack");
   var productStack = document.querySelector(".product-stack");
   var benefitList = document.querySelector(".benefit-list");
+  var openSavingCardButton = document.querySelector("[data-open-saving-card]");
+  var publicCoupons = [];
+  var couponStatusMap = {};
+  var savingCardOpened = false;
 
   function renderPlans(plans) {
     if (!planGrid || !plans || plans.length === 0) {
@@ -34,11 +38,33 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     couponStack.innerHTML = available.map(function (coupon) {
+      var status = couponStatusMap[coupon.id];
+      var disabled = status === "AVAILABLE" || status === "USED";
+      var label = status === "USED" ? "已使用" : (status === "AVAILABLE" ? "已领取" : "领取");
       return '<div class="member-coupon">' +
-        '<strong>' + app.escapeHtml(coupon.title) + '</strong>' +
-        '<span>' + app.escapeHtml(coupon.conditionText) + ' · 减 ' + app.money(coupon.discountAmount) + '</span>' +
+        '<strong class="coupon-value">减 ' + app.money(coupon.discountAmount).replace("¥ ", "") + '</strong>' +
+        '<div><strong>' + app.escapeHtml(coupon.title) + '</strong>' +
+        '<span>' + app.escapeHtml(coupon.conditionText) + ' · 减 ' + app.money(coupon.discountAmount) + '</span></div>' +
+        '<button class="mini-link" type="button" data-claim-coupon="' + app.escapeHtml(coupon.id) + '"' + (disabled ? " disabled" : "") + '>' + label + '</button>' +
       '</div>';
     }).join("");
+  }
+
+  function refreshUserCoupons() {
+    if (!app.isLoggedIn()) {
+      couponStatusMap = {};
+      return Promise.resolve([]);
+    }
+    return app.get("/user/coupons").then(function (coupons) {
+      couponStatusMap = {};
+      (coupons || []).forEach(function (coupon) {
+        couponStatusMap[coupon.couponId || coupon.id] = coupon.status;
+      });
+      return coupons;
+    }).catch(function () {
+      couponStatusMap = {};
+      return [];
+    });
   }
 
   function renderProducts(products) {
@@ -89,6 +115,25 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function markSavingCardOpened() {
+    savingCardOpened = true;
+    if (openSavingCardButton) {
+      openSavingCardButton.textContent = "已开通省钱卡";
+      openSavingCardButton.disabled = true;
+    }
+  }
+
+  function refreshSavingCardState() {
+    if (!app.isLoggedIn()) {
+      return Promise.resolve();
+    }
+    return app.get("/mine").then(function (profile) {
+      if (profile && /省钱卡/.test(profile.memberLevel || "")) {
+        markSavingCardOpened();
+      }
+    }).catch(function () {});
+  }
+
   if (planGrid) {
     planGrid.addEventListener("click", function (event) {
       var button = event.target.closest("[data-plan]");
@@ -103,10 +148,71 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  Promise.all([app.get("/saving-card/plans"), app.get("/coupons"), app.get("/products")])
+  if (couponStack) {
+    couponStack.addEventListener("click", function (event) {
+      var button = event.target.closest("[data-claim-coupon]");
+      if (!button || button.disabled) {
+        return;
+      }
+      if (!app.isLoggedIn()) {
+        app.showMessage("请先登录后领取优惠券");
+        window.setTimeout(function () {
+          window.location.href = "mine.html";
+        }, 500);
+        return;
+      }
+      if (!savingCardOpened) {
+        app.showMessage("请先开通省钱卡后领取优惠券");
+        return;
+      }
+      var couponId = button.dataset.claimCoupon;
+      button.disabled = true;
+      button.textContent = "领取中";
+      app.post("/user/coupons/" + encodeURIComponent(couponId) + "/claim", {})
+        .then(function () {
+          app.showMessage("优惠券已领取");
+          return refreshUserCoupons();
+        })
+        .then(function () {
+          renderCoupons(publicCoupons);
+        })
+        .catch(function (error) {
+          app.showMessage(error.message);
+          button.disabled = false;
+          button.textContent = "领取";
+        });
+    });
+  }
+
+  if (openSavingCardButton) {
+    openSavingCardButton.addEventListener("click", function () {
+      if (!app.isLoggedIn()) {
+        app.showMessage("请先登录后开通省钱卡");
+        window.setTimeout(function () {
+          window.location.href = "mine.html";
+        }, 500);
+        return;
+      }
+      openSavingCardButton.disabled = true;
+      openSavingCardButton.textContent = "开通中";
+      app.post("/saving-card/open", {})
+        .then(function () {
+          markSavingCardOpened();
+          app.showMessage("省钱卡已开通");
+        })
+        .catch(function (error) {
+          app.showMessage(error.message);
+          openSavingCardButton.disabled = false;
+          openSavingCardButton.textContent = "立即开通省钱卡";
+        });
+    });
+  }
+
+  Promise.all([app.get("/saving-card/plans"), app.get("/coupons"), app.get("/products"), refreshUserCoupons(), refreshSavingCardState()])
     .then(function (result) {
+      publicCoupons = result[1] || [];
       renderPlans(result[0]);
-      renderCoupons(result[1]);
+      renderCoupons(publicCoupons);
       renderProducts(result[2]);
     })
     .catch(function (error) {

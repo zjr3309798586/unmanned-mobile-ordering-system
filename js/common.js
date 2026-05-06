@@ -118,7 +118,7 @@ window.OrderingApp = (function () {
   function devLogin(nickname) {
     return request("/auth/dev-login", {
       method: "POST",
-      body: { nickname: nickname || "H5调试用户" }
+        body: { nickname: nickname || "游客用户" }
     }).then(function (session) {
       setUserSession(session);
       return session;

@@ -33,6 +33,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var coupon = coupons.find(function (item) {
       return item.id === selectedCouponId;
     });
+    if (coupon && Number(cartSummary.totalAmount || 0) < Number(coupon.minAmount || 0)) {
+      return 0;
+    }
     return coupon ? Math.min(Number(coupon.discountAmount || 0), Number(cartSummary.totalAmount || 0)) : 0;
   }
 
@@ -71,15 +74,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (coupons.length === 0) {
       couponList.innerHTML = '<button class="coupon-select is-active" type="button" data-coupon-id="">' +
-        '<strong>暂无可用优惠券</strong><span>按商品金额结算</span></button>';
+        '<strong>暂无可用优惠券</strong><span>可先去省钱卡页面领取，再返回结算</span></button>' +
+        '<button class="coupon-select" type="button" data-go-claim><strong>去领取优惠券</strong><span>领取后本单可直接抵扣</span></button>';
       return;
     }
     var options = '<button class="coupon-select' + (!selectedCouponId ? " is-active" : "") + '" type="button" data-coupon-id="">' +
       '<strong>不使用优惠券</strong><span>保持原价，本次订单不抵扣</span></button>';
     options += coupons.map(function (coupon) {
       var active = selectedCouponId === coupon.id ? " is-active" : "";
-      return '<button class="coupon-select' + active + '" type="button" data-coupon-id="' + app.escapeHtml(coupon.id) + '">' +
-        '<strong>' + app.escapeHtml(coupon.title) + '</strong><span>' + app.escapeHtml(coupon.conditionText) + '，选择后减 ' + app.money(coupon.discountAmount) + '</span>' +
+      var disabled = Number(cartSummary.totalAmount || 0) < Number(coupon.minAmount || 0);
+      return '<button class="coupon-select' + active + '" type="button" data-coupon-id="' + app.escapeHtml(coupon.id) + '"' + (disabled ? " disabled" : "") + '>' +
+        '<strong>' + app.escapeHtml(coupon.title) + '</strong><span>' + app.escapeHtml(coupon.conditionText) + '，' + (disabled ? "当前金额未达标" : "选择后减 " + app.money(coupon.discountAmount)) + '</span>' +
       '</button>';
     }).join("");
     couponList.innerHTML = options;
@@ -113,8 +118,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (couponList) {
     couponList.addEventListener("click", function (event) {
+      var claimButton = event.target.closest("[data-go-claim]");
+      if (claimButton) {
+        window.location.href = "saving-card.html";
+        return;
+      }
       var button = event.target.closest("[data-coupon-id]");
       if (!button) {
+        return;
+      }
+      if (button.disabled) {
+        app.showMessage("当前订单金额未达到优惠券使用门槛");
         return;
       }
       selectedCouponId = button.dataset.couponId;
@@ -163,11 +177,16 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  Promise.all([app.get("/cart"), app.get("/coupons"), app.get("/store")])
+  Promise.all([app.get("/cart"), app.get("/user/coupons"), app.get("/store")])
     .then(function (result) {
       cartSummary = result[0] || cartSummary;
       coupons = (result[1] || []).filter(function (coupon) {
-        return coupon.available;
+        return coupon.status === "AVAILABLE" && coupon.couponAvailable !== false;
+      }).map(function (coupon) {
+        return Object.assign({}, coupon, {
+          id: coupon.couponId || coupon.id,
+          available: coupon.couponAvailable !== false
+        });
       });
       selectedCouponId = "";
       renderStore(result[2]);

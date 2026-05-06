@@ -4,26 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
-  <title>点餐页 - 无人移动点餐系统</title>
+  <title>点餐页 - 云豹小点</title>
   <link rel="stylesheet" href="css/common.css">
   <link rel="stylesheet" href="css/menu.css">
 </head>
 <body data-page="menu">
   <div class="app-shell">
-    <header class="top-area">
-      <section class="store-card compact-store">
-        <div class="store-header">
-          <div>
-            <span class="store-label">点餐门店</span>
-            <h1 class="store-name">正在读取门店</h1>
-          </div>
+    <header class="menu-header">
+      <div class="menu-title-row">
+        <strong>点单</strong>
+        <span>先选取餐方式，再选择饮品</span>
+      </div>
+
+      <section class="menu-store-panel">
+        <div>
+          <span class="store-label">当前门店</span>
+          <h1 class="store-name">正在读取门店</h1>
+        </div>
+        <div class="menu-store-status">
           <span class="status-pill is-open">读取中</span>
+          <span>约 12 分钟</span>
         </div>
-        <div class="store-meta">
-          <span>堂食</span>
-          <span>自取</span>
-          <span>平台外送</span>
-        </div>
+      </section>
+
+      <section class="menu-order-mode" aria-label="取餐方式">
+        <button class="mode-pill is-active" type="button">门店自取</button>
+        <button class="mode-pill" type="button">平台外送</button>
       </section>
 
       <label class="search-bar" aria-label="搜索菜单">
@@ -32,26 +38,30 @@
       </label>
     </header>
 
-    <main class="page-main with-floating-bar">
-      <section class="section-card promo-tip-card">
-        <div class="section-head compact-head">
-          <div>
-            <h2 class="section-title">今日点餐优惠</h2>
-            <p class="section-note" data-menu-promo-note>正在读取当前可用优惠券...</p>
-          </div>
+    <main class="menu-main with-floating-bar">
+      <section class="menu-campaign-card">
+        <div>
+          <span class="campaign-tag">今日可用</span>
+          <h2>满减券已准备好</h2>
         </div>
+        <p data-menu-promo-note>正在读取当前可用优惠券...</p>
       </section>
 
       <section class="menu-layout">
-        <aside class="section-card category-panel">
+        <aside class="category-panel" aria-label="商品分类">
           <div class="category-list">
             <button class="category-button is-active" type="button">加载中</button>
           </div>
         </aside>
 
         <div class="menu-content">
-          <section class="section-card menu-group">
-            <p class="section-note">正在读取当前门店商品...</p>
+          <section class="menu-group">
+            <div class="section-head compact-head">
+              <div>
+                <h2 class="section-title">商品列表</h2>
+                <p class="section-note">正在读取当前门店商品...</p>
+              </div>
+            </div>
           </section>
         </div>
       </section>
@@ -60,13 +70,12 @@
     <div class="floating-bar settlement-bar is-hidden" data-settlement-bar>
       <div class="cart-preview" data-cart-preview></div>
       <div class="settlement-main">
+        <button class="cart-bag" type="button" aria-label="展开已选商品">袋</button>
         <div class="floating-summary">
-          <span class="floating-label">已选商品</span>
+          <span class="floating-label">已选 <span data-cart-count>0</span> 件</span>
           <strong class="floating-price" data-cart-total>¥ 0.00</strong>
-          <span class="floating-label"><span data-cart-count>0</span> 件商品</span>
         </div>
         <div class="floating-actions">
-          <a class="button button-secondary" href="cart.html">购物车</a>
           <a class="button button-primary" href="cart.html">去结算</a>
         </div>
       </div>
@@ -74,23 +83,23 @@
 
     <nav class="bottom-nav" aria-label="底部导航">
       <a class="nav-item" data-nav-key="home" href="index.html">
-        <span class="nav-icon">首</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-home.svg" alt=""></span>
         <span>首页</span>
       </a>
       <a class="nav-item" data-nav-key="menu" href="menu.html">
-        <span class="nav-icon">餐</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-menu.svg" alt=""></span>
         <span>点餐</span>
       </a>
       <a class="nav-item" data-nav-key="saving-card" href="saving-card.html">
-        <span class="nav-icon">卡</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-saving.svg" alt=""></span>
         <span>省钱卡</span>
       </a>
       <a class="nav-item" data-nav-key="order" href="order.html">
-        <span class="nav-icon">单</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-order.svg" alt=""></span>
         <span>订单</span>
       </a>
       <a class="nav-item" data-nav-key="mine" href="mine.html">
-        <span class="nav-icon">我</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-mine.svg" alt=""></span>
         <span>我的</span>
       </a>
     </nav>

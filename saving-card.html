@@ -4,46 +4,64 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
-  <title>省钱卡页 - 无人移动点餐系统</title>
+  <title>省钱卡页 - 云豹小点</title>
   <link rel="stylesheet" href="css/common.css">
   <link rel="stylesheet" href="css/saving-card.css">
 </head>
 <body data-page="saving-card">
   <div class="app-shell">
-    <header class="top-area">
-      <section class="saving-hero">
-        <span class="hero-badge">会员专享</span>
-        <h1 class="saving-title">省钱卡</h1>
-        <p class="saving-text">开通后可领取专属优惠券、购买省钱价商品，并获得会员日额外权益。</p>
+    <header class="pass-header">
+      <section class="pass-card">
+        <div class="pass-card-head">
+          <span class="pass-brand">YUNBAO PASS</span>
+          <span class="pass-status">会员权益卡</span>
+        </div>
+        <h1 class="saving-title">云豹省钱卡</h1>
+        <p class="saving-text">开通后可领取专属券，指定饮品享省钱价，下单自动校验可用优惠。</p>
         <div class="hero-price-line">
           <strong class="hero-price" data-current-plan-price>¥ 12.90</strong>
           <span class="hero-price-note" data-current-plan-note>/ 月卡 · 预计月省 28 元</span>
         </div>
-        <div class="action-row">
-          <button class="button button-primary" type="button">立即开通省钱卡</button>
-          <a class="button button-secondary" href="menu.html">先去点餐</a>
+        <div class="pass-actions">
+          <button class="button button-primary" type="button" data-open-saving-card>立即开通</button>
+          <a class="button button-secondary" href="menu.html">去点餐</a>
         </div>
       </section>
     </header>
 
-    <main class="page-main">
+    <main class="page-main pass-main">
+      <section class="benefit-overview" aria-label="会员权益概览">
+        <div class="benefit-cell">
+          <strong>专属券</strong>
+          <span>开卡领取</span>
+        </div>
+        <div class="benefit-cell">
+          <strong>省钱价</strong>
+          <span>指定商品</span>
+        </div>
+        <div class="benefit-cell">
+          <strong>会员日</strong>
+          <span>每周加码</span>
+        </div>
+      </section>
+
       <section class="section-card">
         <div class="section-head compact-head">
           <div>
-            <h2 class="section-title">开通方案</h2>
-            <p class="section-note">切换后会同步更新顶部价格文案</p>
+            <h2 class="section-title">选择开通方案</h2>
+            <p class="section-note">价格来自后端配置，可在后台维护</p>
           </div>
         </div>
         <div class="plan-grid">
           <button class="plan-card is-active" type="button" data-plan data-price="12.90" data-note="/ 月卡 · 预计月省 28 元">
             <strong>月卡</strong>
             <span>¥ 12.90</span>
-            <small>灵活开通</small>
+            <small>适合日常点饮品</small>
           </button>
           <button class="plan-card" type="button" data-plan data-price="29.90" data-note="/ 季卡 · 预计季省 88 元">
             <strong>季卡</strong>
             <span>¥ 29.90</span>
-            <small>推荐方案</small>
+            <small>高频用户更划算</small>
           </button>
         </div>
       </section>
@@ -52,18 +70,11 @@
         <div class="section-head">
           <div>
             <h2 class="section-title">专属优惠券</h2>
-            <p class="section-note">开卡后自动到账</p>
+            <p class="section-note">必须先开通省钱卡，领取后提交订单可使用</p>
           </div>
         </div>
         <div class="coupon-stack">
-          <div class="member-coupon">
-            <strong>满 25 减 8</strong>
-            <span>饮品通用券 · 每周可领</span>
-          </div>
-          <div class="member-coupon">
-            <strong>满 39 减 12</strong>
-            <span>套餐专享券 · 每月 2 张</span>
-          </div>
+          <p class="section-note">正在读取优惠券...</p>
         </div>
       </section>
 
@@ -71,9 +82,9 @@
         <div class="section-head">
           <div>
             <h2 class="section-title">省钱价商品</h2>
-            <p class="section-note">仅省钱卡用户可享优惠价</p>
+            <p class="section-note">常点饮品优先展示</p>
           </div>
-          <a class="section-link" href="menu.html">去点餐</a>
+          <a class="section-link" href="menu.html">全部商品</a>
         </div>
         <div class="product-stack">
           <p class="section-note">正在读取省钱价商品...</p>
@@ -83,30 +94,30 @@
       <section class="section-card">
         <div class="section-head">
           <div>
-            <h2 class="section-title">会员权益说明</h2>
-            <p class="section-note">开通后可领取专属券并享受指定商品优惠</p>
+            <h2 class="section-title">权益说明</h2>
+            <p class="section-note">优惠券是否可用由订单金额和领取状态决定</p>
           </div>
         </div>
         <div class="benefit-list">
           <div class="benefit-item">
             <span class="benefit-icon">券</span>
             <div>
-              <strong class="info-title">专属优惠券</strong>
-              <p class="info-text">每周固定领取饮品券和套餐券，可与日常活动叠加。</p>
+              <strong class="info-title">开卡后领取</strong>
+              <p class="info-text">未开通时只能查看券，开通后才能领取专属券。</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">核</span>
+            <div>
+              <strong class="info-title">下单自动校验</strong>
+              <p class="info-text">提交订单时会根据满减门槛判断优惠券是否可用。</p>
             </div>
           </div>
           <div class="benefit-item">
             <span class="benefit-icon">价</span>
             <div>
-              <strong class="info-title">省钱价商品</strong>
-              <p class="info-text">指定商品开放专属低价，适合与热门推荐商品联动。</p>
-            </div>
-          </div>
-          <div class="benefit-item">
-            <span class="benefit-icon">日</span>
-            <div>
-              <strong class="info-title">会员日加码</strong>
-              <p class="info-text">每周三会员日可额外领取一张高面额优惠券。</p>
+              <strong class="info-title">专属商品价</strong>
+              <p class="info-text">部分商品显示会员参考价，实际金额以后端订单结算为准。</p>
             </div>
           </div>
         </div>
@@ -115,23 +126,23 @@
 
     <nav class="bottom-nav" aria-label="底部导航">
       <a class="nav-item" data-nav-key="home" href="index.html">
-        <span class="nav-icon">首</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-home.svg" alt=""></span>
         <span>首页</span>
       </a>
       <a class="nav-item" data-nav-key="menu" href="menu.html">
-        <span class="nav-icon">餐</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-menu.svg" alt=""></span>
         <span>点餐</span>
       </a>
       <a class="nav-item" data-nav-key="saving-card" href="saving-card.html">
-        <span class="nav-icon">卡</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-saving.svg" alt=""></span>
         <span>省钱卡</span>
       </a>
       <a class="nav-item" data-nav-key="order" href="order.html">
-        <span class="nav-icon">单</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-order.svg" alt=""></span>
         <span>订单</span>
       </a>
       <a class="nav-item" data-nav-key="mine" href="mine.html">
-        <span class="nav-icon">我</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-mine.svg" alt=""></span>
         <span>我的</span>
       </a>
     </nav>

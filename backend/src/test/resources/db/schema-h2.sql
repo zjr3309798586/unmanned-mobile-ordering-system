@@ -29,9 +29,21 @@ CREATE TABLE coupons (
   id VARCHAR(32) PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
   condition_text VARCHAR(200) NOT NULL,
+  min_amount DECIMAL(10, 2) NOT NULL DEFAULT 0,
   discount_amount DECIMAL(10, 2) NOT NULL,
   valid_until VARCHAR(30) NOT NULL,
   available BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE user_coupons (
+  id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
+  coupon_id VARCHAR(32) NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  claimed_at TIMESTAMP NOT NULL,
+  used_at TIMESTAMP,
+  order_id VARCHAR(40),
+  UNIQUE (user_id, coupon_id)
 );
 
 CREATE TABLE saving_card_plans (
@@ -40,6 +52,18 @@ CREATE TABLE saving_card_plans (
   price DECIMAL(10, 2) NOT NULL,
   description VARCHAR(500) NOT NULL,
   benefits VARCHAR(500) NOT NULL DEFAULT ''
+);
+
+CREATE TABLE banners (
+  id VARCHAR(40) PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  subtitle VARCHAR(300) NOT NULL DEFAULT '',
+  tag_text VARCHAR(40) NOT NULL DEFAULT '',
+  image VARCHAR(300) NOT NULL DEFAULT '',
+  link_text VARCHAR(40) NOT NULL DEFAULT '',
+  link_url VARCHAR(120) NOT NULL DEFAULT '',
+  sort_order INT NOT NULL DEFAULT 0,
+  enabled BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE user_profiles (

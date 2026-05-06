@@ -1,32 +1,88 @@
-.saving-hero {
-  padding: 32rpx;
-  border-radius: 24rpx;
+.pass-header {
+  padding: 24rpx;
+  background: linear-gradient(180deg, #eaf1ff 0%, #f4f6fa 100%);
+}
+
+.pass-card {
+  position: relative;
+  overflow: hidden;
+  padding: 36rpx 32rpx;
+  border-radius: 44rpx;
   color: #ffffff;
-  background: linear-gradient(135deg, #123f9c 0%, #1f5eff 62%, #5f8cff 100%);
-  box-shadow: 0 24rpx 48rpx rgba(31, 94, 255, 0.2);
+  background: linear-gradient(135deg, #092966 0%, #1453d9 64%, #6b9dff 100%);
+  box-shadow: 0 36rpx 72rpx rgba(20, 83, 217, 0.22);
+}
+
+.pass-card::after {
+  content: "J";
+  position: absolute;
+  right: -12rpx;
+  bottom: -84rpx;
+  color: rgba(255, 255, 255, 0.12);
+  font-size: 300rpx;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.pass-card-head,
+.pass-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.pass-brand,
+.pass-status {
+  min-height: 48rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 900;
+  line-height: 48rpx;
+}
+
+.pass-brand {
+  color: #1453d9;
+  background: #ffffff;
+}
+
+.pass-status {
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.saving-title,
+.saving-text,
+.hero-price-line {
+  position: relative;
+  z-index: 1;
 }
 
 .saving-title {
-  margin-top: 20rpx;
-  font-size: 56rpx;
+  margin-top: 32rpx;
+  font-size: 60rpx;
   font-weight: 900;
   line-height: 1.15;
 }
 
 .saving-text {
+  max-width: 540rpx;
   margin-top: 16rpx;
   color: rgba(255, 255, 255, 0.78);
   font-size: 24rpx;
-  line-height: 1.58;
+  line-height: 1.65;
 }
 
 .hero-price-line {
-  margin-top: 24rpx;
+  margin-top: 28rpx;
 }
 
 .hero-price {
   color: #ffffff;
-  font-size: 40rpx;
+  font-size: 60rpx;
   font-weight: 900;
 }
 
@@ -37,15 +93,60 @@
   font-size: 22rpx;
 }
 
-.saving-hero .hero-badge {
-  color: #1f5eff;
-  background: #ffffff;
+.pass-actions {
+  justify-content: flex-start;
+  margin-top: 28rpx;
 }
 
-.saving-hero .button-secondary {
+.pass-card .button {
+  min-height: 76rpx;
+  border-radius: 999rpx;
+}
+
+.pass-card .button-primary {
+  color: #1453d9;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.pass-card .button-secondary {
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.14);
+}
+
+.pass-main {
+  padding-top: 0;
+}
+
+.benefit-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16rpx;
+  margin-top: -16rpx;
+  padding: 0 4rpx;
+}
+
+.benefit-cell {
+  padding: 24rpx 16rpx;
+  border: 1rpx solid #edf1f7;
+  border-radius: 28rpx;
+  text-align: center;
+  background: #ffffff;
+  box-shadow: 0 16rpx 36rpx rgba(20, 48, 96, 0.05);
+}
+
+.benefit-cell text:first-child {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 900;
+}
+
+.benefit-cell text:last-child {
+  display: block;
+  margin-top: 8rpx;
+  color: #6d7788;
+  font-size: 22rpx;
 }
 
 .plan-grid {
@@ -57,22 +158,22 @@
 .plan-card {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
-  padding: 24rpx;
-  border: 1rpx solid transparent;
-  border-radius: 20rpx;
+  gap: 14rpx;
+  padding: 26rpx;
+  border: 1rpx solid #edf1f7;
+  border-radius: 28rpx;
   text-align: left;
-  background: #f7f9fd;
+  background: #ffffff;
 }
 
 .plan-name {
   font-size: 28rpx;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .plan-price {
-  color: #ff7a1a;
-  font-size: 40rpx;
+  color: #ef5f20;
+  font-size: 44rpx;
   font-weight: 900;
 }
 
@@ -83,22 +184,40 @@
 }
 
 .plan-card.is-active {
-  border-color: #cfdcff;
-  background: #eaf1ff;
+  border-color: #1453d9;
+  background: #f2f6ff;
+}
+
+.coupon-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
 }
 
 .member-coupon {
+  position: relative;
+  display: grid;
+  grid-template-columns: 176rpx minmax(0, 1fr) auto;
+  gap: 20rpx;
+  align-items: center;
+  min-height: 172rpx;
   padding: 24rpx;
-  border: 1rpx dashed #ffc99f;
-  border-radius: 20rpx;
-  background: #fff1e6;
+  border: 1rpx solid #e8edf5;
+  border-radius: 32rpx;
+  background: #ffffff;
+}
+
+.coupon-value {
+  color: #ef5f20;
+  font-size: 44rpx;
+  font-weight: 900;
+  text-align: center;
 }
 
 .member-coupon-title {
   display: block;
-  color: #ff7a1a;
   font-size: 28rpx;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .member-coupon-desc {
@@ -106,6 +225,30 @@
   margin-top: 8rpx;
   color: #6d7788;
   font-size: 22rpx;
+  line-height: 1.45;
+}
+
+.coupon-claim {
+  min-width: 112rpx;
+  margin: 0;
+  padding: 0 20rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  border-radius: 999rpx;
+  color: #ffffff;
+  font-size: 24rpx;
+  background: #1f5eff;
+}
+
+.coupon-claim[disabled] {
+  color: #98a2b3;
+  background: #eef2f7;
+}
+
+.old-price {
+  color: #98a2b3;
+  font-size: 24rpx;
+  text-decoration: line-through;
 }
 
 .benefit-item {
@@ -115,8 +258,6 @@
   align-items: flex-start;
 }
 
-.old-price {
-  color: #98a2b3;
-  font-size: 24rpx;
-  text-decoration: line-through;
+.benefit-icon {
+  border-radius: 50%;
 }

@@ -232,6 +232,17 @@ button {
   background: var(--primary-soft);
 }
 
+.nav-icon {
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.nav-logo-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
 .search-input {
   width: 100%;
   padding: 0;
@@ -298,6 +309,13 @@ button {
   font-weight: 800;
   letter-spacing: 0;
   transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.button:disabled {
+  color: var(--text-light);
+  background: var(--surface-soft);
+  box-shadow: none;
+  cursor: default;
 }
 
 .button:hover {
@@ -549,6 +567,10 @@ button {
   color: #ffffff;
   background: var(--primary);
   box-shadow: 0 6px 14px rgba(31, 94, 255, 0.2);
+}
+
+.nav-item.is-active .nav-logo-icon {
+  transform: scale(1.05);
 }
 
 .stepper {

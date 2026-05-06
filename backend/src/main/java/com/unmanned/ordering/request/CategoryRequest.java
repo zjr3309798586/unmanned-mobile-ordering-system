@@ -3,10 +3,13 @@ package com.unmanned.ordering.request;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
+// 后台新增 / 修改分类时，页面表单提交的数据结构。
 public class CategoryRequest {
+    // 分类名称，例如“咖啡”“果茶”“轻食”。
     @NotBlank
     private String name;
 
+    // 排序值，越小越靠前。
     @Min(1)
     private int sort = 1;
 

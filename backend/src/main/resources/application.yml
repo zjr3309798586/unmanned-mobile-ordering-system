@@ -1,9 +1,9 @@
-server:
+  server:
   port: 8080
 
 spring:
   application:
-    name: unmanned-mobile-ordering-backend
+    name: yunbao-ordering-backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL:jdbc:mysql://localhost:3306/unmanned_ordering?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}

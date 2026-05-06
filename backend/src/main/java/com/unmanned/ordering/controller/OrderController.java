@@ -31,6 +31,8 @@ public class OrderController {
         this.userAuthService = userAuthService;
     }
 
+    // 查询当前登录用户的订单列表。
+    // status 是可选筛选条件，例如 WAITING_PICKUP、COMPLETED、CANCELED。
     @GetMapping
     public ApiResponse<List<Order>> listOrders(
             @RequestHeader(value = "X-User-Token", required = false) String token,
@@ -39,6 +41,8 @@ public class OrderController {
         return ApiResponse.ok(orderingService.listOrders(user.getId(), status));
     }
 
+    // 查询当前用户的某一个订单详情。
+    // 后端会同时校验：这个订单必须属于当前登录用户。
     @GetMapping("/{orderId}")
     public ApiResponse<Order> getOrder(
             @RequestHeader(value = "X-User-Token", required = false) String token,
@@ -47,6 +51,9 @@ public class OrderController {
         return ApiResponse.ok(orderingService.getOrder(user.getId(), orderId));
     }
 
+    // 提交订单。
+    // 前端只提交取餐方式、优惠券、桌号、备注。
+    // 商品清单不由前端传，而是后端直接读取当前用户购物车，避免前端篡改价格。
     @PostMapping
     public ApiResponse<Order> createOrder(
             @RequestHeader(value = "X-User-Token", required = false) String token,
@@ -55,6 +62,8 @@ public class OrderController {
         return ApiResponse.created(orderingService.createOrder(user.getId(), request));
     }
 
+    // 用户取消自己的订单。
+    // 已完成订单不能取消，具体判断在 OrderingService.cancelOrder 中。
     @PatchMapping("/{orderId}/cancel")
     public ApiResponse<Order> cancelOrder(
             @RequestHeader(value = "X-User-Token", required = false) String token,
@@ -63,6 +72,8 @@ public class OrderController {
         return ApiResponse.ok(orderingService.cancelOrder(user.getId(), orderId));
     }
 
+    // 再来一单。
+    // 后端会把历史订单里的商品重新加入当前用户购物车。
     @PostMapping("/{orderId}/repeat")
     public ApiResponse<CartSummary> repeatOrder(
             @RequestHeader(value = "X-User-Token", required = false) String token,

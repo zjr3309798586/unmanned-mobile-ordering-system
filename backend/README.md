@@ -1,6 +1,6 @@
 # 后端 API 说明
 
-本目录是“无人移动点餐系统”的后端 API，技术栈为 Java 11 + Spring Boot 2.7.18 + MySQL + MyBatis。
+本目录是“云豹小点无人移动点餐系统”的后端 API，技术栈为 Java 11 + Spring Boot 2.7.18 + MySQL + MyBatis。
 
 ## 先理解代码结构
 

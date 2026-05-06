@@ -1,6 +1,6 @@
 INSERT INTO stores (id, name, address, distance, business_hours, notice)
-VALUES ('STORE-001', '智慧点餐校区店', '教学楼 A 座 1 层', '350m', '09:00-21:30',
-        '当前已连接 MySQL 数据库，商品、购物车和订单数据都会保存到后端。')
+VALUES ('STORE-001', '云豹小点校区店', '教学楼 A 座 1 层', '350m', '09:00-21:30',
+  '欢迎使用云豹小点，订单提交后请留意取餐通知。')
 ON DUPLICATE KEY UPDATE
   name = VALUES(name),
   address = VALUES(address),
@@ -34,13 +34,14 @@ ON DUPLICATE KEY UPDATE
   tags = VALUES(tags),
   enabled = VALUES(enabled);
 
-INSERT INTO coupons (id, title, condition_text, discount_amount, valid_until, available) VALUES
-('C-001', '新人立减券', '满 20 元可用', 5.00, '2026-12-31', 1),
-('C-002', '下午茶优惠券', '满 30 元可用', 8.00, '2026-12-31', 1),
-('C-003', '会员专享券', '满 15 元可用', 3.00, '2026-12-31', 1)
+INSERT INTO coupons (id, title, condition_text, min_amount, discount_amount, valid_until, available) VALUES
+('C-001', '新人立减券', '满 20 元可用', 20.00, 5.00, '2026-12-31', 1),
+('C-002', '下午茶优惠券', '满 30 元可用', 30.00, 8.00, '2026-12-31', 1),
+('C-003', '会员专享券', '满 15 元可用', 15.00, 3.00, '2026-12-31', 1)
 ON DUPLICATE KEY UPDATE
   title = VALUES(title),
   condition_text = VALUES(condition_text),
+  min_amount = VALUES(min_amount),
   discount_amount = VALUES(discount_amount),
   valid_until = VALUES(valid_until),
   available = VALUES(available);
@@ -53,6 +54,19 @@ ON DUPLICATE KEY UPDATE
   price = VALUES(price),
   description = VALUES(description),
   benefits = VALUES(benefits);
+
+INSERT INTO banners (id, title, subtitle, tag_text, image, link_text, link_url, sort_order, enabled) VALUES
+('BANNER-001', '蓝杯鲜饮 轻松点单', '到店自取快一步，会员券下单自动抵扣。', '云豹上新',
+ '/images/product-orange-coffee.svg', '去点餐', 'menu.html', 1, 1)
+ON DUPLICATE KEY UPDATE
+  title = VALUES(title),
+  subtitle = VALUES(subtitle),
+  tag_text = VALUES(tag_text),
+  image = VALUES(image),
+  link_text = VALUES(link_text),
+  link_url = VALUES(link_url),
+  sort_order = VALUES(sort_order),
+  enabled = VALUES(enabled);
 
 INSERT INTO users (id, openid, nickname, avatar_url, token, created_at, updated_at) VALUES
 ('USER-SEED-001', NULL, '历史用户', '', NULL, '2026-05-04 10:00:00', '2026-05-04 10:00:00')
@@ -85,7 +99,7 @@ WHERE order_no = 'UMO202605040001'
 
 INSERT INTO orders (id, user_id, order_no, pickup_type, store_name, table_no, remark, status,
                     total_amount, discount_amount, payable_amount, created_at)
-VALUES ('ORDER-SEED-001', 'USER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐校区店', 'A12',
+VALUES ('ORDER-SEED-001', 'USER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '云豹小点校区店', 'A12',
         '历史订单', 'COMPLETED', 29.80, 5.00, 24.80, '2026-05-04 10:30:00')
 ON DUPLICATE KEY UPDATE
   user_id = VALUES(user_id),
@@ -109,8 +123,12 @@ ON DUPLICATE KEY UPDATE
   quantity = VALUES(quantity);
 
 UPDATE orders
-SET store_name = '智慧点餐校区店'
+SET store_name = '云豹小点校区店'
 WHERE store_name = 'Campus Smart Pickup Store';
+
+UPDATE orders
+SET store_name = '云豹小点校区店'
+WHERE store_name = '智慧点餐校区店';
 
 UPDATE order_items item
 JOIN products product ON item.product_id = product.id

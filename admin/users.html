@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>用户管理 - 无人移动点餐系统</title>
+  <title>用户管理 - 云豹小点后台管理</title>
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body data-page="users">
   <div class="admin-shell">
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand"><div class="sidebar-logo">点</div><div><div class="sidebar-title">点餐后台</div><div class="sidebar-subtitle">Management</div></div></div>
+      <div class="sidebar-brand"><div class="sidebar-logo"><img src="../images/mascot-yunbao-144.png" alt="云豹小点"></div><div><div class="sidebar-title">云豹小点后台</div><div class="sidebar-subtitle">后台管理</div></div></div>
       <nav class="nav-list">
         <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
-        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="products" href="products.html">商品管理</a>
         <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
         <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
         <a class="nav-item" data-page="users" href="users.html">用户管理</a>
@@ -23,18 +23,18 @@
     </aside>
     <main class="main">
       <header class="topbar">
-        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>用户管理</h1><p>展示用户会员等级、优惠券和消费情况。</p></div>
-        <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
+        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>用户管理</h1><p>查看会员等级、优惠券数量和消费金额。</p></div>
+        <div class="top-actions"><div class="admin-user"><span class="avatar">J</span><span>管理员</span></div><button class="btn ghost" id="logoutBtn">退出</button></div>
       </header>
       <section class="card">
-        <div class="toolbar"><input class="search" data-table-search="#usersTable" placeholder="搜索用户昵称或会员等级"><button class="btn ghost" type="button" disabled>导出未启用</button></div>
+        <div class="toolbar"><input class="search" data-table-search="#usersTable" placeholder="搜索用户昵称或会员等级"><a class="btn ghost" href="users.html">刷新</a></div>
         <div class="table-wrap">
           <table id="usersTable">
             <thead><tr><th>用户昵称</th><th>会员等级</th><th>积分</th><th>优惠券</th><th>累计消费</th><th>状态</th></tr></thead>
             <tbody>
-              <tr><td>Guest User</td><td>银卡会员</td><td>1280</td><td>3 张</td><td>¥326.80</td><td><span class="status green">正常</span></td></tr>
+              <tr><td>游客用户</td><td>银卡会员</td><td>1280</td><td>3 张</td><td>¥326.80</td><td><span class="status green">正常</span></td></tr>
               <tr><td>学生用户</td><td>普通用户</td><td>320</td><td>1 张</td><td>¥86.60</td><td><span class="status green">正常</span></td></tr>
-              <tr><td>会员用户</td><td>金卡会员</td><td>2680</td><td>5 张</td><td>¥706.20</td><td><span class="status orange">高价值</span></td></tr>
+              <tr><td>会员用户</td><td>金卡会员</td><td>2680</td><td>5 张</td><td>¥706.20</td><td><span class="status blue">高价值</span></td></tr>
             </tbody>
           </table>
         </div>

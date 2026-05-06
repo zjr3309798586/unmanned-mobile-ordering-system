@@ -30,12 +30,17 @@ public class CartController {
         this.userAuthService = userAuthService;
     }
 
+    // 查询当前登录用户的购物车。
+    // 前端必须在请求头里带 X-User-Token，否则 requireUser 会抛出“请先登录”。
     @GetMapping
     public ApiResponse<CartSummary> getCart(@RequestHeader(value = "X-User-Token", required = false) String token) {
         User user = userAuthService.requireUser(token);
         return ApiResponse.ok(orderingService.getCartSummary(user.getId()));
     }
 
+    // 加入购物车。
+    // request 中包含 productId、spec、quantity。
+    // 返回 CartSummary，是为了让前端直接刷新购物车数量和总金额。
     @PostMapping("/items")
     public ApiResponse<CartSummary> addCartItem(
             @RequestHeader(value = "X-User-Token", required = false) String token,
@@ -44,6 +49,8 @@ public class CartController {
         return ApiResponse.created(orderingService.addCartItem(user.getId(), request));
     }
 
+    // 修改购物车某一项的数量。
+    // itemId 是购物车记录 ID，不是商品 ID。
     @PatchMapping("/items/{itemId}")
     public ApiResponse<CartSummary> updateCartItem(
             @PathVariable String itemId,
@@ -53,6 +60,7 @@ public class CartController {
         return ApiResponse.ok(orderingService.updateCartItem(user.getId(), itemId, request.getQuantity()));
     }
 
+    // 删除购物车里的某一项。
     @DeleteMapping("/items/{itemId}")
     public ApiResponse<CartSummary> deleteCartItem(
             @RequestHeader(value = "X-User-Token", required = false) String token,
@@ -61,6 +69,7 @@ public class CartController {
         return ApiResponse.ok(orderingService.deleteCartItem(user.getId(), itemId));
     }
 
+    // 清空当前用户购物车。
     @DeleteMapping
     public ApiResponse<CartSummary> clearCart(@RequestHeader(value = "X-User-Token", required = false) String token) {
         User user = userAuthService.requireUser(token);

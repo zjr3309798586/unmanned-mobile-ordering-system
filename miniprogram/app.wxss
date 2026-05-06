@@ -197,6 +197,16 @@ button::after {
   background: #eaf1ff;
 }
 
+.nav-icon {
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.nav-logo-icon {
+  width: 44rpx;
+  height: 44rpx;
+}
+
 .search-input,
 .search input {
   flex: 1;
@@ -247,6 +257,12 @@ button::after {
   color: #ffffff;
   background: #1f5eff;
   box-shadow: 0 16rpx 36rpx rgba(31, 94, 255, 0.22);
+}
+
+.button[disabled] {
+  color: #98a2b3;
+  background: #f1f3f6;
+  box-shadow: none;
 }
 
 .button-secondary,
@@ -486,6 +502,10 @@ button::after {
   color: #ffffff;
   background: #1f5eff;
   box-shadow: 0 12rpx 28rpx rgba(31, 94, 255, 0.2);
+}
+
+.nav-item.is-active .nav-logo-icon {
+  transform: scale(1.05);
 }
 
 .stepper {

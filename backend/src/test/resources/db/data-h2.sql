@@ -1,6 +1,6 @@
 MERGE INTO stores KEY(id) VALUES
-('STORE-001', '智慧点餐校区店', '教学楼 A 座 1 层', '350m', '09:00-21:30',
- '当前已连接 MySQL 数据库，商品、购物车和订单数据都会保存到后端。');
+('STORE-001', '云豹小点校区店', '教学楼 A 座 1 层', '350m', '09:00-21:30',
+  '欢迎使用云豹小点，订单提交后请留意取餐通知。');
 
 MERGE INTO categories KEY(id) VALUES
 ('coffee', '咖啡', 1),
@@ -17,13 +17,17 @@ MERGE INTO products KEY(id) VALUES
 ('P-1006', 'snack', '芝士烤吐司', '现烤吐司搭配芝士和黄油，适合配饮品。', '/images/product-toast.svg', 9.90, 156, '小食', TRUE);
 
 MERGE INTO coupons KEY(id) VALUES
-('C-001', '新人立减券', '满 20 元可用', 5.00, '2026-12-31', TRUE),
-('C-002', '下午茶优惠券', '满 30 元可用', 8.00, '2026-12-31', TRUE),
-('C-003', '会员专享券', '满 15 元可用', 3.00, '2026-12-31', TRUE);
+('C-001', '新人立减券', '满 20 元可用', 20.00, 5.00, '2026-12-31', TRUE),
+('C-002', '下午茶优惠券', '满 30 元可用', 30.00, 8.00, '2026-12-31', TRUE),
+('C-003', '会员专享券', '满 15 元可用', 15.00, 3.00, '2026-12-31', TRUE);
 
 MERGE INTO saving_card_plans KEY(id) VALUES
 ('S-001', '月度省钱卡', 9.90, '开通 30 天内可领取会员专属券，并享受指定商品省钱价。',
  '4 张专属优惠券,指定商品省钱价,会员生日权益');
+
+MERGE INTO banners KEY(id) VALUES
+('BANNER-001', '蓝杯鲜饮 轻松点单', '到店自取快一步，会员券下单自动抵扣。', '云豹上新',
+ '/images/product-orange-coffee.svg', '去点餐', 'menu.html', 1, TRUE);
 
 MERGE INTO user_profiles KEY(user_id) VALUES
 ('USER-SEED-001', '历史用户', '银卡会员', 1280, 36.80, 3, 18.50);
@@ -32,7 +36,7 @@ MERGE INTO users KEY(id) VALUES
 ('USER-SEED-001', NULL, '历史用户', '', NULL, '2026-05-04 10:00:00', '2026-05-04 10:00:00');
 
 MERGE INTO orders KEY(id) VALUES
-('ORDER-SEED-001', 'USER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '智慧点餐校区店', 'A12',
+('ORDER-SEED-001', 'USER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '云豹小点校区店', 'A12',
  '历史订单', 'COMPLETED', 29.80, 5.00, 24.80, '2026-05-04 10:30:00');
 
 MERGE INTO order_items (id, order_id, product_id, product_name, spec, price, quantity) KEY(id) VALUES

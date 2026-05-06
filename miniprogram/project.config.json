@@ -1,7 +1,7 @@
 {
-  "description": "无人移动点餐系统微信小程序",
-  "appid": "touristappid",
-  "projectname": "unmanned-mobile-ordering-system",
+  "description": "云豹小点微信小程序",
+  "appid": "wx5bdfb97db00180f4",
+  "projectname": "云豹小点",
   "miniprogramRoot": "./",
   "compileType": "miniprogram",
   "setting": {

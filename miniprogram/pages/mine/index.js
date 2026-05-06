@@ -16,7 +16,6 @@ function emptyProfile() {
 Page({
   data: {
     loggedIn: false,
-    avatarText: "登",
     profile: emptyProfile(),
     services: [
       { name: "我的订单", desc: "查看订单状态", target: "order" },
@@ -28,8 +27,7 @@ Page({
 
   onShow() {
     this.setData({
-      loggedIn: auth.isLoggedIn(),
-      avatarText: auth.isLoggedIn() ? "我" : "登"
+      loggedIn: auth.isLoggedIn()
     });
     if (auth.isLoggedIn()) {
       this.loadProfile();
@@ -40,7 +38,7 @@ Page({
 
   login() {
     auth.wechatLogin().then(() => {
-      this.setData({ loggedIn: true, avatarText: "我" });
+      this.setData({ loggedIn: true });
       this.loadProfile();
     }).catch((error) => {
       wx.showToast({ title: error.message, icon: "none" });
@@ -56,7 +54,7 @@ Page({
           return;
         }
         auth.logout().then(() => {
-          this.setData({ loggedIn: false, avatarText: "登", profile: emptyProfile() });
+          this.setData({ loggedIn: false, profile: emptyProfile() });
         });
       }
     });

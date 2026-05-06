@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>活动管理 - 无人移动点餐系统</title>
+  <title>活动管理 - 云豹小点后台管理</title>
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body data-page="activities">
   <div class="admin-shell">
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand"><div class="sidebar-logo">点</div><div><div class="sidebar-title">点餐后台</div><div class="sidebar-subtitle">Management</div></div></div>
+      <div class="sidebar-brand"><div class="sidebar-logo"><img src="../images/mascot-yunbao-144.png" alt="云豹小点"></div><div><div class="sidebar-title">云豹小点后台</div><div class="sidebar-subtitle">后台管理</div></div></div>
       <nav class="nav-list">
         <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
-        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="products" href="products.html">商品管理</a>
         <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
         <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
         <a class="nav-item" data-page="users" href="users.html">用户管理</a>
@@ -23,22 +23,20 @@
     </aside>
     <main class="main">
       <header class="topbar">
-        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>活动管理</h1><p>管理首页 Banner、新人券包和集杯任务。</p></div>
-        <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
+        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>活动管理</h1><p>维护首页 Banner、活动入口和跳转配置。</p></div>
+        <div class="top-actions"><div class="admin-user"><span class="avatar">J</span><span>管理员</span></div><button class="btn ghost" id="logoutBtn">退出</button></div>
       </header>
       <section class="activity-list">
-        <div class="small-card"><strong>首页主 Banner</strong><p class="muted">当前版本未开放活动配置接口。</p></div>
-        <div class="small-card"><strong>新人券包</strong><p class="muted">请先使用优惠券管理维护可用券。</p></div>
-        <div class="small-card"><strong>集杯任务</strong><p class="muted">会员任务功能未启用。</p></div>
+        <div class="small-card"><strong>正在加载活动位...</strong><p class="muted">请稍候</p></div>
       </section>
       <section class="card" style="margin-top:18px;">
-        <div class="card-header"><h2>活动配置</h2><span class="muted">当前版本未启用活动配置写入</span></div>
+        <div class="card-header"><h2>活动配置</h2><span class="muted">保存后同步到前台首页</span></div>
         <div class="form-grid">
-          <div class="field"><label>活动名称</label><input placeholder="例如：夏日果茶节"></div>
+          <div class="field"><label>活动名称</label><input placeholder="夏日果茶节"></div>
           <div class="field"><label>活动位置</label><select><option>首页 Banner</option><option>点餐页推荐</option><option>省钱卡页</option></select></div>
-          <div class="field wide"><label>活动说明</label><textarea placeholder="填写活动规则和展示文案"></textarea></div>
+          <div class="field wide"><label>活动说明</label><textarea placeholder="填写活动规则和页面文案"></textarea></div>
         </div>
-        <button class="btn" type="button" disabled>当前版本未开放保存</button>
+        <button class="btn" type="button">保存 Banner</button>
       </section>
     </main>
   </div>

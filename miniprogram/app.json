@@ -10,7 +10,7 @@
     "pages/saving-card/index"
   ],
   "window": {
-    "navigationBarTitleText": "无人移动点餐系统",
+    "navigationBarTitleText": "云豹小点",
     "navigationBarBackgroundColor": "#f6f7fb",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#f6f7fb"

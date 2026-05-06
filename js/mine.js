@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var profileTitle = document.querySelector(".profile-title");
   var profileText = document.querySelector(".profile-text");
   var memberTitle = document.querySelector(".member-title");
-  var memberText = document.querySelector(".member-card .info-text");
+  var memberText = document.querySelector(".member-entry .info-text");
   var assetGrid = document.querySelector(".asset-grid");
   var serviceList = document.querySelector(".service-list");
   var actionRow = document.querySelector(".profile-copy .action-row");
@@ -13,11 +13,10 @@ document.addEventListener("DOMContentLoaded", function () {
       profileTitle.textContent = "请先登录";
     }
     if (profileText) {
-      profileText.textContent = "当前浏览器还没有用户会话。H5 页面可用本地调试登录，小程序端后续使用微信 wx.login 登录。";
+      profileText.textContent = "登录后可以同步订单、购物车、优惠券和会员权益。";
     }
     if (actionRow) {
-      actionRow.innerHTML = '<button class="button button-primary" type="button" data-dev-login>H5 调试登录</button>' +
-        '<span class="tiny-note">微信小程序端使用微信授权登录</span>';
+      actionRow.innerHTML = '<button class="button button-primary" type="button" data-dev-login>一键登录</button>';
     }
     if (memberTitle) {
       memberTitle.textContent = "未登录";
@@ -92,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("click", function (event) {
     if (event.target.closest("[data-dev-login]")) {
       event.preventDefault();
-      app.devLogin("H5调试用户")
+      app.devLogin("游客用户")
         .then(function () {
           app.showMessage("登录成功");
           window.setTimeout(function () {

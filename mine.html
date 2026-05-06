@@ -4,88 +4,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
-  <title>我的页 - 无人移动点餐系统</title>
+  <title>我的页 - 云豹小点</title>
   <link rel="stylesheet" href="css/common.css">
   <link rel="stylesheet" href="css/mine.css">
 </head>
 <body data-page="mine">
   <div class="app-shell">
-    <header class="top-area">
+    <header class="mine-header">
       <section class="profile-hero">
-        <img class="avatar-thumb" src="images/avatar-placeholder.svg" alt="用户头像">
+        <img class="avatar-thumb" src="images/mascot-yunbao-144.png" alt="云豹小点头像">
         <div class="profile-copy">
           <span class="store-label">个人中心</span>
-          <h1 class="profile-title">欢迎来到无人移动点餐系统</h1>
-          <p class="profile-text">登录后可同步订单、优惠券、会员权益和常用门店信息。</p>
+          <h1 class="profile-title">欢迎来到云豹小点</h1>
+          <p class="profile-text">登录后可同步订单、优惠券、会员权益和常用门店。</p>
           <div class="action-row">
-            <button class="button button-primary" type="button" data-dev-login>H5 调试登录</button>
-            <span class="tiny-note">小程序端后续使用微信登录</span>
+            <button class="button button-primary" type="button" data-dev-login>一键登录</button>
           </div>
         </div>
       </section>
     </header>
 
-    <main class="page-main">
-      <section class="section-card">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">会员信息</h2>
-            <p class="section-note">来自当前用户资产数据</p>
-          </div>
-          <a class="section-link" href="saving-card.html">查看权益</a>
-        </div>
-        <div class="member-card">
-          <div>
-            <strong class="member-title">普通会员</strong>
-            <p class="info-text">成长值 1260，预计本月已节省 18 元。</p>
-          </div>
-          <span class="hero-badge">会员日周三</span>
-        </div>
-      </section>
-
-      <section class="section-card">
-        <div class="section-head compact-head">
-          <div>
-            <h2 class="section-title">我的资产</h2>
-            <p class="section-note">优惠券、积分、余额等入口</p>
-          </div>
-        </div>
+    <main class="page-main mine-main">
+      <section class="asset-panel">
         <div class="asset-grid">
           <div class="asset-card">
-            <strong>6</strong>
+            <strong>--</strong>
             <span>优惠券</span>
           </div>
           <div class="asset-card">
-            <strong>380</strong>
+            <strong>--</strong>
             <span>积分</span>
           </div>
           <div class="asset-card">
-            <strong>¥ 28</strong>
+            <strong>--</strong>
             <span>余额</span>
           </div>
         </div>
+      </section>
+
+      <section class="member-entry">
+        <div>
+          <span class="member-kicker">YUNBAO PASS</span>
+          <strong class="member-title">普通会员</strong>
+          <p class="info-text">成长值 0，开通省钱卡后可领取专属券。</p>
+        </div>
+        <a class="button button-secondary" href="saving-card.html">查看权益</a>
       </section>
 
       <section class="section-card">
         <div class="section-head compact-head">
           <div>
             <h2 class="section-title">我的订单</h2>
-            <p class="section-note">常用订单入口</p>
+            <p class="section-note">查看订单进度与历史记录</p>
           </div>
-          <a class="section-link" href="order.html">查看全部</a>
+          <a class="section-link" href="order.html">全部</a>
+        </div>
+        <div class="order-shortcuts">
+          <a href="order.html"><span>取</span><strong>待取餐</strong></a>
+          <a href="order.html"><span>完</span><strong>已完成</strong></a>
+          <a href="order.html"><span>退</span><strong>退款</strong></a>
+          <a href="menu.html"><span>再</span><strong>再来一单</strong></a>
         </div>
         <div class="service-list">
           <a class="service-row" href="order.html" data-service-link>
             <div>
               <strong class="info-title">待出餐订单</strong>
-              <p class="info-text">查看当前订单状态、取餐号和下单时间。</p>
-            </div>
-            <span class="row-arrow">›</span>
-          </a>
-          <a class="service-row" href="order.html" data-service-link>
-            <div>
-              <strong class="info-title">历史订单</strong>
-              <p class="info-text">支持再来一单、申请退单和历史记录查看。</p>
+              <p class="info-text">当前订单状态、取餐号和下单时间会显示在这里。</p>
             </div>
             <span class="row-arrow">›</span>
           </a>
@@ -95,30 +79,30 @@
       <section class="section-card">
         <div class="section-head compact-head">
           <div>
-            <h2 class="section-title">更多服务</h2>
-            <p class="section-note">账户、地址和客服能力集中管理</p>
+            <h2 class="section-title">常用服务</h2>
+            <p class="section-note">账户、权益、订单相关入口</p>
           </div>
         </div>
         <div class="more-grid">
-          <a class="feature-card compact-feature" href="saving-card.html">
+          <a class="service-tile" href="saving-card.html">
             <span class="feature-icon">卡</span>
             <strong>省钱卡</strong>
-            <p>查看会员权益和专属券。</p>
+            <p>专属券和会员价。</p>
           </a>
-          <a class="feature-card compact-feature" href="cart.html">
+          <a class="service-tile" href="cart.html">
             <span class="feature-icon">车</span>
             <strong>购物车</strong>
-            <p>继续确认商品与优惠信息。</p>
+            <p>查看已选商品。</p>
           </a>
-          <a class="feature-card compact-feature" href="submit-order.html">
+          <a class="service-tile" href="submit-order.html">
             <span class="feature-icon">号</span>
-            <strong>地址与桌号</strong>
-            <p>提交订单时填写桌号或取餐备注。</p>
+            <strong>桌号备注</strong>
+            <p>提交订单填写。</p>
           </a>
-          <a class="feature-card compact-feature" href="index.html">
+          <a class="service-tile" href="index.html">
             <span class="feature-icon">助</span>
             <strong>帮助中心</strong>
-            <p>常见问题、客服联系和反馈。</p>
+            <p>门店问题反馈。</p>
           </a>
         </div>
       </section>
@@ -126,23 +110,23 @@
 
     <nav class="bottom-nav" aria-label="底部导航">
       <a class="nav-item" data-nav-key="home" href="index.html">
-        <span class="nav-icon">首</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-home.svg" alt=""></span>
         <span>首页</span>
       </a>
       <a class="nav-item" data-nav-key="menu" href="menu.html">
-        <span class="nav-icon">餐</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-menu.svg" alt=""></span>
         <span>点餐</span>
       </a>
       <a class="nav-item" data-nav-key="saving-card" href="saving-card.html">
-        <span class="nav-icon">卡</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-saving.svg" alt=""></span>
         <span>省钱卡</span>
       </a>
       <a class="nav-item" data-nav-key="order" href="order.html">
-        <span class="nav-icon">单</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-order.svg" alt=""></span>
         <span>订单</span>
       </a>
       <a class="nav-item" data-nav-key="mine" href="mine.html">
-        <span class="nav-icon">我</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-mine.svg" alt=""></span>
         <span>我的</span>
       </a>
     </nav>

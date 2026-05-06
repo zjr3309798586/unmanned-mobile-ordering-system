@@ -65,10 +65,10 @@
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><text class="nav-icon">首</text><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><text class="nav-icon">餐</text><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><text class="nav-icon">卡</text><text>省钱卡</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/order/index" open-type="redirect"><text class="nav-icon">单</text><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><text class="nav-icon">我</text><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit" /></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit" /></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit" /></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit" /></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit" /></view><text>我的</text></navigator>
   </view>
 </view>

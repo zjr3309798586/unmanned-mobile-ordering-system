@@ -37,11 +37,24 @@ function request(path, options = {}) {
 
 function imageUrl(value) {
   const localFallback = "/images/food-placeholder.svg";
+  const localAssets = {
+    "food-placeholder.svg": true,
+    "product-default.svg": true,
+    "product-orange-coffee.svg": true,
+    "product-coconut-latte.svg": true,
+    "product-grapefruit-tea.svg": true,
+    "product-milk-tea.svg": true,
+    "product-lemon-tea.svg": true,
+    "product-toast.svg": true,
+    "mascot-yunbao.png": true,
+    "mascot-yunbao-144.png": true
+  };
   if (!value) {
     return localFallback;
   }
   if (value.indexOf("/images/") === 0) {
-    return localFallback;
+    const filename = value.split("/").pop();
+    return localAssets[filename] ? "/images/" + filename : localFallback;
   }
   if (value.indexOf("http://") === 0 || value.indexOf("https://") === 0) {
     return localFallback;

@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
       titleNode.textContent = product.name;
     }
     if (noteNode) {
-      noteNode.textContent = "月售 " + (product.sales || 0) + " 杯，数据来自后端商品接口";
+          noteNode.textContent = "月售 " + (product.sales || 0) + " 杯，门店热销单品";
     }
     if (descNode) {
       descNode.textContent = product.description || "";

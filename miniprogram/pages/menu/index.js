@@ -14,7 +14,8 @@ Page({
     promoNote: "正在读取当前可用优惠券...",
     cartSummary: { items: [], totalAmount: 0, totalQuantity: 0, totalText: "¥ 0.00" },
     productCounts: {},
-    cartExpanded: false
+    cartExpanded: false,
+    orderMode: "pickup"
   },
 
   onShow() {
@@ -71,6 +72,10 @@ Page({
   selectCategory(event) {
     this.setData({ activeCategory: event.currentTarget.dataset.id });
     this.filterProducts();
+  },
+
+  selectOrderMode(event) {
+    this.setData({ orderMode: event.currentTarget.dataset.mode });
   },
 
   filterProducts() {

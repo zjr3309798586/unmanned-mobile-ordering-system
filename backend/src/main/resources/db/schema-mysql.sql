@@ -30,9 +30,22 @@ CREATE TABLE IF NOT EXISTS coupons (
   id VARCHAR(32) PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
   condition_text VARCHAR(200) NOT NULL,
+  min_amount DECIMAL(10, 2) NOT NULL DEFAULT 0,
   discount_amount DECIMAL(10, 2) NOT NULL,
   valid_until VARCHAR(30) NOT NULL,
   available TINYINT(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_coupons (
+  id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
+  coupon_id VARCHAR(32) NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  claimed_at DATETIME NOT NULL,
+  used_at DATETIME,
+  order_id VARCHAR(40),
+  UNIQUE KEY uk_user_coupon (user_id, coupon_id),
+  INDEX idx_user_coupons_user_status (user_id, status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS saving_card_plans (
@@ -41,6 +54,18 @@ CREATE TABLE IF NOT EXISTS saving_card_plans (
   price DECIMAL(10, 2) NOT NULL,
   description VARCHAR(500) NOT NULL,
   benefits VARCHAR(500) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS banners (
+  id VARCHAR(40) PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  subtitle VARCHAR(300) NOT NULL DEFAULT '',
+  tag_text VARCHAR(40) NOT NULL DEFAULT '',
+  image VARCHAR(300) NOT NULL DEFAULT '',
+  link_text VARCHAR(40) NOT NULL DEFAULT '',
+  link_url VARCHAR(120) NOT NULL DEFAULT '',
+  sort_order INT NOT NULL DEFAULT 0,
+  enabled TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS user_profiles (
@@ -103,6 +128,17 @@ CREATE TABLE IF NOT EXISTS order_items (
   UNIQUE KEY uk_order_item (order_id, product_id, spec),
   INDEX idx_order_items_order_id (order_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET @sql = (
+  SELECT IF(COUNT(*) = 0,
+    'ALTER TABLE coupons ADD COLUMN min_amount DECIMAL(10, 2) NOT NULL DEFAULT 0 AFTER condition_text',
+    'SELECT 1')
+  FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'coupons' AND COLUMN_NAME = 'min_amount'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 SET @sql = (
   SELECT IF(COUNT(*) = 0,

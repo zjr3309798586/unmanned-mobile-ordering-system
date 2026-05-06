@@ -4,153 +4,115 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
-  <title>首页 - 无人移动点餐系统</title>
+  <title>首页 - 云豹小点</title>
   <link rel="stylesheet" href="css/common.css">
   <link rel="stylesheet" href="css/home.css">
 </head>
 <body data-page="home">
   <div class="app-shell">
-    <section class="home-banner home-top-banner" aria-label="首页宣传活动">
-      <div class="banner-content">
-        <span class="hero-badge">限时活动</span>
-        <h2 class="banner-title">今日鲜果饮<br>第二杯半价</h2>
-        <p class="banner-text">新人下单再领 3 张优惠券，支持到店自取和平台外送。</p>
-        <div class="banner-offer-row">
-          <span class="banner-offer">满 25 减 6</span>
-          <span class="banner-offer">省钱卡专享价</span>
+    <header class="home-shop-header">
+      <section class="home-store-bar">
+        <div>
+          <span class="store-label">当前门店</span>
+          <h1 class="store-name">云豹小点校区店</h1>
         </div>
-        <div class="hero-actions">
-          <a class="button button-primary" href="menu.html">去点餐</a>
-          <a class="button button-secondary" href="saving-card.html">领优惠</a>
-        </div>
-      </div>
-      <div class="banner-visual">
-        <img class="banner-image" src="images/food-placeholder.svg" alt="饮品活动宣传图">
-      </div>
-    </section>
-
-    <header class="top-area home-top-tools">
-      <section class="store-card">
-        <div class="store-header">
-          <div>
-            <span class="store-label">当前门店</span>
-            <h1 class="store-name">浦东世纪广场店</h1>
-          </div>
-          <span class="status-pill is-open">营业中</span>
-        </div>
-        <div class="store-meta">
-          <span>距你 620m</span>
-          <span>预计 12 分钟出餐</span>
-          <span>支持堂食 / 自取 / 配送</span>
-        </div>
-        <p class="store-address">上海市浦东新区云杉路 88 号 1 层，门店环境舒适，支持到店自取与平台外送。</p>
+        <span class="status-pill is-open">营业中</span>
       </section>
 
-      <label class="search-bar" aria-label="搜索商品">
+      <label class="search-bar home-search" aria-label="搜索商品">
         <span class="search-icon">搜</span>
-        <input class="search-input" type="search" placeholder="搜索饮品、小食、套餐、活动">
+        <input class="search-input" type="search" placeholder="搜索奶茶、果茶、咖啡、小食">
       </label>
     </header>
 
     <main class="page-main home-main">
-      <section class="section-card">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">服务入口</h2>
-            <p class="section-note">支持不同就餐方式</p>
+      <section class="home-banner home-hero-card" aria-label="首页宣传活动">
+        <div class="banner-content">
+          <span class="hero-badge">云豹上新</span>
+          <h2 class="banner-title">蓝杯鲜饮<br>轻松点单</h2>
+          <p class="banner-text">到店自取快一步，会员券下单自动抵扣。</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="menu.html">去点餐</a>
           </div>
         </div>
-        <div class="service-grid">
-          <button class="service-card is-active" type="button" data-service-card>
-            <span class="service-icon">取</span>
-            <strong>到店自取</strong>
-            <p>提前下单，到店后凭取餐号快速取餐。</p>
-          </button>
-          <button class="service-card" type="button" data-service-card>
-            <span class="service-icon">送</span>
-            <strong>平台外送</strong>
-            <p>平台配送接单后送达，适合办公室和宿舍场景。</p>
-          </button>
+        <div class="banner-visual">
+          <img class="banner-image" src="images/product-orange-coffee.svg" alt="云豹小点活动饮品">
+          <img class="banner-side-image" src="images/mascot-yunbao-144.png" alt="">
         </div>
       </section>
 
-      <section class="section-card">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">快捷功能</h2>
-            <p class="section-note">常用操作快速进入</p>
-          </div>
-        </div>
-        <div class="feature-grid">
-          <a class="feature-card" href="menu.html">
-            <span class="feature-icon">餐</span>
-            <strong>开始点餐</strong>
-            <p>进入分类菜单与商品列表。</p>
-          </a>
-          <a class="feature-card" href="cart.html">
-            <span class="feature-icon">车</span>
-            <strong>购物车</strong>
-            <p>查看已选商品和金额汇总。</p>
-          </a>
-          <a class="feature-card" href="saving-card.html">
-            <span class="feature-icon">卡</span>
-            <strong>省钱卡</strong>
-            <p>领取专属券，享受会员优惠。</p>
-          </a>
-          <a class="feature-card" href="order.html">
-            <span class="feature-icon">单</span>
-            <strong>我的订单</strong>
-            <p>查看下单进度和历史记录。</p>
-          </a>
-        </div>
+      <section class="order-mode-panel" aria-label="取餐方式">
+        <a class="order-mode-card is-active" href="menu.html">
+          <span class="mode-icon">取</span>
+          <strong>门店自取</strong>
+          <small>提前下单，到店即取</small>
+        </a>
+        <a class="order-mode-card" href="menu.html">
+          <span class="mode-icon">送</span>
+          <strong>平台外送</strong>
+          <small>宿舍 / 办公室配送</small>
+        </a>
       </section>
 
-      <section class="section-card">
+      <section class="quick-strip" aria-label="快捷入口">
+        <a href="saving-card.html">
+          <span>券</span>
+          <strong>领券中心</strong>
+        </a>
+        <a href="saving-card.html">
+          <span>卡</span>
+          <strong>省钱卡</strong>
+        </a>
+        <a href="order.html">
+          <span>单</span>
+          <strong>我的订单</strong>
+        </a>
+        <a href="cart.html">
+          <span>车</span>
+          <strong>购物车</strong>
+        </a>
+      </section>
+
+      <section class="coupon-ribbon" data-coupon-ribbon>
+        <div>
+          <span class="ribbon-kicker" data-coupon-kicker>今日优惠</span>
+          <strong data-coupon-title>正在读取优惠券</strong>
+          <small data-coupon-copy>优惠信息会从后台优惠券数据同步。</small>
+        </div>
+        <a href="saving-card.html" data-coupon-action>去领取</a>
+      </section>
+
+      <section class="section-card hot-section">
         <div class="section-head">
           <div>
-            <h2 class="section-title">热门推荐商品</h2>
-            <p class="section-note">来自当前门店商品数据</p>
+            <h2 class="section-title">本店热卖</h2>
+            <p class="section-note">按销量优先推荐，点击可查看详情</p>
           </div>
-          <a class="section-link" href="menu.html">查看全部</a>
+          <a class="section-link" href="menu.html">全部</a>
         </div>
-        <div class="product-stack">
+        <div class="product-stack home-product-scroll">
           <p class="section-note">正在读取推荐商品...</p>
         </div>
       </section>
 
-      <section class="promo-cluster">
-        <article class="section-card promo-card">
-          <div class="section-head compact-head">
-            <div>
-              <h2 class="section-title">新人券包</h2>
-              <p class="section-note">新用户可领 3 张券</p>
-            </div>
-            <span class="hero-badge warm-badge">限时</span>
+      <section class="section-card task-card">
+        <div class="section-head compact-head">
+          <div>
+            <h2 class="section-title">集杯任务</h2>
+            <p class="section-note" data-task-note>登录后同步订单杯数，累计 8 杯可得饮品券</p>
           </div>
-          <div class="coupon-strip">
-            <p class="section-note">正在读取优惠券...</p>
+          <a class="section-link" href="saving-card.html">查看</a>
+        </div>
+        <div class="task-progress">
+          <div class="progress-track">
+            <span class="progress-fill" style="width: 0%;" data-task-progress></span>
           </div>
-        </article>
-
-        <article class="section-card task-card">
-          <div class="section-head compact-head">
-            <div>
-              <h2 class="section-title">集杯任务</h2>
-              <p class="section-note">已完成 4 / 8 杯</p>
-            </div>
-            <a class="section-link" href="saving-card.html">查看权益</a>
-          </div>
-          <div class="task-progress">
-            <div class="progress-track">
-              <span class="progress-fill" style="width: 50%;"></span>
-            </div>
-            <div class="task-footnote">再买 4 杯即可领取饮品兑换券。</div>
-          </div>
-        </article>
+          <div class="task-footnote" data-task-footnote>请先登录后查看你的集杯进度。</div>
+        </div>
       </section>
 
-      <section class="section-card">
-        <div class="section-head">
+      <section class="section-card notice-card">
+        <div class="section-head compact-head">
           <div>
             <h2 class="section-title">门店公告</h2>
             <p class="section-note">当前门店通知</p>
@@ -163,41 +125,29 @@
               <p class="info-text">高峰期建议提前 10 分钟下单，到店后可通过取餐号直接领取。</p>
             </div>
           </div>
-          <div class="info-row">
-            <div>
-              <strong class="info-title">会员活动</strong>
-              <p class="info-text">每周三会员日可叠加领取店内专属优惠券，下单时可直接抵扣。</p>
-            </div>
-          </div>
-          <div class="info-row">
-            <div>
-              <strong class="info-title">营业时间</strong>
-              <p class="info-text">每日 08:00 - 22:00，节假日与特殊活动安排以门店公告为准。</p>
-            </div>
-          </div>
         </div>
       </section>
     </main>
 
     <nav class="bottom-nav" aria-label="底部导航">
       <a class="nav-item" data-nav-key="home" href="index.html">
-        <span class="nav-icon">首</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-home.svg" alt=""></span>
         <span>首页</span>
       </a>
       <a class="nav-item" data-nav-key="menu" href="menu.html">
-        <span class="nav-icon">餐</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-menu.svg" alt=""></span>
         <span>点餐</span>
       </a>
       <a class="nav-item" data-nav-key="saving-card" href="saving-card.html">
-        <span class="nav-icon">卡</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-saving.svg" alt=""></span>
         <span>省钱卡</span>
       </a>
       <a class="nav-item" data-nav-key="order" href="order.html">
-        <span class="nav-icon">单</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-order.svg" alt=""></span>
         <span>订单</span>
       </a>
       <a class="nav-item" data-nav-key="mine" href="mine.html">
-        <span class="nav-icon">我</span>
+        <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-mine.svg" alt=""></span>
         <span>我的</span>
       </a>
     </nav>

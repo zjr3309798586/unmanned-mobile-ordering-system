@@ -8,22 +8,30 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+// 后台新增 / 修改商品时，页面表单提交的数据结构。
 public class ProductRequest {
+    // 必填：商品所属分类 id，对应 categories 表的 id。
     @NotBlank
     private String categoryId;
 
+    // 必填：商品名称。
     @NotBlank
     private String name;
 
+    // 商品描述和图片地址可以为空；图片一般是 /images/uploads/xxx.png。
     private String description;
     private String image;
 
+    // 必填：商品价格必须大于等于 0.01。
     @NotNull
     @DecimalMin("0.01")
     private BigDecimal price;
 
+    // 后台可手动设置销量，用于热门排序；tags 是商品标签，例如“新品”“推荐”。
     private int sales;
     private List<String> tags = new ArrayList<>();
+
+    // enabled 控制商品是否上架。false 表示下架，前台点餐页不展示。
     private boolean enabled = true;
 
     public String getCategoryId() {

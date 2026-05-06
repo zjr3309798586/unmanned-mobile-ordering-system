@@ -14,12 +14,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// MyBatis 类型转换器。
+// 数据库里 tags / benefits 是逗号分隔字符串，Java 代码里希望它是 List<String>。
 @MappedTypes(List.class)
 @MappedJdbcTypes(JdbcType.VARCHAR)
 public class StringListTypeHandler extends BaseTypeHandler<List<String>> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType)
             throws SQLException {
+        // Java List<String> -> 数据库存储字符串，例如 ["新品", "推荐"] -> "新品,推荐"。
         ps.setString(i, String.join(",", parameter));
     }
 
@@ -42,6 +45,7 @@ public class StringListTypeHandler extends BaseTypeHandler<List<String>> {
         if (value == null || value.trim().isEmpty()) {
             return new ArrayList<>();
         }
+        // 数据库字符串 -> Java List<String>，并过滤空白内容。
         return Arrays.stream(value.split(","))
                 .map(String::trim)
                 .filter(item -> !item.isEmpty())

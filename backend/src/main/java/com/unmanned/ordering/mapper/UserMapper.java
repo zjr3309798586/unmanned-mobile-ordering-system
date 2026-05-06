@@ -1,6 +1,7 @@
 package com.unmanned.ordering.mapper;
 
 import com.unmanned.ordering.model.User;
+import com.unmanned.ordering.model.UserCoupon;
 import com.unmanned.ordering.model.UserProfile;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -8,25 +9,33 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
+// UserMapper 负责 users 用户表、user_profiles 用户资料表、user_coupons 用户优惠券表。
 @Mapper
 public interface UserMapper {
+    // 根据 token 找用户。前端每次请求都会带 X-User-Token。
     @Select("SELECT * FROM users WHERE token = #{token}")
     User findByToken(String token);
 
+    // 微信登录时根据 openid 找用户。
     @Select("SELECT * FROM users WHERE openid = #{openid}")
     User findByOpenid(String openid);
 
+    // 根据用户 id 找用户。
     @Select("SELECT * FROM users WHERE id = #{userId}")
     User findById(String userId);
 
+    // 首次登录时创建用户。
     @Insert({
             "INSERT INTO users (id, openid, nickname, avatar_url, token, created_at, updated_at)",
             "VALUES (#{id}, #{openid}, #{nickname}, #{avatarUrl}, #{token}, #{createdAt}, #{updatedAt})"
     })
     int insertUser(User user);
 
+    // 老用户重新登录时刷新昵称、头像、token。
     @Update({
             "UPDATE users",
             "SET nickname = #{nickname}, avatar_url = #{avatarUrl}, token = #{token}, updated_at = CURRENT_TIMESTAMP",
@@ -34,21 +43,140 @@ public interface UserMapper {
     })
     int updateUserSession(User user);
 
+    // 退出登录时清空 token。
     @Update("UPDATE users SET token = NULL, updated_at = CURRENT_TIMESTAMP WHERE token = #{token}")
     int clearToken(String token);
 
+    // 我的页查询用户资料。
     @Select("SELECT * FROM user_profiles WHERE user_id = #{userId}")
     UserProfile findProfileByUserId(String userId);
 
+    // 后台用户管理列表。
     @Select("SELECT * FROM user_profiles ORDER BY user_id")
     List<UserProfile> listProfiles();
 
+    // 首次登录时给用户创建默认资料。
     @Insert({
             "INSERT INTO user_profiles (user_id, nickname, member_level, points, balance, coupon_count, saving_amount)",
             "VALUES (#{userId}, #{nickname}, '普通会员', 0, 0.00, 0, 0.00)"
     })
     int insertDefaultProfile(@Param("userId") String userId, @Param("nickname") String nickname);
 
+    // 登录时同步用户昵称。
     @Update("UPDATE user_profiles SET nickname = #{nickname} WHERE user_id = #{userId}")
     int updateProfileNickname(@Param("userId") String userId, @Param("nickname") String nickname);
+
+    // 购买省钱卡后升级会员等级。
+    @Update("UPDATE user_profiles SET member_level = #{memberLevel} WHERE user_id = #{userId}")
+    int updateMemberLevel(@Param("userId") String userId, @Param("memberLevel") String memberLevel);
+
+    // 我的页优惠券列表：用户领过的券都会在这里查出来。
+    @Select({
+            "SELECT uc.id, uc.user_id, uc.coupon_id, c.title, c.condition_text,",
+            "       c.min_amount, c.discount_amount, c.valid_until, c.available AS coupon_available,",
+            "       uc.status, uc.claimed_at, uc.used_at, uc.order_id",
+            "FROM user_coupons uc",
+            "JOIN coupons c ON uc.coupon_id = c.id",
+            "WHERE uc.user_id = #{userId}",
+            "ORDER BY CASE WHEN uc.status = 'AVAILABLE' THEN 0 ELSE 1 END, uc.claimed_at DESC"
+    })
+    List<UserCoupon> listUserCoupons(String userId);
+
+    // 判断用户是否已经领取过某张券。
+    @Select({
+            "SELECT uc.id, uc.user_id, uc.coupon_id, c.title, c.condition_text,",
+            "       c.min_amount, c.discount_amount, c.valid_until, c.available AS coupon_available,",
+            "       uc.status, uc.claimed_at, uc.used_at, uc.order_id",
+            "FROM user_coupons uc",
+            "JOIN coupons c ON uc.coupon_id = c.id",
+            "WHERE uc.user_id = #{userId} AND uc.coupon_id = #{couponId}"
+    })
+    UserCoupon findUserCoupon(@Param("userId") String userId, @Param("couponId") String couponId);
+
+    // 下单使用优惠券前，必须确认这张券属于当前用户且状态为 AVAILABLE。
+    @Select({
+            "SELECT uc.id, uc.user_id, uc.coupon_id, c.title, c.condition_text,",
+            "       c.min_amount, c.discount_amount, c.valid_until, c.available AS coupon_available,",
+            "       uc.status, uc.claimed_at, uc.used_at, uc.order_id",
+            "FROM user_coupons uc",
+            "JOIN coupons c ON uc.coupon_id = c.id",
+            "WHERE uc.user_id = #{userId} AND uc.coupon_id = #{couponId}",
+            "  AND uc.status = 'AVAILABLE'"
+    })
+    UserCoupon findAvailableUserCoupon(@Param("userId") String userId, @Param("couponId") String couponId);
+
+    // 防止同一用户重复领取同一张券。
+    @Select("SELECT COUNT(*) FROM user_coupons WHERE user_id = #{userId} AND coupon_id = #{couponId}")
+    int countUserCoupon(@Param("userId") String userId, @Param("couponId") String couponId);
+
+    // 用户领取优惠券。
+    @Insert({
+            "INSERT INTO user_coupons (id, user_id, coupon_id, status, claimed_at)",
+            "VALUES (#{id}, #{userId}, #{couponId}, #{status}, #{claimedAt})"
+    })
+    int insertUserCoupon(@Param("id") String id,
+                         @Param("userId") String userId,
+                         @Param("couponId") String couponId,
+                         @Param("status") String status,
+                         @Param("claimedAt") LocalDateTime claimedAt);
+
+    // 下单成功后，把用户选择的优惠券标记为已使用。
+    @Update({
+            "UPDATE user_coupons",
+            "SET status = 'USED', used_at = #{usedAt}, order_id = #{orderId}",
+            "WHERE user_id = #{userId} AND coupon_id = #{couponId} AND status = 'AVAILABLE'"
+    })
+    int markUserCouponUsed(@Param("userId") String userId,
+                           @Param("couponId") String couponId,
+                           @Param("orderId") String orderId,
+                           @Param("usedAt") LocalDateTime usedAt);
+
+    // 订单取消时，把本单用掉的优惠券恢复成可用。
+    @Update({
+            "UPDATE user_coupons",
+            "SET status = 'AVAILABLE', used_at = NULL, order_id = NULL",
+            "WHERE user_id = #{userId} AND order_id = #{orderId} AND status = 'USED'"
+    })
+    int restoreCouponByOrder(@Param("userId") String userId, @Param("orderId") String orderId);
+
+    // 领取、使用、恢复优惠券后，重新统计“我的页”优惠券数量。
+    @Update({
+            "UPDATE user_profiles",
+            "SET coupon_count = (",
+            "  SELECT COUNT(*) FROM user_coupons",
+            "  WHERE user_id = #{userId} AND status = 'AVAILABLE'",
+            ")",
+            "WHERE user_id = #{userId}"
+    })
+    int refreshCouponCount(String userId);
+
+    // 下单成功后增加用户积分、累计节省金额，并刷新可用券数量。
+    @Update({
+            "UPDATE user_profiles",
+            "SET points = points + #{points},",
+            "    saving_amount = saving_amount + #{savingAmount},",
+            "    coupon_count = (",
+            "      SELECT COUNT(*) FROM user_coupons",
+            "      WHERE user_id = #{userId} AND status = 'AVAILABLE'",
+            "    )",
+            "WHERE user_id = #{userId}"
+    })
+    int addOrderStats(@Param("userId") String userId,
+                      @Param("points") int points,
+                      @Param("savingAmount") BigDecimal savingAmount);
+
+    // 取消订单时扣回积分和节省金额，防止统计数据虚高。
+    @Update({
+            "UPDATE user_profiles",
+            "SET points = CASE WHEN points > #{points} THEN points - #{points} ELSE 0 END,",
+            "    saving_amount = CASE WHEN saving_amount > #{savingAmount} THEN saving_amount - #{savingAmount} ELSE 0 END,",
+            "    coupon_count = (",
+            "      SELECT COUNT(*) FROM user_coupons",
+            "      WHERE user_id = #{userId} AND status = 'AVAILABLE'",
+            "    )",
+            "WHERE user_id = #{userId}"
+    })
+    int subtractOrderStats(@Param("userId") String userId,
+                           @Param("points") int points,
+                           @Param("savingAmount") BigDecimal savingAmount);
 }

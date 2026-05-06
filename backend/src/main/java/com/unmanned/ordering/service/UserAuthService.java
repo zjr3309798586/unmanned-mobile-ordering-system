@@ -38,6 +38,8 @@ public class UserAuthService {
         this.objectMapper = objectMapper;
     }
 
+    // H5 浏览器开发阶段使用的游客登录。
+    // 它会创建一个临时用户，生成 token，并创建默认会员资料。
     @Transactional
     public UserSession devLogin(DevLoginRequest request) {
         String nickname = defaultNickname(request == null ? null : request.getNickname());
@@ -45,9 +47,12 @@ public class UserAuthService {
         User user = new User(newUserId(), null, nickname, "", token, LocalDateTime.now(), LocalDateTime.now());
         userMapper.insertUser(user);
         userMapper.insertDefaultProfile(user.getId(), nickname);
-        return toSession(user, "H5_DEV");
+        return toSession(user, "GUEST");
     }
 
+    // 正式微信小程序登录。
+    // 小程序前端先 wx.login() 获取 code，再把 code 传给这个接口。
+    // 后端调用微信 jscode2session 接口，换取 openid。
     @Transactional
     public UserSession wechatLogin(WechatLoginRequest request) {
         if (!StringUtils.hasText(wechatAppId) || !StringUtils.hasText(wechatAppSecret)) {
@@ -95,6 +100,9 @@ public class UserAuthService {
         return toSession(user, "WECHAT");
     }
 
+    // 需要登录的接口都会调用这个方法。
+    // token 来自请求头 X-User-Token。
+    // 如果 token 不存在或失效，就抛出 401 错误。
     public User requireUser(String token) {
         if (!StringUtils.hasText(token)) {
             throw new BusinessException(401, "请先登录");
@@ -106,6 +114,7 @@ public class UserAuthService {
         return user;
     }
 
+    // 我的页使用，根据 token 查询当前用户资料。
     public UserProfile getProfile(String token) {
         User user = requireUser(token);
         UserProfile profile = userMapper.findProfileByUserId(user.getId());
@@ -115,6 +124,7 @@ public class UserAuthService {
         return profile;
     }
 
+    // 退出登录时清空数据库中的 token。
     public void logout(String token) {
         if (StringUtils.hasText(token)) {
             userMapper.clearToken(token);

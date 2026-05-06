@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>订单管理 - 无人移动点餐系统</title>
+  <title>订单管理 - 云豹小点后台管理</title>
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body data-page="orders">
   <div class="admin-shell">
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand"><div class="sidebar-logo">点</div><div><div class="sidebar-title">点餐后台</div><div class="sidebar-subtitle">Management</div></div></div>
+      <div class="sidebar-brand"><div class="sidebar-logo"><img src="../images/mascot-yunbao-144.png" alt="云豹小点"></div><div><div class="sidebar-title">云豹小点后台</div><div class="sidebar-subtitle">后台管理</div></div></div>
       <nav class="nav-list">
         <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
-        <a class="nav-item" data-page="products" href="products.html">菜品管理</a>
+        <a class="nav-item" data-page="products" href="products.html">商品管理</a>
         <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
         <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
         <a class="nav-item" data-page="users" href="users.html">用户管理</a>
@@ -23,8 +23,8 @@
     </aside>
     <main class="main">
       <header class="topbar">
-        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>订单管理</h1><p>查看订单状态，处理取消和出餐。</p></div>
-        <div class="top-actions"><div class="admin-user"><span class="avatar">A</span> 管理员</div><button class="btn ghost" id="logoutBtn">退出</button></div>
+        <div><button class="btn ghost menu-toggle" id="menuToggle">菜单</button><h1>订单管理</h1><p>查看订单状态，处理出餐和取消。</p></div>
+        <div class="top-actions"><div class="admin-user"><span class="avatar">J</span><span>管理员</span></div><button class="btn ghost" id="logoutBtn">退出</button></div>
       </header>
 
       <section class="card">
@@ -41,7 +41,7 @@
           <table id="ordersTable">
             <thead><tr><th>订单号</th><th>用户</th><th>商品</th><th>金额</th><th>取餐方式</th><th>状态</th><th>操作</th></tr></thead>
             <tbody>
-              <tr><td colspan="7" class="table-empty">正在读取后端订单数据...</td></tr>
+              <tr><td colspan="7" class="table-empty">正在加载订单...</td></tr>
             </tbody>
           </table>
         </div>

@@ -3,7 +3,9 @@
     categories: [],
     products: [],
     orders: [],
-    coupons: []
+    users: [],
+    coupons: [],
+    banners: []
   };
 
   var defaultApiBaseUrl = window.location.protocol === "file:"
@@ -76,8 +78,49 @@
     return request(path, { method: "DELETE" });
   }
 
+  function uploadImage(file) {
+    var formData = new FormData();
+    formData.append("file", file);
+    return fetch(apiBaseUrl + "/admin/uploads/images", {
+      method: "POST",
+      headers: { "X-Admin-Token": adminToken() },
+      body: formData
+    }).then(function (response) {
+      return response.json().then(function (payload) {
+        if (!response.ok || payload.success === false) {
+          throw new Error(payload.message || "图片上传失败");
+        }
+        return payload.data;
+      });
+    });
+  }
+
+  function bindImagePreview(root) {
+    var fileInput = root.querySelector("[name=imageFile]");
+    var preview = root.querySelector(".image-preview");
+    if (!fileInput || !preview) {
+      return;
+    }
+    fileInput.addEventListener("change", function () {
+      var file = fileInput.files[0];
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+      }
+    });
+  }
+
   function money(value) {
     return "¥ " + Number(value || 0).toFixed(2);
+  }
+
+  function assetUrl(value) {
+    if (!value) {
+      return "../images/food-placeholder.svg";
+    }
+    if (value.indexOf("/images/") === 0) {
+      return ".." + value;
+    }
+    return value;
   }
 
   function escapeHtml(value) {
@@ -105,7 +148,7 @@
     if (status === "CANCELED") {
       return "red";
     }
-    return "orange";
+    return "blue";
   }
 
   function statusFilter(status) {
@@ -134,6 +177,13 @@
     return category ? category.name : categoryId;
   }
 
+  function userName(userId) {
+    var user = state.users.find(function (item) {
+      return item.userId === userId;
+    });
+    return user ? user.nickname : (userId ? "用户 " + userId.slice(-6) : "游客用户");
+  }
+
   function showToast(message) {
     var toast = $(".toast");
     if (!toast) {
@@ -151,7 +201,9 @@
 
   function showLoading(node, text) {
     if (node) {
-      node.innerHTML = '<tr><td colspan="8" class="table-empty">' + escapeHtml(text || "正在读取后端数据...") + '</td></tr>';
+      var table = node.closest("table");
+      var columnCount = table ? Math.max($all("thead th", table).length, 1) : 1;
+      node.innerHTML = '<tr><td colspan="' + columnCount + '" class="table-empty">' + escapeHtml(text || "正在加载数据...") + '</td></tr>';
     }
   }
 
@@ -286,7 +338,7 @@
         var statCards = $all(".stat-card");
         setStatCard(statCards[0], "营业额", money(dashboard.orderAmount), "来自订单实付金额汇总");
         setStatCard(statCards[1], "订单总数", dashboard.orderCount, "前台提交订单后这里会增加");
-        setStatCard(statCards[2], "在售菜品", dashboard.productCount, "菜品管理下架后会减少");
+        setStatCard(statCards[2], "在售商品", dashboard.productCount, "商品管理下架后会减少");
         setStatCard(statCards[3], "购物车商品", dashboard.cartItemCount, "前台加入购物车后会变化");
         renderHotProducts(products);
         renderTrend(orders);
@@ -370,11 +422,12 @@
       return;
     }
     if (!state.products.length) {
-      showLoading(tableBody, "暂无菜品数据");
+      showLoading(tableBody, "暂无商品数据");
       return;
     }
     tableBody.innerHTML = state.products.map(function (product) {
       return '<tr>' +
+        '<td><img class="table-thumb" src="' + escapeHtml(assetUrl(product.image)) + '" alt="' + escapeHtml(product.name) + '" onerror="this.src=\'../images/food-placeholder.svg\'"></td>' +
         '<td>' + escapeHtml(product.name) + '</td>' +
         '<td>' + escapeHtml(categoryName(product.categoryId)) + '</td>' +
         '<td>' + money(product.price) + '</td>' +
@@ -399,7 +452,8 @@
     }
     formGrid.dataset.productForm = "true";
     formGrid.innerHTML = renderProductFormFields();
-    saveButton.textContent = "保存到后端";
+    bindImagePreview(formGrid);
+  saveButton.textContent = "保存";
     saveButton.removeAttribute("data-toast");
     saveButton.type = "button";
     saveButton.addEventListener("click", saveProduct);
@@ -407,7 +461,7 @@
       addButton.removeAttribute("data-toast");
       addButton.addEventListener("click", function () {
         fillProductForm(null);
-        showToast("已切换为新增菜品");
+        showToast("已切换为新增商品");
       });
     }
     fillProductForm(null);
@@ -418,13 +472,14 @@
       return '<option value="' + escapeHtml(category.id) + '">' + escapeHtml(category.name) + '</option>';
     }).join("");
     return '<input type="hidden" name="id">' +
-      '<div class="field"><label>菜品名称</label><input name="name" placeholder="例如：香草拿铁"></div>' +
+      '<div class="field"><label>商品名称</label><input name="name" placeholder="香草拿铁"></div>' +
       '<div class="field"><label>所属分类</label><select name="categoryId">' + categoryOptions + '</select></div>' +
       '<div class="field"><label>价格</label><input name="price" type="number" step="0.01" min="0.01" placeholder="16.90"></div>' +
       '<div class="field"><label>销量</label><input name="sales" type="number" min="0" placeholder="0"></div>' +
-      '<div class="field"><label>标签</label><input name="tags" placeholder="例如：新品,热销"></div>' +
+      '<div class="field"><label>标签</label><input name="tags" placeholder="新品,热销"></div>' +
       '<div class="field"><label>状态</label><select name="enabled"><option value="true">在售</option><option value="false">下架</option></select></div>' +
-      '<div class="field wide"><label>菜品描述</label><textarea name="description" placeholder="填写商品口味、卖点和备注"></textarea></div>';
+      '<div class="field wide image-field"><label>商品图片</label><input name="image" placeholder="/images/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><img class="image-preview" alt="商品图片预览"></div>' +
+      '<div class="field wide"><label>商品描述</label><textarea name="description" placeholder="填写商品口味、卖点和备注"></textarea></div>';
   }
 
   function handleProductTableClick(event) {
@@ -440,7 +495,7 @@
       disableButton.disabled = true;
       del("/admin/products/" + encodeURIComponent(disableButton.dataset.disableProduct))
         .then(function () {
-          showToast("已下架，前台点餐页不会再展示该菜品");
+        showToast("已下架，前台点餐页不会再显示该商品");
           return reloadProducts();
         })
         .catch(function (error) {
@@ -464,10 +519,12 @@
     form.querySelector("[name=sales]").value = product ? Number(product.sales || 0) : "0";
     form.querySelector("[name=tags]").value = product && product.tags ? product.tags.join(",") : "";
     form.querySelector("[name=enabled]").value = product && !product.enabled ? "false" : "true";
+    form.querySelector("[name=image]").value = product && product.image ? product.image : "/images/food-placeholder.svg";
+    form.querySelector(".image-preview").src = assetUrl(form.querySelector("[name=image]").value);
     form.querySelector("[name=description]").value = product ? product.description : "";
     var note = $(".card[style] .muted");
     if (note) {
-      note.textContent = product ? "正在编辑：" + product.name : "新增菜品会写入 MySQL，并显示到前台点餐页";
+  note.textContent = product ? "正在编辑：" + product.name : "新增商品保存后会显示到前台点餐页";
     }
   }
 
@@ -477,13 +534,13 @@
     var categoryId = form.querySelector("[name=categoryId]").value;
     var price = Number(form.querySelector("[name=price]").value);
     if (!name || !categoryId || !price) {
-      throw new Error("请填写菜品名称、分类和价格");
+      throw new Error("请填写商品名称、分类和价格");
     }
     return {
       categoryId: categoryId,
       name: name,
       description: form.querySelector("[name=description]").value.trim(),
-      image: "/images/food-placeholder.svg",
+      image: form.querySelector("[name=image]").value.trim() || "/images/food-placeholder.svg",
       price: price,
       sales: Number(form.querySelector("[name=sales]").value || 0),
       tags: form.querySelector("[name=tags]").value.split(",").map(function (tag) {
@@ -506,11 +563,16 @@
       showToast(error.message);
       return;
     }
-    var action = productId
-      ? patch("/admin/products/" + encodeURIComponent(productId), payload)
-      : post("/admin/products", payload);
+    var file = form.querySelector("[name=imageFile]").files[0];
+    var action = (file ? uploadImage(file).then(function (result) {
+      payload.image = result.path;
+    }) : Promise.resolve()).then(function () {
+      return productId
+        ? patch("/admin/products/" + encodeURIComponent(productId), payload)
+        : post("/admin/products", payload);
+    });
     action.then(function () {
-      showToast(productId ? "菜品已更新，前台同步生效" : "菜品已新增，前台同步生效");
+      showToast(productId ? "商品已更新，前台同步生效" : "商品已新增，前台同步生效");
       fillProductForm(null);
       return reloadProducts();
     }).catch(function (error) {
@@ -531,9 +593,10 @@
     }
     var tableBody = $("#ordersTable tbody");
     showLoading(tableBody);
-    get("/admin/orders")
-      .then(function (orders) {
-        state.orders = orders || [];
+    Promise.all([get("/admin/orders"), get("/admin/users")])
+      .then(function (result) {
+        state.orders = result[0] || [];
+        state.users = result[1] || [];
         renderOrdersTable();
       })
       .catch(function (error) {
@@ -560,7 +623,7 @@
         : '<button class="link-btn" type="button" data-show-order="' + escapeHtml(order.id) + '">详情</button>';
       return '<tr data-status="' + statusFilter(order.status) + '">' +
         '<td>' + escapeHtml(order.orderNo) + '</td>' +
-        '<td>未登录用户</td>' +
+        '<td>' + escapeHtml(userName(order.userId)) + '</td>' +
         '<td>' + escapeHtml(goods) + '</td>' +
         '<td>' + money(order.payableAmount) + '</td>' +
         '<td>' + escapeHtml(pickupText(order.pickupType)) + '</td>' +
@@ -623,7 +686,7 @@
         return product.categoryId === category.id;
       }).length;
       return '<div class="small-card"><strong>' + escapeHtml(category.name) + '</strong>' +
-        '<p class="muted">' + count + ' 个菜品，排序 ' + Number(category.sort || 0) + '</p>' +
+        '<p class="muted">' + count + ' 个商品，排序 ' + Number(category.sort || 0) + '</p>' +
         '<div class="mini-actions">' +
           '<button class="link-btn" type="button" data-edit-category="' + escapeHtml(category.id) + '">编辑</button>' +
           '<button class="link-btn" type="button" data-delete-category="' + escapeHtml(category.id) + '">删除</button>' +
@@ -640,7 +703,7 @@
     }
     formGrid.dataset.categoryForm = "true";
     formGrid.innerHTML = '<input type="hidden" name="id">' +
-      '<div class="field"><label>分类名称</label><input name="name" placeholder="例如：新品专区"></div>' +
+      '<div class="field"><label>分类名称</label><input name="name" placeholder="新品专区"></div>' +
       '<div class="field"><label>排序值</label><input name="sort" type="number" min="1" placeholder="5"></div>';
     saveButton.removeAttribute("data-toast");
     saveButton.textContent = "保存分类";
@@ -677,7 +740,7 @@
     form.querySelector("[name=sort]").value = category ? Number(category.sort || 1) : String(state.categories.length + 1);
     var note = $(".card[style] .muted");
     if (note) {
-      note.textContent = category ? "正在编辑：" + category.name : "新增分类会写入 MySQL，并同步到前台点餐页";
+  note.textContent = category ? "正在编辑：" + category.name : "新增分类保存后会同步到前台点餐页";
     }
   }
 
@@ -731,7 +794,7 @@
     }
     list.innerHTML = (state.coupons || []).map(function (coupon) {
       return '<div class="small-card"><strong>' + escapeHtml(coupon.title) + '</strong>' +
-        '<p class="muted">' + escapeHtml(coupon.conditionText) + '，减 ' + money(coupon.discountAmount) + '，有效期至 ' + escapeHtml(coupon.validUntil) + '</p>' +
+        '<p class="muted">满 ' + money(coupon.minAmount) + ' 可用，减 ' + money(coupon.discountAmount) + '，有效期至 ' + escapeHtml(coupon.validUntil) + '</p>' +
         '<p><span class="status ' + (coupon.available ? "green" : "red") + '">' + (coupon.available ? "启用" : "停用") + '</span></p>' +
         '<div class="mini-actions">' +
           '<button class="link-btn" type="button" data-edit-coupon="' + escapeHtml(coupon.id) + '">编辑</button>' +
@@ -749,9 +812,10 @@
     }
     formGrid.dataset.couponForm = "true";
     formGrid.innerHTML = '<input type="hidden" name="id">' +
-      '<div class="field"><label>券名称</label><input name="title" placeholder="例如：周末满减券"></div>' +
+      '<div class="field"><label>券名称</label><input name="title" placeholder="周末满减券"></div>' +
       '<div class="field"><label>优惠金额</label><input name="discountAmount" type="number" step="0.01" min="0.01" placeholder="5.00"></div>' +
-      '<div class="field"><label>使用门槛</label><input name="conditionText" placeholder="满 20 元可用"></div>' +
+      '<div class="field"><label>使用门槛金额</label><input name="minAmount" type="number" step="0.01" min="0" placeholder="20.00"></div>' +
+      '<div class="field"><label>门槛说明</label><input name="conditionText" placeholder="满 20 元可用"></div>' +
       '<div class="field"><label>有效期</label><input name="validUntil" placeholder="2026-12-31"></div>' +
       '<div class="field"><label>状态</label><select name="available"><option value="true">启用</option><option value="false">停用</option></select></div>';
     saveButton.removeAttribute("data-toast");
@@ -787,12 +851,13 @@
     form.querySelector("[name=id]").value = coupon ? coupon.id : "";
     form.querySelector("[name=title]").value = coupon ? coupon.title : "";
     form.querySelector("[name=discountAmount]").value = coupon ? Number(coupon.discountAmount || 0).toFixed(2) : "";
+    form.querySelector("[name=minAmount]").value = coupon ? Number(coupon.minAmount || 0).toFixed(2) : "";
     form.querySelector("[name=conditionText]").value = coupon ? coupon.conditionText : "";
     form.querySelector("[name=validUntil]").value = coupon ? coupon.validUntil : "2026-12-31";
     form.querySelector("[name=available]").value = coupon && !coupon.available ? "false" : "true";
     var note = $(".card[style] .muted");
     if (note) {
-      note.textContent = coupon ? "正在编辑：" + coupon.title : "新增优惠券会写入 MySQL，并同步到提交订单页";
+  note.textContent = coupon ? "正在编辑：" + coupon.title : "新增优惠券保存后可在提交订单页使用";
     }
   }
 
@@ -802,6 +867,7 @@
     var payload = {
       title: form.querySelector("[name=title]").value.trim(),
       discountAmount: Number(form.querySelector("[name=discountAmount]").value),
+      minAmount: Number(form.querySelector("[name=minAmount]").value || 0),
       conditionText: form.querySelector("[name=conditionText]").value.trim(),
       validUntil: form.querySelector("[name=validUntil]").value.trim(),
       available: form.querySelector("[name=available]").value === "true"
@@ -827,6 +893,141 @@
     return get("/admin/coupons").then(function (coupons) {
       state.coupons = coupons || [];
       renderCouponList();
+    });
+  }
+
+  function initActivitiesPage() {
+    if (document.body.dataset.page !== "activities") {
+      return;
+    }
+    Promise.all([get("/admin/banners")]).then(function (result) {
+      state.banners = result[0] || [];
+      renderBannerList();
+      setupBannerForm();
+    }).catch(function (error) { showToast(error.message); });
+  }
+
+  function renderBannerList() {
+    var list = $(".activity-list");
+    if (!list) {
+      return;
+    }
+    if (!state.banners.length) {
+      list.innerHTML = '<div class="small-card"><strong>暂无 Banner</strong><p class="muted">可在下方新增首页活动位。</p></div>';
+      return;
+    }
+    list.innerHTML = state.banners.map(function (banner) {
+      return '<div class="small-card banner-card">' +
+        '<img class="image-preview" src="' + escapeHtml(assetUrl(banner.image)) + '" alt="Banner 图片">' +
+        '<strong>' + escapeHtml(banner.title) + '</strong>' +
+        '<p class="muted">' + escapeHtml(banner.subtitle || "") + '</p>' +
+        '<p><span class="status ' + (banner.enabled ? "green" : "red") + '">' + (banner.enabled ? "启用" : "停用") + '</span></p>' +
+        '<div class="mini-actions">' +
+          '<button class="link-btn" type="button" data-edit-banner="' + escapeHtml(banner.id) + '">编辑</button>' +
+          '<button class="link-btn" type="button" data-disable-banner="' + escapeHtml(banner.id) + '">停用</button>' +
+        '</div></div>';
+    }).join("");
+    list.onclick = handleBannerClick;
+  }
+
+  function setupBannerForm() {
+    var formGrid = $(".form-grid");
+    var saveButton = $(".card[style] .btn");
+    if (!formGrid || !saveButton) {
+      return;
+    }
+    formGrid.dataset.bannerForm = "true";
+    formGrid.innerHTML = '<input type="hidden" name="id">' +
+      '<div class="field"><label>Banner 标题</label><input name="title" placeholder="蓝杯鲜饮 轻松点单"></div>' +
+      '<div class="field"><label>角标文字</label><input name="tagText" placeholder="云豹上新"></div>' +
+      '<div class="field wide"><label>副标题</label><input name="subtitle" placeholder="活动说明"></div>' +
+      '<div class="field"><label>按钮文字</label><input name="linkText" placeholder="去点餐"></div>' +
+      '<div class="field"><label>跳转地址</label><input name="linkUrl" placeholder="menu.html"></div>' +
+      '<div class="field"><label>排序</label><input name="sort" type="number" min="0" placeholder="1"></div>' +
+      '<div class="field"><label>状态</label><select name="enabled"><option value="true">启用</option><option value="false">停用</option></select></div>' +
+      '<div class="field wide image-field"><label>Banner 图片</label><input name="image" placeholder="/images/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><img class="image-preview" alt="Banner 图片预览"></div>';
+    bindImagePreview(formGrid);
+    saveButton.removeAttribute("data-toast");
+    saveButton.textContent = "保存 Banner";
+    saveButton.onclick = saveBanner;
+    fillBannerForm(null);
+  }
+
+  function handleBannerClick(event) {
+    var edit = event.target.closest("[data-edit-banner]");
+    var disable = event.target.closest("[data-disable-banner]");
+    if (edit) {
+      var banner = state.banners.find(function (item) {
+        return item.id === edit.dataset.editBanner;
+      });
+      fillBannerForm(banner);
+    }
+    if (disable) {
+      del("/admin/banners/" + encodeURIComponent(disable.dataset.disableBanner))
+        .then(function () {
+          showToast("Banner 已停用");
+          return reloadBanners();
+        })
+        .catch(function (error) { showToast(error.message); });
+    }
+  }
+
+  function fillBannerForm(banner) {
+    var form = $("[data-banner-form]");
+    if (!form) {
+      return;
+    }
+    form.querySelector("[name=id]").value = banner ? banner.id : "";
+    form.querySelector("[name=title]").value = banner ? banner.title : "";
+    form.querySelector("[name=tagText]").value = banner ? banner.tagText : "";
+    form.querySelector("[name=subtitle]").value = banner ? banner.subtitle : "";
+    form.querySelector("[name=linkText]").value = banner ? banner.linkText : "去点餐";
+    form.querySelector("[name=linkUrl]").value = banner ? banner.linkUrl : "menu.html";
+    form.querySelector("[name=sort]").value = banner ? Number(banner.sort || 0) : "1";
+    form.querySelector("[name=enabled]").value = banner && !banner.enabled ? "false" : "true";
+    form.querySelector("[name=image]").value = banner && banner.image ? banner.image : "/images/food-placeholder.svg";
+    form.querySelector(".image-preview").src = assetUrl(form.querySelector("[name=image]").value);
+  }
+
+  function saveBanner() {
+    var form = $("[data-banner-form]");
+    var bannerId = form.querySelector("[name=id]").value;
+    var payload = {
+      title: form.querySelector("[name=title]").value.trim(),
+      subtitle: form.querySelector("[name=subtitle]").value.trim(),
+      tagText: form.querySelector("[name=tagText]").value.trim(),
+      image: form.querySelector("[name=image]").value.trim() || "/images/food-placeholder.svg",
+      linkText: form.querySelector("[name=linkText]").value.trim(),
+      linkUrl: form.querySelector("[name=linkUrl]").value.trim(),
+      sort: Number(form.querySelector("[name=sort]").value || 0),
+      enabled: form.querySelector("[name=enabled]").value === "true"
+    };
+    if (!payload.title) {
+      showToast("请填写 Banner 标题");
+      return;
+    }
+    var file = form.querySelector("[name=imageFile]").files[0];
+    var action = (file ? uploadImage(file).then(function (result) {
+      payload.image = result.path;
+    }) : Promise.resolve()).then(function () {
+      return bannerId
+        ? patch("/admin/banners/" + encodeURIComponent(bannerId), payload)
+        : post("/admin/banners", payload);
+    });
+    action.then(function () {
+      showToast(bannerId ? "Banner 已更新" : "Banner 已新增");
+      return reloadBanners();
+    }).then(function () {
+      fillBannerForm(null);
+    }).catch(function (error) {
+      showToast(error.message);
+    });
+  }
+
+  function reloadBanners() {
+    return get("/admin/banners").then(function (banners) {
+      state.banners = banners || [];
+      renderBannerList();
     });
   }
 
@@ -859,6 +1060,127 @@
       .catch(function (error) { showToast(error.message); });
   }
 
+  function initAnalyticsPage() {
+    if (document.body.dataset.page !== "analytics") {
+      return;
+    }
+    Promise.all([get("/admin/orders"), get("/admin/products"), get("/admin/categories"), get("/admin/users")])
+      .then(function (result) {
+        var orders = result[0] || [];
+        var products = result[1] || [];
+        var categories = result[2] || [];
+        var users = result[3] || [];
+        renderAnalyticsStats(orders, users);
+        renderCategorySales(products, categories);
+        renderBusinessNotes(orders, products);
+      })
+      .catch(function (error) {
+        showToast(error.message);
+      });
+  }
+
+  function renderAnalyticsStats(orders, users) {
+    var paidOrders = (orders || []).filter(function (order) {
+      return order.status !== "CANCELED";
+    });
+    var totalAmount = paidOrders.reduce(function (sum, order) {
+      return sum + Number(order.payableAmount || 0);
+    }, 0);
+    var discountAmount = paidOrders.reduce(function (sum, order) {
+      return sum + Number(order.discountAmount || 0);
+    }, 0);
+    var averageAmount = paidOrders.length ? totalAmount / paidOrders.length : 0;
+    var orderCountByUser = {};
+    paidOrders.forEach(function (order) {
+      if (order.userId) {
+        orderCountByUser[order.userId] = (orderCountByUser[order.userId] || 0) + 1;
+      }
+    });
+    var activeUserCount = Object.keys(orderCountByUser).length || users.length || 1;
+    var repeatUserCount = Object.keys(orderCountByUser).filter(function (userId) {
+      return orderCountByUser[userId] > 1;
+    }).length;
+    var repeatRate = Math.round(repeatUserCount / activeUserCount * 100);
+    var peakHour = peakOrderHour(paidOrders);
+    var statCards = $all(".stat-card");
+    setStatCard(statCards[0], "客单价", money(averageAmount), "按未取消订单计算");
+    setStatCard(statCards[1], "复购率", repeatRate + "%", "有两笔及以上订单的用户占比");
+    setStatCard(statCards[2], "优惠成本", money(discountAmount), "来自订单已抵扣金额");
+    setStatCard(statCards[3], "高峰时段", peakHour, "按订单创建时间统计");
+  }
+
+  function peakOrderHour(orders) {
+    if (!orders || !orders.length) {
+      return "--";
+    }
+    var counts = {};
+    orders.forEach(function (order) {
+      var date = order.createdAt ? new Date(order.createdAt) : null;
+      if (date && !isNaN(date.getTime())) {
+        var hour = String(date.getHours()).padStart(2, "0") + ":00";
+        counts[hour] = (counts[hour] || 0) + 1;
+      }
+    });
+    return Object.keys(counts).sort(function (a, b) {
+      return counts[b] - counts[a];
+    })[0] || "--";
+  }
+
+  function renderCategorySales(products, categories) {
+    var chart = $(".analytics-category-bars") || $(".chart-bars");
+    if (!chart) {
+      return;
+    }
+    var categoryNameMap = {};
+    categories.forEach(function (category) {
+      categoryNameMap[category.id] = category.name;
+    });
+    var salesMap = {};
+    (products || []).forEach(function (product) {
+      var key = product.categoryId || "other";
+      salesMap[key] = (salesMap[key] || 0) + Number(product.sales || 0);
+    });
+    var rows = Object.keys(salesMap).map(function (categoryId) {
+      return {
+        name: categoryNameMap[categoryId] || categoryId,
+        sales: salesMap[categoryId]
+      };
+    }).sort(function (a, b) {
+      return b.sales - a.sales;
+    });
+    var total = rows.reduce(function (sum, row) {
+      return sum + row.sales;
+    }, 0) || 1;
+    chart.innerHTML = rows.map(function (row) {
+      var percent = Math.round(row.sales / total * 100);
+      return '<div class="bar-row"><span>' + escapeHtml(row.name) + '</span><div class="bar"><span style="width:' + Math.max(6, percent) + '%;"></span></div><strong>' + percent + '%</strong></div>';
+    }).join("") || '<p class="muted">暂无商品销量数据。</p>';
+  }
+
+  function renderBusinessNotes(orders, products) {
+    var noteCard = $(".content-grid .card:nth-child(2)");
+    if (!noteCard) {
+      return;
+    }
+    var hotProduct = (products || []).slice().sort(function (a, b) {
+      return Number(b.sales || 0) - Number(a.sales || 0);
+    })[0];
+    var waitingCount = (orders || []).filter(function (order) {
+      return order.status === "WAITING_PICKUP";
+    }).length;
+    var paragraphs = $all("p.muted", noteCard);
+    if (paragraphs[0]) {
+      paragraphs[0].textContent = waitingCount
+        ? "当前还有 " + waitingCount + " 笔待取餐订单，建议优先处理订单管理页。"
+        : "当前没有待取餐订单，订单处理压力较低。";
+    }
+    if (paragraphs[1]) {
+      paragraphs[1].textContent = hotProduct
+        ? hotProduct.name + " 当前销量最高，适合继续放在首页热门推荐位。"
+        : "暂无商品销量数据，可先在商品管理中维护商品。";
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     if (!initAuthGuard()) {
       return;
@@ -874,6 +1196,8 @@
     initOrdersPage();
     initCategoriesPage();
     initCouponsPage();
+    initActivitiesPage();
     initUsersPage();
+    initAnalyticsPage();
   });
 })();
