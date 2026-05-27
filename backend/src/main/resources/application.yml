@@ -1,4 +1,4 @@
-  server:
+server:
   port: 8080
 
 spring:
@@ -8,7 +8,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL:jdbc:mysql://localhost:3306/unmanned_ordering?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:123456}
+    password: ${DB_PASSWORD:qwe6649qwe}
   jackson:
     time-zone: Asia/Shanghai
     serialization:

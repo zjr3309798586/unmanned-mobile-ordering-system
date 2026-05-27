@@ -207,6 +207,17 @@
     }
   }
 
+  function withLoading(button, promise) {
+    if (!button) return promise;
+    var originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = "保存中...";
+    return promise.finally(function () {
+      button.disabled = false;
+      button.textContent = originalText;
+    });
+  }
+
   function initNav() {
     var page = document.body.getAttribute("data-page");
     if (!page) {
@@ -308,8 +319,16 @@
     var menuToggle = $("#menuToggle");
     var sidebar = $("#sidebar");
     if (menuToggle && sidebar) {
+      var overlay = document.createElement("div");
+      overlay.className = "sidebar-overlay";
+      document.body.appendChild(overlay);
       menuToggle.addEventListener("click", function () {
         sidebar.classList.toggle("open");
+        overlay.classList.toggle("show");
+      });
+      overlay.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
       });
     }
   }
@@ -324,6 +343,21 @@
         weekday: "long"
       });
     }
+  }
+
+  function initAdminUser() {
+    var username = localStorage.getItem("umo-admin-username") || "管理员";
+    var avatarLetter = username.charAt(0).toUpperCase();
+    $all(".admin-user").forEach(function (el) {
+      var avatar = $(".avatar", el);
+      var nameSpan = el.querySelector("span:last-child");
+      if (avatar) {
+        avatar.textContent = avatarLetter;
+      }
+      if (nameSpan && nameSpan !== avatar) {
+        nameSpan.textContent = username;
+      }
+    });
   }
 
   function initDashboardPage() {
@@ -385,8 +419,11 @@
     }
     var labels = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
     var counts = labels.map(function () { return 0; });
+    var now = new Date();
+    var sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
     (orders || []).forEach(function (order) {
-      var date = order.createdAt ? new Date(order.createdAt) : new Date();
+      var date = order.createdAt ? new Date(order.createdAt) : null;
+      if (!date || date < sevenDaysAgo) return;
       var index = (date.getDay() + 6) % 7;
       counts[index] += 1;
     });
@@ -413,6 +450,7 @@
       })
       .catch(function (error) {
         showToast(error.message);
+        showLoading(tableBody, "加载失败，请刷新重试");
       });
   }
 
@@ -435,7 +473,7 @@
         '<td><span class="status ' + (product.enabled ? "green" : "red") + '">' + (product.enabled ? "在售" : "已下架") + '</span></td>' +
         '<td class="mini-actions">' +
           '<button class="link-btn" type="button" data-edit-product="' + escapeHtml(product.id) + '">编辑</button>' +
-          '<button class="link-btn" type="button" data-disable-product="' + escapeHtml(product.id) + '">' + (product.enabled ? "下架" : "已下架") + '</button>' +
+          (product.enabled ? '<button class="link-btn" type="button" data-disable-product="' + escapeHtml(product.id) + '">下架</button>' : '<button class="link-btn" type="button" disabled style="opacity:0.5;cursor:not-allowed">已下架</button>') +
         '</td>' +
       '</tr>';
     }).join("");
@@ -492,6 +530,9 @@
       fillProductForm(product);
     }
     if (disableButton && !disableButton.disabled) {
+      if (!confirm("确定要下架该商品吗？下架后前台点餐页将不再显示。")) {
+        return;
+      }
       disableButton.disabled = true;
       del("/admin/products/" + encodeURIComponent(disableButton.dataset.disableProduct))
         .then(function () {
@@ -555,6 +596,7 @@
     if (!form) {
       return;
     }
+    var saveBtn = $(".card[style] .btn");
     var productId = form.querySelector("[name=id]").value;
     var payload;
     try {
@@ -571,13 +613,13 @@
         ? patch("/admin/products/" + encodeURIComponent(productId), payload)
         : post("/admin/products", payload);
     });
-    action.then(function () {
+    withLoading(saveBtn, action.then(function () {
       showToast(productId ? "商品已更新，前台同步生效" : "商品已新增，前台同步生效");
       fillProductForm(null);
       return reloadProducts();
     }).catch(function (error) {
       showToast(error.message);
-    });
+    }));
   }
 
   function reloadProducts() {
@@ -601,6 +643,7 @@
       })
       .catch(function (error) {
         showToast(error.message);
+        showLoading(tableBody, "加载失败，请刷新重试");
       });
   }
 
@@ -637,7 +680,11 @@
   function handleOrderTableClick(event) {
     var complete = event.target.closest("[data-complete-order]");
     var cancel = event.target.closest("[data-cancel-order]");
+    var show = event.target.closest("[data-show-order]");
     if (complete) {
+      if (!confirm("确定将该订单标记为已完成吗？")) {
+        return;
+      }
       patch("/admin/orders/" + encodeURIComponent(complete.dataset.completeOrder) + "/complete", {})
         .then(function () {
           showToast("订单已完成，前台订单状态同步变化");
@@ -646,6 +693,9 @@
         .catch(function (error) { showToast(error.message); });
     }
     if (cancel) {
+      if (!confirm("确定要取消该订单吗？取消后将回滚销量和优惠券。")) {
+        return;
+      }
       patch("/admin/orders/" + encodeURIComponent(cancel.dataset.cancelOrder) + "/cancel", {})
         .then(function () {
           showToast("订单已取消，前台订单状态同步变化");
@@ -653,6 +703,30 @@
         })
         .catch(function (error) { showToast(error.message); });
     }
+    if (show) {
+      var order = state.orders.find(function (item) {
+        return item.id === show.dataset.showOrder;
+      });
+      if (order) {
+        showOrderDetail(order);
+      }
+    }
+  }
+
+  function showOrderDetail(order) {
+    var goods = (order.items || []).map(function (item) {
+      return item.productName + " x" + item.quantity + "  " + money(item.price);
+    }).join("\n");
+    var info = "订单号：" + order.orderNo +
+      "\n用户：" + userName(order.userId) +
+      "\n状态：" + statusText(order.status) +
+      "\n取餐方式：" + pickupText(order.pickupType) +
+      "\n商品明细：\n" + (goods || "无") +
+      "\n\n原价：" + money(order.totalAmount) +
+      "\n优惠：-" + money(order.discountAmount) +
+      "\n实付：" + money(order.payableAmount) +
+      "\n下单时间：" + (order.createdAt || "--");
+    alert(info);
   }
 
   function reloadOrders() {
@@ -673,7 +747,11 @@
         renderCategoryList();
         setupCategoryForm();
       })
-      .catch(function (error) { showToast(error.message); });
+      .catch(function (error) {
+        showToast(error.message);
+        var list = $(".category-list");
+        if (list) list.innerHTML = '<div class="small-card"><strong>加载失败</strong><p class="muted">请刷新页面重试</p></div>';
+      });
   }
 
   function renderCategoryList() {
@@ -721,6 +799,9 @@
       fillCategoryForm(category);
     }
     if (remove) {
+      if (!confirm("确定要删除该分类吗？删除后无法恢复。")) {
+        return;
+      }
       del("/admin/categories/" + encodeURIComponent(remove.dataset.deleteCategory))
         .then(function () {
           showToast("分类已删除");
@@ -746,6 +827,7 @@
 
   function saveCategory() {
     var form = $("[data-category-form]");
+    var saveBtn = $(".card[style] .btn");
     var categoryId = form.querySelector("[name=id]").value;
     var payload = {
       name: form.querySelector("[name=name]").value.trim(),
@@ -758,14 +840,14 @@
     var action = categoryId
       ? patch("/admin/categories/" + encodeURIComponent(categoryId), payload)
       : post("/admin/categories", payload);
-    action.then(function () {
+    withLoading(saveBtn, action.then(function () {
       showToast(categoryId ? "分类已更新" : "分类已新增");
       return reloadCategories();
     }).then(function () {
       fillCategoryForm(null);
     }).catch(function (error) {
       showToast(error.message);
-    });
+    }));
   }
 
   function reloadCategories() {
@@ -784,7 +866,11 @@
       state.coupons = coupons || [];
       renderCouponList();
       setupCouponForm();
-    }).catch(function (error) { showToast(error.message); });
+    }).catch(function (error) {
+      showToast(error.message);
+      var list = $(".coupon-list");
+      if (list) list.innerHTML = '<div class="small-card"><strong>加载失败</strong><p class="muted">请刷新页面重试</p></div>';
+    });
   }
 
   function renderCouponList() {
@@ -816,7 +902,7 @@
       '<div class="field"><label>优惠金额</label><input name="discountAmount" type="number" step="0.01" min="0.01" placeholder="5.00"></div>' +
       '<div class="field"><label>使用门槛金额</label><input name="minAmount" type="number" step="0.01" min="0" placeholder="20.00"></div>' +
       '<div class="field"><label>门槛说明</label><input name="conditionText" placeholder="满 20 元可用"></div>' +
-      '<div class="field"><label>有效期</label><input name="validUntil" placeholder="2026-12-31"></div>' +
+      '<div class="field"><label>有效期</label><input name="validUntil" type="date" placeholder="2026-12-31"></div>' +
       '<div class="field"><label>状态</label><select name="available"><option value="true">启用</option><option value="false">停用</option></select></div>';
     saveButton.removeAttribute("data-toast");
     saveButton.textContent = "保存优惠券";
@@ -834,6 +920,9 @@
       fillCouponForm(coupon);
     }
     if (disable) {
+      if (!confirm("确定要停用该优惠券吗？停用后用户将无法使用。")) {
+        return;
+      }
       del("/admin/coupons/" + encodeURIComponent(disable.dataset.disableCoupon))
         .then(function () {
           showToast("优惠券已停用，提交订单页不会再使用");
@@ -863,6 +952,7 @@
 
   function saveCoupon() {
     var form = $("[data-coupon-form]");
+    var saveBtn = $(".card[style] .btn");
     var couponId = form.querySelector("[name=id]").value;
     var payload = {
       title: form.querySelector("[name=title]").value.trim(),
@@ -879,14 +969,14 @@
     var action = couponId
       ? patch("/admin/coupons/" + encodeURIComponent(couponId), payload)
       : post("/admin/coupons", payload);
-    action.then(function () {
+    withLoading(saveBtn, action.then(function () {
       showToast(couponId ? "优惠券已更新" : "优惠券已新增");
       return reloadCoupons();
     }).then(function () {
       fillCouponForm(null);
     }).catch(function (error) {
       showToast(error.message);
-    });
+    }));
   }
 
   function reloadCoupons() {
@@ -904,7 +994,11 @@
       state.banners = result[0] || [];
       renderBannerList();
       setupBannerForm();
-    }).catch(function (error) { showToast(error.message); });
+    }).catch(function (error) {
+      showToast(error.message);
+      var list = $(".activity-list");
+      if (list) list.innerHTML = '<div class="small-card"><strong>加载失败</strong><p class="muted">请刷新页面重试</p></div>';
+    });
   }
 
   function renderBannerList() {
@@ -963,6 +1057,9 @@
       fillBannerForm(banner);
     }
     if (disable) {
+      if (!confirm("确定要停用该 Banner 吗？停用后首页将不再展示。")) {
+        return;
+      }
       del("/admin/banners/" + encodeURIComponent(disable.dataset.disableBanner))
         .then(function () {
           showToast("Banner 已停用");
@@ -991,6 +1088,7 @@
 
   function saveBanner() {
     var form = $("[data-banner-form]");
+    var saveBtn = $(".card[style] .btn");
     var bannerId = form.querySelector("[name=id]").value;
     var payload = {
       title: form.querySelector("[name=title]").value.trim(),
@@ -1014,14 +1112,14 @@
         ? patch("/admin/banners/" + encodeURIComponent(bannerId), payload)
         : post("/admin/banners", payload);
     });
-    action.then(function () {
+    withLoading(saveBtn, action.then(function () {
       showToast(bannerId ? "Banner 已更新" : "Banner 已新增");
       return reloadBanners();
     }).then(function () {
       fillBannerForm(null);
     }).catch(function (error) {
       showToast(error.message);
-    });
+    }));
   }
 
   function reloadBanners() {
@@ -1057,7 +1155,13 @@
             '<td><span class="status green">正常</span></td></tr>';
         }).join("") || '<tr><td colspan="6" class="muted-cell">暂无用户数据</td></tr>';
       })
-      .catch(function (error) { showToast(error.message); });
+      .catch(function (error) {
+        showToast(error.message);
+        var tableBody = $("#usersTable tbody");
+        if (tableBody) {
+          showLoading(tableBody, "加载失败，请刷新重试");
+        }
+      });
   }
 
   function initAnalyticsPage() {
@@ -1075,7 +1179,7 @@
         renderBusinessNotes(orders, products);
       })
       .catch(function (error) {
-        showToast(error.message);
+        showToast("统计数据加载失败：" + error.message);
       });
   }
 
@@ -1191,6 +1295,7 @@
     initTabs();
     initButtons();
     initDate();
+    initAdminUser();
     initDashboardPage();
     initProductsPage();
     initOrdersPage();
