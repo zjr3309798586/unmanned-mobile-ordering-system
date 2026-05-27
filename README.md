@@ -14,8 +14,7 @@
 - `index.html`：首页
 - `menu.html`：点餐页
 - `detail.html`：商品详情页
-- `cart.html`：购物车页
-- `submit-order.html`：提交订单页
+- `cart.html`：购物车 / 结算页(已合并提交订单)
 - `order.html`：订单页
 - `mine.html`：我的页
 - `saving-card.html`：省钱卡页
@@ -33,8 +32,7 @@
 - `pages/home/index`：首页
 - `pages/menu/index`：点餐页
 - `pages/detail/index`：商品详情页
-- `pages/cart/index`：购物车页
-- `pages/submit-order/index`：提交订单页
+- `pages/cart/index`：购物车 / 结算页(已合并提交订单)
 - `pages/order/index`：订单页
 - `pages/mine/index`：我的页
 - `pages/saving-card/index`：省钱卡页
@@ -157,4 +155,84 @@ mvn test
 
 ```text
 backend/README.md
+```
+
+## 项目结构总览
+
+```
+前台页面/                       项目根
+├── *.html (7 个)              H5 页面(平铺在根)
+├── css/                       H5 样式
+├── js/                        H5 脚本
+├── images/                    图片资源
+├── admin/                     后台管理端(原生 HTML/CSS/JS)
+├── miniprogram/               微信小程序源码
+│   ├── pages/                   页面(7 个)
+│   ├── images/                  图片(与 H5 同步)
+│   ├── utils/                   工具:api/auth/config/format
+│   └── app.js / app.json / app.wxss
+├── backend/                   后端 Spring Boot 服务
+│   ├── src/main/java/com/unmanned/ordering/
+│   │   ├── controller/          接收请求
+│   │   ├── service/             业务逻辑
+│   │   ├── mapper/              MyBatis 数据访问
+│   │   ├── model/               实体
+│   │   ├── request/             请求 DTO
+│   │   ├── common/              工具类
+│   │   ├── config/              配置(静态资源映射等)
+│   │   └── exception/           全局异常处理
+│   ├── src/main/resources/      MyBatis XML、application.yml
+│   └── pom.xml
+├── docs/                      项目文档
+│   ├── 编码规范.md              ★ 项目代码规范(必读)
+│   ├── 代码详解文档.md
+│   ├── 后端完整代码精讲.md
+│   ├── design-reference.md
+│   └── …                        其他设计/截图/文档生成脚本
+├── .gitignore
+├── .editorconfig              ★ 编辑器格式约定
+└── README.md
+```
+
+## 开发规范
+
+本项目所有代码必须遵循 [`docs/编码规范.md`](docs/编码规范.md)。
+
+该规范文档涵盖:
+
+- 项目目录结构、命名约定
+- HTML / CSS / JavaScript 编码风格
+- 微信小程序与 Java 后端编码规范
+- 接口设计、数据格式
+- Git 分支与 Commit Message 规范
+- 资源文件命名与压缩要求
+
+### 编辑器配置
+
+项目根目录已配置 `.editorconfig`,主流编辑器(VS Code / IDEA / WebStorm / Sublime / Vim 等)会自动加载,统一执行:
+
+- UTF-8 编码
+- LF 换行
+- 2 空格缩进(Java / XML 为 4 空格)
+- 行尾自动去除空格
+- 文件末尾自动留空行
+
+如使用 VS Code,建议安装 `EditorConfig for VS Code` 插件。
+
+### Git 提交约定
+
+提交信息遵循 Conventional Commits:
+
+```
+<type>(<scope>): <subject>
+```
+
+`type` 取值:`feat` / `fix` / `docs` / `style` / `refactor` / `perf` / `test` / `chore`
+
+示例:
+
+```
+feat(cart): 不可用优惠券置灰并显示"还差 ¥X"
+fix(menu): 修复加号按钮在 iOS 无响应
+docs: 补充编码规范文档
 ```

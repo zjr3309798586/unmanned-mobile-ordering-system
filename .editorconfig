@@ -1,0 +1,35 @@
+# =============================================================
+# 云豹小点 - .editorconfig
+# 统一各编辑器(VS Code / IDEA / WebStorm / Sublime …)的格式规则
+# 详见 docs/编码规范.md
+# =============================================================
+root = true
+
+# 默认规则:所有文件 UTF-8 / LF 换行 / 2 空格缩进 / 行尾去空格 / 文件末尾留空行
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Java / XML 文件用 4 空格缩进(符合 Java 社区惯例)
+[*.{java,xml}]
+indent_size = 4
+
+# Maven / Gradle 配置
+[{pom.xml,*.gradle}]
+indent_size = 4
+
+# Markdown 允许行尾保留空格(用于强制换行)
+[*.md]
+trim_trailing_whitespace = false
+
+# Windows 批处理保留 CRLF
+[*.{bat,cmd}]
+end_of_line = crlf
+
+# Makefile 必须用 Tab
+[Makefile]
+indent_style = tab

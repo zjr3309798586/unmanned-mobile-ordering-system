@@ -1,3 +1,91 @@
-miniprogram/project.private.config.json
+# =============================================================
+# 云豹小点 - .gitignore
+# =============================================================
+
+# --- Java / Maven 编译产物 ---
+backend/target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# --- 运行日志 ---
+*.log
+*.log.*
+backend/backend-run.out.log
+backend/backend-run.err.log
+logs/
+
+# --- IDE 配置 ---
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.code-workspace
+.project
+.classpath
+.settings/
+nbproject/private/
+*.swp
+*.swo
+
+# --- AI 工具本地状态 ---
+.claude/
+.codex_tmp/
+.cursor/
+.aider*
+
+# --- 操作系统垃圾文件 ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# --- Office 临时锁文件 ---
 ~$*.docx
+~$*.xlsx
+~$*.pptx
 docs/~$*.docx
+
+# --- 本地配置 / 敏感信息 ---
+.env
+.env.local
+*.local.*
+application-local.yml
+application-local.properties
+
+# --- 微信小程序本地配置 ---
+miniprogram/project.private.config.json
+miniprogram_npm/
+
+# --- Node / 前端构建产物(暂未使用,预留) ---
+node_modules/
+dist/
+build/
+.cache/
+*.tsbuildinfo
+
+# --- Python 临时文件(docs/ 里有几个 .py 脚本) ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.python-version
+
+# --- 备份与临时文件 ---
+*.bak
+*.tmp
+*.temp
+*.orig
+*.rej
+
+# --- 数据库本地导出 ---
+*.dump
+*.sql.gz
