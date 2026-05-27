@@ -47,14 +47,15 @@ public class CorsConfig {
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
                 // 让 Spring Boot 能直接访问前台 H5、后台 HTML、CSS、JS、图片资源。
                 // 因为服务从 backend 目录启动，所以 file:../ 表示项目根目录。
+                // H5 已整理到 h5/ 子目录,admin 保持在根目录。
                 registry.addResourceHandler("/*.html")
-                        .addResourceLocations("file:../", "file:./");
+                        .addResourceLocations("file:../h5/pages/", "file:./h5/pages/");
                 registry.addResourceHandler("/css/**")
-                        .addResourceLocations("file:../css/", "file:./css/");
+                        .addResourceLocations("file:../h5/css/", "file:./h5/css/");
                 registry.addResourceHandler("/js/**")
-                        .addResourceLocations("file:../js/", "file:./js/");
+                        .addResourceLocations("file:../h5/js/", "file:./h5/js/");
                 registry.addResourceHandler("/images/**")
-                        .addResourceLocations("file:../images/", "file:./images/");
+                        .addResourceLocations("file:../h5/images/", "file:./h5/images/");
                 registry.addResourceHandler("/admin/**")
                         .addResourceLocations("file:../admin/", "file:./admin/");
             }
