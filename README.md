@@ -8,21 +8,34 @@
 
 ## 前台用户端
 
-前台使用原生 HTML、CSS、JavaScript 实现，已接入 Spring Boot 后端接口。
+前台使用原生 HTML、CSS、JavaScript 实现，已接入 Spring Boot 后端接口。所有 H5
+文件统一收纳在 `h5/` 子目录下,并由后端静态映射保持原 URL 不变(用户仍可访问
+`http://127.0.0.1:8080/menu.html`)。
 
-页面包括：
-- `index.html`：首页
-- `menu.html`：点餐页
-- `detail.html`：商品详情页
-- `cart.html`：购物车 / 结算页(已合并提交订单)
-- `order.html`：订单页
-- `mine.html`：我的页
-- `saving-card.html`：省钱卡页
+页面位于 `h5/pages/`:
+- `h5/pages/index.html`：首页
+- `h5/pages/menu.html`：点餐页
+- `h5/pages/detail.html`：商品详情页
+- `h5/pages/cart.html`：购物车 / 结算页(已合并提交订单)
+- `h5/pages/order.html`：订单页
+- `h5/pages/mine.html`：我的页
+- `h5/pages/saving-card.html`：省钱卡页
 
-公共资源：
-- `css/`：前台页面样式
-- `js/`：前台页面脚本
-- `images/`：图片资源
+公共资源:
+- `h5/css/`：前台页面样式
+- `h5/js/`：前台页面脚本
+- `h5/images/`：图片资源(按用途分子目录)
+    - `nav/`：底部导航图标
+    - `home/`：首页 banner / mascot / 装饰
+    - `menu/`：商品图(`menu-*.png` + `product-*.svg`)
+    - `mine/`：我的页素材
+    - `saving/`：省钱卡(吉祥物 + 自取/外卖图标)
+    - `mascot/`：全局吉祥物
+    - `common/`：占位图(food/avatar/banner-placeholder)
+
+页面内引用统一使用绝对路径,例如 `<link href="/css/cart.css">`、
+`<img src="/images/menu/menu-product-grape.png">`,由后端 8080 统一映射,
+不依赖 html 文件所在物理位置。
 
 ## 微信小程序端
 
@@ -161,14 +174,32 @@ backend/README.md
 
 ```
 前台页面/                       项目根
-├── *.html (7 个)              H5 页面(平铺在根)
-├── css/                       H5 样式
-├── js/                        H5 脚本
-├── images/                    图片资源
+├── h5/                        H5 前台用户端
+│   ├── pages/                   7 个页面 html
+│   │   ├── index.html
+│   │   ├── menu.html
+│   │   ├── detail.html
+│   │   ├── cart.html
+│   │   ├── order.html
+│   │   ├── mine.html
+│   │   └── saving-card.html
+│   ├── css/                     8 个样式文件
+│   ├── js/                      8 个脚本文件
+│   └── images/                  图片资源(按用途分子目录)
+│       ├── nav/                   底部导航图标
+│       ├── home/                  首页 banner / mascot / 装饰
+│       ├── menu/                  商品图(menu-*.png + product-*.svg)
+│       ├── mine/                  我的页素材
+│       ├── saving/                省钱卡素材 + 自取/外卖图标
+│       ├── mascot/                全局吉祥物
+│       └── common/                占位图(food/avatar/banner-placeholder)
 ├── admin/                     后台管理端(原生 HTML/CSS/JS)
+│   ├── *.html                   9 个管理页面
+│   ├── css/admin.css
+│   └── js/admin.js
 ├── miniprogram/               微信小程序源码
-│   ├── pages/                   页面(7 个)
-│   ├── images/                  图片(与 H5 同步)
+│   ├── pages/                   7 个页面(home/menu/detail/cart/order/mine/saving-card)
+│   ├── images/                  图片资源(同 h5/images 分子目录 + 自带 icons/ 子目录)
 │   ├── utils/                   工具:api/auth/config/format
 │   └── app.js / app.json / app.wxss
 ├── backend/                   后端 Spring Boot 服务
@@ -193,6 +224,21 @@ backend/README.md
 ├── .editorconfig              ★ 编辑器格式约定
 └── README.md
 ```
+
+### 静态资源 URL 映射
+
+后端 `FrontendResourceConfig` 与 `CorsConfig` 把 URL 与物理路径解耦,
+开发者改动 H5 文件物理位置不影响访问 URL:
+
+| URL 路径              | 物理位置          |
+| --------------------- | ----------------- |
+| `/`                   | forward 到 `/index.html` |
+| `/X.html`             | `h5/pages/X.html` |
+| `/css/**`             | `h5/css/**`       |
+| `/js/**`              | `h5/js/**`        |
+| `/images/**`          | `h5/images/**`    |
+| `/admin/**`           | `admin/**`        |
+| `/api/**`             | Spring 控制器     |
 
 ## 开发规范
 
