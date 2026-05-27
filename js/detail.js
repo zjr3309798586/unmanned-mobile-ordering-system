@@ -1,152 +1,141 @@
 document.addEventListener("DOMContentLoaded", function () {
   var app = window.OrderingApp;
-  var productId = app.queryParam("id");
-  var product = null;
-  var price = parseFloat(document.body.dataset.unitPrice || "0");
-  var quantity = 1;
-  var coverNode = document.querySelector(".detail-cover");
-  var titleNode = document.querySelector(".section-title");
-  var noteNode = document.querySelector(".section-note");
-  var descNode = document.querySelector(".product-desc");
-  var priceNode = document.querySelector(".detail-price-line .price");
-  var qtyNode = document.querySelector("[data-detail-qty]");
-  var countNode = document.querySelector("[data-detail-count]");
-  var totalNode = document.querySelector("[data-detail-total]");
-  var minusButton = document.querySelector("[data-detail-minus]");
-  var plusButton = document.querySelector("[data-detail-plus]");
-  var addCartButton = document.querySelector(".detail-action-bar .button-secondary");
-  var buyButton = document.querySelector(".detail-action-bar .button-primary");
-  var textBlockNode = document.querySelector(".text-block");
+  var body = document.body;
+  var unitPrice = Number(body.dataset.unitPrice || 13.9);
 
-  function render() {
-    if (qtyNode) {
-      qtyNode.textContent = String(quantity);
-    }
-    if (countNode) {
-      countNode.textContent = String(quantity);
-    }
-    if (totalNode) {
-      totalNode.textContent = app.money(price * quantity);
-    }
-  }
+  var qtyNum = document.querySelector("[data-qty-num]");
+  var priceIntNode = document.querySelector("[data-pr-int]");
+  var specSummary = document.querySelector("[data-spec-summary]");
+  var addCartBtn = document.querySelector("[data-add-cart]");
+  var nameNode = document.querySelector(".d-name");
+  var descNode = document.querySelector(".d-desc");
+  var heroImg = document.querySelector(".d-hero-img");
 
-  function renderProduct(data) {
-    product = data;
-    productId = product.id;
-    price = Number(product.price || 0);
-    document.body.dataset.unitPrice = String(price);
+  var qty = 1;
 
-    if (coverNode) {
-      coverNode.src = app.imageUrl(product.image);
-      coverNode.alt = product.name;
-      coverNode.onerror = function () {
-        coverNode.src = "images/food-placeholder.svg";
-      };
-    }
-    if (titleNode) {
-      titleNode.textContent = product.name;
-    }
-    if (noteNode) {
-          noteNode.textContent = "月售 " + (product.sales || 0) + " 杯，门店热销单品";
-    }
-    if (descNode) {
-      descNode.textContent = product.description || "";
-    }
-    if (textBlockNode) {
-      textBlockNode.innerHTML = '<p>' + app.escapeHtml(product.description || "暂无更多商品说明。") + '</p>' +
-        '<p>当前商品支持温度、甜度和加料选择，加入购物车后会按所选规格保存。</p>';
-    }
-    if (priceNode) {
-      priceNode.textContent = app.money(price);
-    }
-    render();
-  }
-
-  function selectedSpec() {
-    var specs = [];
-    document.querySelectorAll("[data-choice-group]").forEach(function (group) {
-      group.querySelectorAll("[data-choice].is-active").forEach(function (choice) {
-        specs.push(choice.textContent.trim());
-      });
-    });
-    return specs.length ? specs.join(" / ") : app.defaultSpec;
-  }
-
-  function addToCart(redirectUrl) {
-    if (!productId) {
-      app.showMessage("商品数据未加载完成");
-      return;
-    }
-    if (!app.isLoggedIn()) {
-      app.showMessage("请先登录后购买商品");
-      window.setTimeout(function () {
-        window.location.href = "mine.html";
-      }, 700);
-      return;
-    }
-    app.post("/cart/items", {
-      productId: productId,
-      spec: selectedSpec(),
-      quantity: quantity
-    }).then(function () {
-      app.showMessage("已加入购物车");
-      if (redirectUrl) {
-        window.setTimeout(function () {
-          window.location.href = redirectUrl;
-        }, 450);
-      }
-    }).catch(function (error) {
-      app.showMessage(error.message);
-    });
-  }
-
-  if (minusButton) {
-    minusButton.addEventListener("click", function () {
-      if (quantity > 1) {
-        quantity -= 1;
-        render();
-      }
-    });
-  }
-
-  if (plusButton) {
-    plusButton.addEventListener("click", function () {
-      quantity += 1;
-      render();
-    });
-  }
-
-  if (addCartButton) {
-    addCartButton.addEventListener("click", function (event) {
-      event.preventDefault();
-      addToCart("cart.html");
-    });
-  }
-
-  if (buyButton) {
-    buyButton.addEventListener("click", function (event) {
-      event.preventDefault();
-      addToCart("submit-order.html");
-    });
-  }
-
-  if (productId) {
+  /* ===== 按 ?id= 拉真实商品 ===== */
+  var productId = app && app.queryParam ? app.queryParam("id") : null;
+  if (productId && app && app.get) {
     app.get("/products/" + encodeURIComponent(productId))
-      .then(renderProduct)
-      .catch(function (error) {
-        app.showMessage(error.message);
-      });
-  } else {
-    app.get("/products")
-      .then(function (products) {
-        if (products && products.length) {
-          renderProduct(products[0]);
-        }
+      .then(function (p) {
+        if (!p) return;
+        if (nameNode) nameNode.textContent = p.name;
+        if (descNode && p.description) descNode.textContent = p.description;
+        if (heroImg && p.image) heroImg.src = app.imageUrl(p.image);
+        unitPrice = Number(p.price || unitPrice);
+        // 同步规格按钮里的价格(单规格"中¥X")
+        var sizeBtn = document.querySelector('[data-opt-group="size"] .d-opt-btn');
+        if (sizeBtn) sizeBtn.textContent = "中¥" + Math.round(unitPrice);
+        document.title = p.name + " - 云豹小点";
+        updateUI();
       })
-      .catch(function (error) {
-        app.showMessage(error.message);
-      });
+      .catch(function () {});
   }
 
-  render();
+  /* ===== 选项切换 ===== */
+  document.querySelectorAll("[data-opt-group]").forEach(function (group) {
+    group.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-opt]");
+      if (!btn) return;
+      group.querySelectorAll("[data-opt]").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      updateUI();
+    });
+  });
+
+  /* ===== 数量加减 ===== */
+  var minus = document.querySelector("[data-qty-minus]");
+  var plus = document.querySelector("[data-qty-plus]");
+  if (minus) minus.addEventListener("click", function () { if (qty > 1) { qty--; updateUI(); } });
+  if (plus) plus.addEventListener("click", function () { qty++; updateUI(); });
+
+  /* ===== UI 同步 ===== */
+  function collectSpec() {
+    var parts = [];
+    var spec = {};
+    document.querySelectorAll("[data-opt-group]").forEach(function (group) {
+      var key = group.dataset.optGroup;
+      var name = group.dataset.optName;
+      var sel = group.querySelector("[data-opt].is-active");
+      if (sel) {
+        var v = sel.dataset.opt;
+        spec[key] = v;
+        // 摘要只取规格相关(去掉"¥17"价格部分)
+        var summaryVal = v.replace(/¥\d+(\.\d+)?/, "").trim();
+        if (summaryVal) parts.push(summaryVal);
+        else parts.push(v);
+      }
+    });
+    return { spec: spec, summary: parts.join("/") };
+  }
+
+  function updateUI() {
+    if (qtyNum) qtyNum.textContent = String(qty);
+    var total = unitPrice * qty;
+    if (priceIntNode) priceIntNode.textContent = total.toFixed(1);
+    var s = collectSpec();
+    if (specSummary) specSummary.textContent = s.summary;
+  }
+
+  /* ===== 加入购物车 ===== */
+  if (addCartBtn) {
+    addCartBtn.addEventListener("click", function () {
+      var s = collectSpec();
+      if (!app || !app.isLoggedIn || !app.isLoggedIn()) {
+        // 未登录走 devLogin 兜底
+        var doAdd = function () { realAdd(s); };
+        if (app && app.devLogin) app.devLogin("游客用户").then(doAdd).catch(function () { if (app.showMessage) app.showMessage("登录失败"); });
+        else if (app && app.showMessage) app.showMessage("请先登录");
+        return;
+      }
+      realAdd(s);
+    });
+  }
+
+  function realAdd(s) {
+    addCartBtn.disabled = true;
+    var pid = (app.queryParam ? (app.queryParam("id") || "P-1001") : "P-1001");
+    app.post("/cart/items", { productId: pid, spec: s.summary, quantity: qty })
+      .then(function () {
+        if (app.showMessage) app.showMessage("已加入购物车");
+        window.setTimeout(function () { window.location.href = "cart.html"; }, 350);
+      })
+      .catch(function (e) {
+        if (app.showMessage) app.showMessage(e.message);
+      })
+      .finally(function () { addCartBtn.disabled = false; });
+  }
+
+  /* ===== 口味收藏 ===== */
+  var favBtn = document.querySelector("[data-fav-btn]");
+  var favIcon = document.querySelector("[data-fav-icon]");
+  var FAV_KEY = "orderingFavorites";
+
+  function getFavs() {
+    try { return JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); } catch (e) { return []; }
+  }
+  function saveFavs(list) {
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch (e) {}
+  }
+  function syncFavUI() {
+    if (!favBtn || !productId) return;
+    var favs = getFavs();
+    var on = favs.indexOf(productId) >= 0;
+    favBtn.classList.toggle("is-active", on);
+    if (favIcon) favIcon.textContent = on ? "★" : "☆";
+  }
+  if (favBtn) {
+    favBtn.addEventListener("click", function () {
+      if (!productId) return;
+      var favs = getFavs();
+      var i = favs.indexOf(productId);
+      if (i >= 0) { favs.splice(i, 1); if (app.showMessage) app.showMessage("已取消收藏"); }
+      else { favs.push(productId); if (app.showMessage) app.showMessage("已加入口味收藏"); }
+      saveFavs(favs);
+      syncFavUI();
+    });
+  }
+  syncFavUI();
+
+  updateUI();
 });

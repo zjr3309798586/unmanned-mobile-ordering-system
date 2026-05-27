@@ -2,135 +2,144 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
-  <title>首页 - 云豹小点</title>
-  <link rel="stylesheet" href="css/common.css">
-  <link rel="stylesheet" href="css/home.css">
+  <title>云豹小点 - 首页</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/common.css?v=2">
+  <link rel="stylesheet" href="css/home.css?v=3">
 </head>
 <body data-page="home">
-  <div class="app-shell">
-    <header class="home-shop-header">
-      <section class="home-store-bar">
-        <div>
-          <span class="store-label">当前门店</span>
-          <h1 class="store-name">云豹小点校区店</h1>
-        </div>
-        <span class="status-pill is-open">营业中</span>
-      </section>
+  <div class="app-shell home-shell">
 
-      <label class="search-bar home-search" aria-label="搜索商品">
-        <span class="search-icon">搜</span>
-        <input class="search-input" type="search" placeholder="搜索奶茶、果茶、咖啡、小食">
-      </label>
+    <header class="home-topbar">
+      <div class="ht-capsule">
+        <button class="ht-cap-btn" type="button" aria-label="更多">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/></svg>
+        </button>
+        <i class="ht-cap-sep"></i>
+        <button class="ht-cap-btn" type="button" aria-label="位置">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
     </header>
 
-    <main class="page-main home-main">
-      <section class="home-banner home-hero-card" aria-label="首页宣传活动">
-        <div class="banner-content">
-          <span class="hero-badge">云豹上新</span>
-          <h2 class="banner-title">蓝杯鲜饮<br>轻松点单</h2>
-          <p class="banner-text">到店自取快一步，会员券下单自动抵扣。</p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="menu.html">去点餐</a>
-          </div>
-        </div>
-        <div class="banner-visual">
-          <img class="banner-image" src="images/product-orange-coffee.svg" alt="云豹小点活动饮品">
-          <img class="banner-side-image" src="images/mascot-yunbao-144.png" alt="">
-        </div>
-      </section>
+    <section class="carousel" data-carousel>
+      <div class="carousel-inner" data-carousel-inner>
 
-      <section class="order-mode-panel" aria-label="取餐方式">
-        <a class="order-mode-card is-active" href="menu.html">
-          <span class="mode-icon">取</span>
-          <strong>门店自取</strong>
-          <small>提前下单，到店即取</small>
-        </a>
-        <a class="order-mode-card" href="menu.html">
-          <span class="mode-icon">送</span>
-          <strong>平台外送</strong>
-          <small>宿舍 / 办公室配送</small>
-        </a>
-      </section>
+        <article class="c-slide" data-slide="0">
+          <div class="c-bg c-bg-1"></div>
+        </article>
 
-      <section class="quick-strip" aria-label="快捷入口">
-        <a href="saving-card.html">
-          <span>券</span>
-          <strong>领券中心</strong>
-        </a>
-        <a href="saving-card.html">
-          <span>卡</span>
-          <strong>省钱卡</strong>
-        </a>
-        <a href="order.html">
-          <span>单</span>
-          <strong>我的订单</strong>
-        </a>
-        <a href="cart.html">
-          <span>车</span>
-          <strong>购物车</strong>
-        </a>
-      </section>
+        <article class="c-slide" data-slide="1">
+          <div class="c-bg c-bg-2"></div>
+        </article>
 
-      <section class="coupon-ribbon" data-coupon-ribbon>
-        <div>
-          <span class="ribbon-kicker" data-coupon-kicker>今日优惠</span>
-          <strong data-coupon-title>正在读取优惠券</strong>
-          <small data-coupon-copy>优惠信息会从后台优惠券数据同步。</small>
-        </div>
-        <a href="saving-card.html" data-coupon-action>去领取</a>
-      </section>
+        <article class="c-slide" data-slide="2">
+          <div class="c-bg c-bg-3"></div>
+        </article>
 
-      <section class="section-card hot-section">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">本店热卖</h2>
-            <p class="section-note">按销量优先推荐，点击可查看详情</p>
-          </div>
-          <a class="section-link" href="menu.html">全部</a>
-        </div>
-        <div class="product-stack home-product-scroll">
-          <p class="section-note">正在读取推荐商品...</p>
-        </div>
-      </section>
+      </div>
 
-      <section class="section-card task-card">
-        <div class="section-head compact-head">
-          <div>
-            <h2 class="section-title">集杯任务</h2>
-            <p class="section-note" data-task-note>登录后同步订单杯数，累计 8 杯可得饮品券</p>
-          </div>
-          <a class="section-link" href="saving-card.html">查看</a>
-        </div>
-        <div class="task-progress">
-          <div class="progress-track">
-            <span class="progress-fill" style="width: 0%;" data-task-progress></span>
-          </div>
-          <div class="task-footnote" data-task-footnote>请先登录后查看你的集杯进度。</div>
-        </div>
-      </section>
+      <div class="c-overlay"></div>
 
-      <section class="section-card notice-card">
-        <div class="section-head compact-head">
-          <div>
-            <h2 class="section-title">门店公告</h2>
-            <p class="section-note">当前门店通知</p>
-          </div>
+      <div class="c-indicators" data-carousel-indicators>
+        <span class="c-dot is-active"></span>
+        <span class="c-dot"></span>
+        <span class="c-dot"></span>
+      </div>
+
+      <p class="c-disclaim">*图片仅供参考,实际以出杯为准</p>
+    </section>
+
+    <main class="content-overlay">
+
+      <section class="member-progress-card">
+        <div class="mpc-avatar">
+          <svg viewBox="0 0 32 32" width="22" height="22" fill="#9ca3af" aria-hidden="true">
+            <circle cx="16" cy="11" r="6"/>
+            <path d="M4 28c2-7 8-10 12-10s10 3 12 10z"/>
+          </svg>
         </div>
-        <div class="announcement-list">
-          <div class="info-row">
-            <div>
-              <strong class="info-title">自取提醒</strong>
-              <p class="info-text">高峰期建议提前 10 分钟下单，到店后可通过取餐号直接领取。</p>
+        <div class="mpc-body">
+          <div class="mpc-name">爱嫩仙草满福的...</div>
+          <div class="mpc-row">
+            <div class="mpc-progress">
+              <div class="mpc-progress-bg">
+                <div class="mpc-progress-fill" style="width: 33%"></div>
+              </div>
+              <span class="mpc-count">1/3杯</span>
             </div>
+            <button class="mpc-btn" type="button">去领取</button>
           </div>
         </div>
+      </section>
+
+      <div class="home-divider"></div>
+
+      <section class="pickup-split">
+        <button class="ps-side" type="button" data-mode="pickup">
+          <span class="ps-zh">自取</span>
+          <span class="ps-en">Pickup</span>
+        </button>
+        <div class="ps-divider"></div>
+        <button class="ps-side" type="button" data-mode="delivery">
+          <span class="ps-bubble">最高享免配!</span>
+          <span class="ps-zh">外卖</span>
+          <span class="ps-en">Deliver</span>
+        </button>
+      </section>
+
+      <div class="home-divider"></div>
+
+      <section class="quick-grid">
+        <a class="qg-item" href="menu.html">
+          <div class="qg-icon qg-icon-99">
+            <span class="qg-99-num">9.9</span>
+            <span class="qg-99-tag">喝咖啡</span>
+          </div>
+          <span class="qg-h">高品质咖啡</span>
+          <span class="qg-sub">全场9.9</span>
+        </a>
+        <a class="qg-item" href="saving-card.html">
+          <div class="qg-icon qg-icon-30">
+            <span class="qg-30-num">领30元</span>
+            <span class="qg-30-tag">券</span>
+          </div>
+          <span class="qg-h">领30元券包</span>
+          <span class="qg-sub">加入社群</span>
+        </a>
+        <a class="qg-item" href="mine.html">
+          <div class="qg-icon qg-icon-points">
+            <svg viewBox="0 0 32 24" width="34" height="24" fill="none" stroke="#191c23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="6" width="20" height="12" rx="1.6"/>
+              <circle cx="16" cy="4" r="2"/>
+              <circle cx="24" cy="20" r="2" fill="#191c23"/>
+            </svg>
+          </div>
+          <span class="qg-h">积分兑换</span>
+          <span class="qg-sub">专享福利</span>
+        </a>
+        <a class="qg-item" href="saving-card.html">
+          <div class="qg-icon qg-icon-code">
+            <svg viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="#191c23" stroke-width="2" stroke-linejoin="round" stroke-dasharray="3 2">
+              <rect x="6" y="6" width="20" height="20" rx="1.6"/>
+              <path d="M6 16h20" stroke-dasharray="3 2"/>
+            </svg>
+          </div>
+          <span class="qg-h">券码兑换</span>
+          <span class="qg-sub">立享优惠</span>
+        </a>
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="底部导航">
-      <a class="nav-item" data-nav-key="home" href="index.html">
+    <nav class="bottom-nav home-bottom-nav" aria-label="底部导航">
+      <a class="nav-item is-active" data-nav-key="home" href="index.html">
         <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-home.svg" alt=""></span>
         <span>首页</span>
       </a>
@@ -153,7 +162,7 @@
     </nav>
   </div>
 
-  <script src="js/common.js"></script>
-  <script src="js/home.js"></script>
+  <script src="js/common.js?v=2"></script>
+  <script src="js/home.js?v=3"></script>
 </body>
 </html>

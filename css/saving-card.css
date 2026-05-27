@@ -1,295 +1,525 @@
-.pass-header {
-  padding: 12px;
-  background: linear-gradient(180deg, #eaf1ff 0%, #f4f6fa 100%);
+.saving-shell {
+  background: linear-gradient(180deg, #005bbf 0%, #1a73e8 22%, #eaf3ff 38%, #f5faff 100%);
+  min-height: 100vh;
+  font-family: "Be Vietnam Pro", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.saving-shell .saving-page-title,
+.saving-shell .pass-card-title,
+.saving-shell .block-h,
+.saving-shell .sc-amount,
+.saving-shell .sp-price,
+.saving-shell .pass-price-amount,
+.saving-shell .sfb-yuan {
+  font-family: "Plus Jakarta Sans", "PingFang SC", sans-serif;
+  letter-spacing: -0.4px;
+}
+
+/* --- 顶栏 --- */
+.saving-topbar {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 14px 16px 6px;
+  color: #ffffff;
+}
+
+.saving-brand-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  justify-self: start;
+}
+
+.saving-brand-mini svg {
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.saving-page-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 900;
+  justify-self: center;
+}
+
+.saving-rule {
+  color: #ffffff;
+  font-size: 12px;
+  opacity: 0.95;
+  justify-self: end;
+}
+
+/* --- 主卡 hero --- */
+.pass-hero {
+  position: relative;
+  padding: 8px 16px 0;
 }
 
 .pass-card {
   position: relative;
   overflow: hidden;
-  padding: 18px 16px;
-  border-radius: 22px;
+  padding: 18px 18px 78px;
+  border-radius: 24px;
   color: #ffffff;
   background:
-    radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.22), transparent 34%),
-    linear-gradient(135deg, #092966 0%, #1453d9 64%, #6b9dff 100%);
-  box-shadow: 0 18px 36px rgba(20, 83, 217, 0.22);
+    radial-gradient(circle at 12% 110%, rgba(255, 255, 255, 0.12), transparent 38%),
+    linear-gradient(160deg, #1a73e8 0%, #004493 70%, #005bbf 100%);
+  box-shadow: 0 18px 36px rgba(20, 83, 217, 0.28);
+  min-height: 210px;
 }
 
-.pass-card::after {
-  content: "J";
+.pass-deco-cloud {
   position: absolute;
-  right: -6px;
-  bottom: -42px;
-  color: rgba(255, 255, 255, 0.12);
-  font-size: 150px;
-  font-weight: 900;
-  line-height: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
 }
 
-.pass-card-head,
-.pass-actions {
+.pass-deco-cloud-a {
+  left: -28px;
+  bottom: 30px;
+  width: 110px;
+  height: 110px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pass-deco-cloud-b {
+  left: 50px;
+  top: 10px;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pass-mascot {
+  position: absolute;
+  right: 6px;
+  bottom: 78px;
+  width: 132px;
+  height: auto;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.pass-card-row {
   position: relative;
-  z-index: 1;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-right: 100px;
+}
+
+.pass-card-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+}
+
+.pass-card-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pass-save-line {
+  position: relative;
+  z-index: 2;
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.pass-save-line strong {
+  color: #ffe066;
+  font-size: 22px;
+  font-weight: 900;
+  margin: 0 2px;
+  letter-spacing: -0.4px;
+}
+
+/* --- 底部白底价格条(在 pass-card 内底部) --- */
+.pass-footer {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  z-index: 3;
 }
 
-.pass-brand,
-.pass-status {
+.pass-price-block {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pass-price-amount {
   display: inline-flex;
-  min-height: 24px;
-  padding: 0 9px;
-  border-radius: 999px;
-  font-size: 11px;
+  align-items: baseline;
+  color: #ff5722;
+  font-size: 26px;
   font-weight: 900;
-  line-height: 24px;
+  letter-spacing: -0.6px;
+  line-height: 1;
 }
 
-.pass-brand {
-  color: #1453d9;
-  background: #ffffff;
+.pass-price-amount em {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 800;
+  margin-right: 1px;
 }
 
-.pass-status {
-  color: rgba(255, 255, 255, 0.82);
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.saving-title,
-.saving-text,
-.hero-price-line {
-  position: relative;
-  z-index: 1;
-}
-
-.saving-title {
-  margin: 16px 0 0;
-  font-size: 30px;
-  font-weight: 900;
-  line-height: 1.15;
-}
-
-.saving-text {
-  max-width: 270px;
-  margin: 8px 0 0;
-  color: rgba(255, 255, 255, 0.78);
+.pass-price-amount small {
+  color: #999;
   font-size: 12px;
-  line-height: 1.65;
+  font-weight: 600;
+  margin-left: 2px;
 }
 
-.hero-price-line {
-  margin-top: 14px;
-}
-
-.hero-price {
+.pass-price-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #ff9145 0%, #ff5722 100%);
   color: #ffffff;
-  font-size: 30px;
+  font-size: 10px;
+  font-weight: 800;
 }
 
-.hero-price-note {
-  display: block;
-  margin-top: 4px;
-  color: rgba(255, 255, 255, 0.72);
+.pass-price-hint {
+  width: 100%;
+  color: #888;
   font-size: 11px;
 }
 
-.pass-actions {
-  justify-content: flex-start;
-  margin-top: 14px;
-}
-
-.pass-card .button {
+.pass-open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 38px;
+  padding: 0 22px;
   border-radius: 999px;
-}
-
-.pass-card .button-primary {
-  color: #1453d9;
-  background: #ffffff;
-  box-shadow: none;
-}
-
-.pass-card .button-secondary {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.18);
+  font-size: 14px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1a73e8 0%, #005bbf 100%);
+  box-shadow: 0 8px 18px rgba(0, 91, 191, 0.32);
+  flex: 0 0 auto;
 }
 
-.pass-main {
-  padding-top: 0;
+/* --- 主区 --- */
+.saving-main {
+  position: relative;
+  padding: 14px 16px calc(var(--nav-height) + 90px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.benefit-overview {
+.block-card {
+  padding: 16px 16px 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(70, 110, 170, 0.08);
+}
+
+.block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.block-h {
+  margin: 0;
+  color: #1a2a4a;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+}
+
+.block-link {
+  color: #8a98b5;
+  font-size: 12px;
+}
+
+/* --- 专享优惠券 3 列 --- */
+.saving-coupon-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin-top: -8px;
-  padding: 0 2px;
 }
 
-.benefit-cell {
-  padding: 12px 8px;
-  border: 1px solid #edf1f7;
-  border-radius: 14px;
-  text-align: center;
-  background: #ffffff;
-  box-shadow: 0 8px 18px rgba(20, 48, 96, 0.05);
-}
-
-.benefit-cell strong,
-.benefit-cell span {
-  display: block;
-}
-
-.benefit-cell strong {
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.benefit-cell span {
-  margin-top: 4px;
-  color: var(--text-soft);
-  font-size: 11px;
-}
-
-.plan-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.plan-card {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  padding: 13px;
-  border: 1px solid #edf1f7;
-  border-radius: 14px;
-  text-align: left;
-  background: #ffffff;
-}
-
-.plan-card strong {
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.plan-card span {
-  color: #ef5f20;
-  font-size: 22px;
-  font-weight: 900;
-}
-
-.plan-card small {
-  color: var(--text-soft);
-  font-size: 11px;
-}
-
-.plan-card.is-active {
-  border-color: #1453d9;
-  background: #f2f6ff;
-  box-shadow: inset 0 0 0 1px rgba(20, 83, 217, 0.08);
-}
-
-.coupon-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.member-coupon {
+.saving-coupon {
   position: relative;
-  display: grid;
-  grid-template-columns: 88px minmax(0, 1fr) auto;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  min-height: 86px;
-  padding: 12px;
-  border: 1px solid #e8edf5;
-  border-radius: 16px;
-  background: #ffffff;
+  gap: 4px;
+  padding: 14px 6px 10px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #e6f0ff 0%, #f8fbff 100%);
+  border: 1px solid #cfe0ff;
 }
 
-.member-coupon::before,
-.member-coupon::after {
-  content: "";
-  position: absolute;
-  left: 82px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--page-bg);
-}
-
-.member-coupon::before {
-  top: -6px;
-}
-
-.member-coupon::after {
-  bottom: -6px;
-}
-
-.coupon-value {
-  color: #ef5f20;
-  font-size: 22px;
+.sc-amount {
+  color: #ff5722;
+  font-size: 28px;
   font-weight: 900;
-  text-align: center;
+  line-height: 1;
+  letter-spacing: -0.6px;
+  display: inline-flex;
+  align-items: baseline;
 }
 
-.member-coupon strong {
-  display: block;
+.sc-currency {
   font-size: 14px;
+  font-weight: 800;
+  margin-right: 1px;
+}
+
+.sc-cond {
+  color: #2a3a5a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sc-tag {
+  color: #8a98b5;
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.sc-btn {
+  width: 100%;
+  margin-top: 6px;
+  min-height: 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #1a73e8 0%, #005bbf 100%);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* --- 省钱价商品 3 列 --- */
+.saving-product-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.saving-product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 6px 10px;
+  border-radius: 12px;
+  background: #f7fbff;
+  border: 1px solid #e8eef9;
+}
+
+.saving-product img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.sp-name {
+  margin-top: 6px;
+  color: #1a2a4a;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-price-line {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.sp-price {
+  color: #ff5722;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+}
+
+.sp-origin {
+  color: #b0b8c8;
+  font-size: 11px;
+  text-decoration: line-through;
+}
+
+/* --- 会员权益 5 列 --- */
+.saving-benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.sb-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 2px;
+}
+
+.sb-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eaf3ff;
+}
+
+.sb-label {
+  color: #5a6a85;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* --- 规则说明 --- */
+.saving-rule-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #6a7a99;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.saving-rule-list li + li {
+  margin-top: 4px;
+}
+
+/* --- 底部浮动开通条 --- */
+.saving-floating-bar {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--nav-height) + 8px);
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: calc(100% - 24px);
+  max-width: 406px;
+  padding: 8px 10px 8px 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 91, 191, 0.2), 0 0 0 1px rgba(0, 91, 191, 0.06);
+  transform: translateX(-50%);
+}
+
+.sfb-mascot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  background: #eaf3ff;
+  flex: 0 0 auto;
+}
+
+.sfb-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sfb-text strong {
+  color: #1a2a4a;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.sfb-text span {
+  color: #8a98b5;
+  font-size: 11px;
+  line-height: 1.1;
+}
+
+.sfb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff9145 0%, #ff5722 100%);
+  color: #ffffff;
+  font-weight: 800;
+  flex: 0 0 auto;
+  box-shadow: 0 6px 14px rgba(255, 87, 34, 0.32);
+}
+
+.sfb-btn em {
+  font-size: 16px;
+  font-style: normal;
   font-weight: 900;
 }
 
-.member-coupon span {
-  display: block;
-  margin-top: 4px;
-  color: var(--text-soft);
-  font-size: 11px;
-  line-height: 1.45;
-}
-
-.member-coupon .mini-link {
-  flex: 0 0 auto;
-  min-height: 30px;
-  padding: 0 10px;
-  border-radius: 999px;
-  color: #ffffff;
+.sfb-btn span {
   font-size: 12px;
-  background: var(--primary);
 }
 
-.member-coupon .mini-link:disabled {
-  color: var(--text-faint);
-  background: var(--surface-muted);
+.page-main-bottom-spacer {
+  height: 4px;
 }
 
-.product-stack .product-card {
-  border-radius: 14px;
-  box-shadow: none;
-}
-
-.benefit-item {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  gap: 10px;
-  align-items: flex-start;
-}
-
-.benefit-icon {
-  border-radius: 50%;
-}
-
+/* 380px 以下 5 列权益挤,缩小 */
 @media (max-width: 380px) {
-  .member-coupon {
-    grid-template-columns: 74px minmax(0, 1fr);
+  .sb-icon {
+    width: 36px;
+    height: 36px;
   }
-
-  .member-coupon .mini-link {
-    grid-column: 1 / -1;
-    justify-self: stretch;
+  .sb-label {
+    font-size: 10px;
+  }
+  .pass-mascot {
+    width: 110px;
   }
 }

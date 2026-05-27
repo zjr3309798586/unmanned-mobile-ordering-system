@@ -1,32 +1,357 @@
-.detail-top-area {
-  padding-bottom: 0;
+/* =========================================================
+   Detail v4 — Campus Fresh,选项 + 底部全宽 CTA
+   ========================================================= */
+.detail-shell {
+  --primary: #005bbf;
+  --primary-container: #1a73e8;
+  --primary-light: #f0f7ff;
+  --on-surface: #191c23;
+  --on-surface-variant: #414754;
+  --on-surface-mute: #999999;
+  --surface-blue: #f7f8fa;
+  --surface-container: #f3f4f6;
+  --outline-variant: #eeeeee;
+  --price-red: #FF4D4F;
+
+  background: var(--surface-blue);
+  font-family: "Be Vietnam Pro", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--on-surface);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  padding-bottom: 200px;
 }
 
-.detail-hero-card {
-  margin-top: 0;
-  padding: 10px;
-  box-shadow: var(--shadow-card);
-}
-
-.detail-cover {
+/* === 顶部图区 === */
+.d-img-wrap {
+  position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-md);
-  object-fit: cover;
-  background: var(--surface-soft);
+  background: #fff;
+  aspect-ratio: 1 / 1;
 }
 
-.detail-badge-row {
+.d-topbar {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+}
+
+.d-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(6px);
+}
+
+.d-top-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.d-top-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(229, 231, 235, 0.6);
+}
+
+.d-pill-dots { display: inline-flex; gap: 3px; align-items: center; }
+.d-pill-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #191c23;
+  display: inline-block;
+}
+
+.d-pill-sep {
+  width: 1px;
+  height: 14px;
+  background: #d1d5db;
+  margin: 0 8px;
+}
+
+.d-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+/* === 主体 === */
+.d-main {
+  position: relative;
+  z-index: 5;
+  margin-top: -24px;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 24px 16px 24px;
+}
+
+/* 头部行(标题/描述/收藏) */
+.d-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.d-head-text { flex: 1 1 auto; min-width: 0; }
+
+.d-name {
+  margin: 0 0 6px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--on-surface);
+  letter-spacing: -0.3px;
+}
+
+.d-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+  max-width: 260px;
+}
+
+.d-fav {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-surface-variant);
+  background: transparent;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.d-fav span {
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.d-fav-icon { font-size: 22px; line-height: 1; color: #414754; }
+.d-fav.is-active { color: #f5a623; }
+.d-fav.is-active .d-fav-icon { color: #ffb300; }
+
+/* 分隔线 */
+.d-divider {
+  height: 1px;
+  background: var(--outline-variant);
+  width: 100%;
+  margin: 24px 0;
+}
+
+/* 选项组 */
+.d-options {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.d-opt-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.d-opt-label {
+  width: 56px;
+  padding-top: 8px;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+
+.d-opt-label em {
+  color: #ef4444;
+  margin-left: 2px;
+  font-style: normal;
+}
+
+.d-opt-btns {
+  flex: 1 1 auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 12px;
 }
 
-.quantity-row {
+.d-opt-btn {
+  position: relative;
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--surface-container);
+  color: var(--on-surface);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.d-opt-btn.is-active {
+  background: var(--primary-light);
+  border-color: var(--primary-container);
+  color: var(--primary-container);
+  font-weight: 500;
+}
+
+.d-opt-btn.is-active::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-container) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23fff'><path d='M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z'/></svg>") center/10px no-repeat;
+}
+
+/* === sticky 底部 === */
+.d-footer {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  width: 100%;
+  max-width: 430px;
+  transform: translateX(-50%);
+  z-index: 50;
+  background: #fff;
+  border-top: 1px solid #f3f4f6;
+  border-radius: 16px 16px 0 0;
+  padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+}
+
+.d-foot-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+/* 价格 */
+.d-price-line {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  color: var(--price-red);
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.d-pr-yuan { font-size: 14px; font-weight: 700; }
+.d-pr-int { font-size: 26px; font-weight: 700; letter-spacing: -0.6px; margin: 0 2px; line-height: 1; }
+
+.d-pr-tip {
+  display: inline-flex;
   align-items: center;
+  margin-left: 4px;
+  font-size: 12px;
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-weight: 500;
+  color: var(--price-red);
 }
 
-.detail-action-bar .button {
-  min-width: 104px;
+.d-pr-tip i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  margin-left: 3px;
+  border: 1px solid var(--price-red);
+  border-radius: 50%;
+  font-size: 9px;
+  font-style: normal;
+  color: var(--price-red);
+  background: transparent;
 }
+
+.d-pr-origin {
+  margin-left: 6px;
+  color: var(--on-surface-variant);
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 13px;
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* 数量 */
+.d-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface-container);
+}
+
+.d-qty-minus,
+.d-qty-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.d-qty-minus {
+  background: transparent;
+  color: var(--on-surface-variant);
+}
+
+.d-qty-plus {
+  background: var(--primary);
+  color: #fff;
+}
+
+.d-qty-num {
+  min-width: 18px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+
+/* 规格摘要 */
+.d-spec-summary {
+  color: var(--on-surface-mute);
+  font-size: 12px;
+  margin-bottom: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 全宽 CTA */
+.d-cta {
+  width: 100%;
+  padding: 14px 0;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(0, 91, 191, 0.2);
+}
+
+.d-cta:active { background: #003e80; }

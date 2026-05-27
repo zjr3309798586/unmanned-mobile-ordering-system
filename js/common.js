@@ -171,6 +171,8 @@ window.OrderingApp = (function () {
 })();
 
 document.addEventListener("DOMContentLoaded", function () {
+  // 不再自动 devLogin,让 mine 页登录入口和加购流程按需触发
+
   var currentPage = document.body.dataset.page || "";
   var navPageMap = {
     detail: "menu",

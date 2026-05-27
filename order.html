@@ -4,39 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
-  <title>订单页 - 云豹小点</title>
-  <link rel="stylesheet" href="css/common.css">
-  <link rel="stylesheet" href="css/order.css">
+  <title>订单 - 云豹小点</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/common.css?v=2">
+  <link rel="stylesheet" href="css/order.css?v=3">
 </head>
 <body data-page="order">
-  <div class="app-shell">
-    <header class="top-area">
-      <section class="store-card compact-store">
-        <div class="store-header">
-          <div>
-            <span class="store-label">订单中心</span>
-            <h1 class="store-name">我的订单</h1>
-          </div>
-          <span class="status-pill is-open">可查看历史订单</span>
-        </div>
-        <p class="store-address">订单会保存在这里，支持查看进度、取消订单和再来一单。</p>
-      </section>
+  <div class="app-shell order-shell">
+
+    <header class="order-topbar">
+      <button class="order-tab is-active" type="button" data-order-filter="self">
+        <span>自取</span>
+        <i class="order-tab-bar"></i>
+      </button>
+      <button class="order-tab" type="button" data-order-filter="delivery">
+        <span>外卖</span>
+        <i class="order-tab-bar"></i>
+      </button>
     </header>
 
-    <main class="page-main">
-      <section class="section-card">
-        <div class="order-tabs">
-          <button class="tab-chip is-active" type="button" data-order-filter="all">全部订单</button>
-          <button class="tab-chip" type="button" data-order-filter="current">进行中</button>
-          <button class="tab-chip" type="button" data-order-filter="history">历史订单</button>
-        </div>
-      </section>
-
-      <section class="order-list">
-        <section class="section-card">
-          <p class="section-note">正在读取订单...</p>
-        </section>
-      </section>
+    <main class="page-main order-main">
+      <div class="order-list" data-order-list>
+        <p class="order-empty" data-order-empty>加载中...</p>
+      </div>
     </main>
 
     <nav class="bottom-nav" aria-label="底部导航">
@@ -52,7 +45,7 @@
         <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-saving.svg" alt=""></span>
         <span>省钱卡</span>
       </a>
-      <a class="nav-item" data-nav-key="order" href="order.html">
+      <a class="nav-item is-active" data-nav-key="order" href="order.html">
         <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-order.svg" alt=""></span>
         <span>订单</span>
       </a>
@@ -63,7 +56,7 @@
     </nav>
   </div>
 
-  <script src="js/common.js"></script>
-  <script src="js/order.js"></script>
+  <script src="js/common.js?v=2"></script>
+  <script src="js/order.js?v=3"></script>
 </body>
 </html>

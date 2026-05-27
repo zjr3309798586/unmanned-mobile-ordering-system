@@ -4,97 +4,150 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
-  <title>购物车页 - 云豹小点</title>
-  <link rel="stylesheet" href="css/common.css">
-  <link rel="stylesheet" href="css/cart.css">
+  <title>购物车 - 云豹小点</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/common.css?v=2">
+  <link rel="stylesheet" href="css/cart.css?v=9">
 </head>
 <body data-page="cart">
-  <div class="app-shell">
-    <header class="top-area">
-      <section class="store-card compact-store">
-        <div class="store-header">
-          <div>
-            <span class="store-label">当前购物车</span>
-            <h1 class="store-name">正在读取门店</h1>
-          </div>
-          <span class="status-pill">支持继续加购</span>
-        </div>
-        <p class="store-address">已选商品将保存在当前门店购物车中，可直接跳转提交订单页。</p>
-      </section>
+  <div class="app-shell cart-shell">
+
+    <header class="cart-topbar">
+      <button class="ct-back" type="button" onclick="history.back()" aria-label="返回">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#191c23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <h1 class="ct-title">购物车</h1>
+      <button class="ct-edit" type="button">编辑</button>
     </header>
 
-    <main class="page-main with-floating-bar">
-      <section class="section-card tip-card">
-        <div class="section-head compact-head">
-          <div>
-            <h2 class="section-title">优惠提示</h2>
-            <p class="section-note">当前可用满减券与省钱卡优惠</p>
+    <main class="cart-main">
+
+      <!-- 门店卡 -->
+      <section class="store-card">
+        <div class="sc-main">
+          <div class="sc-head">
+            <span class="sc-pickup">自取</span>
+            <h2 class="sc-store-name">双流北京华联店</h2>
+            <svg class="sc-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
           </div>
+          <p class="sc-addr">四川省成都市双流区西航港街道锦华路172号北京华联外广场亭子(华为斜对面)</p>
+          <hr class="sc-divider">
+          <p class="sc-queue">前方<strong>11杯</strong>/<strong>6单</strong>制作中</p>
         </div>
-        <p class="info-text" data-cart-tip-text>正在读取当前可用优惠...</p>
+        <button class="sc-locate" type="button" aria-label="定位">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="#1a73e8">
+            <path d="M12 2C7.6 2 4 5.6 4 10c0 5.5 7.3 11.7 7.6 11.9.2.2.6.2.8 0 .3-.2 7.6-6.4 7.6-11.9 0-4.4-3.6-8-8-8zm0 11.2c-1.7 0-3.2-1.4-3.2-3.2S10.3 6.8 12 6.8s3.2 1.4 3.2 3.2-1.5 3.2-3.2 3.2z"/>
+          </svg>
+        </button>
       </section>
 
-      <section class="section-card">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">已选商品</h2>
-            <p class="section-note">支持数量修改与删除</p>
-          </div>
-          <a class="section-link" href="menu.html">继续点餐</a>
-        </div>
-        <div class="cart-item-list" data-cart-list>
-          <p class="section-note">正在读取购物车...</p>
-        </div>
-      </section>
-
-      <section class="section-card">
-        <div class="section-head compact-head">
-          <div>
-            <h2 class="section-title">费用明细</h2>
-            <p class="section-note">当前金额来自购物车已选商品</p>
-          </div>
-        </div>
-        <div class="summary-list">
-          <div class="summary-row">
-            <span>商品总价</span>
-            <strong data-goods-total>¥ 0.00</strong>
-          </div>
-          <div class="summary-row">
-            <span>包装费</span>
-            <strong data-packaging-fee>¥ 0.00</strong>
-          </div>
-          <div class="summary-row">
-            <span>优惠金额</span>
-            <strong class="discount-price" data-discount-total>- ¥ 0.00</strong>
-          </div>
-          <div class="summary-row total-row">
-            <span>应付金额</span>
-            <strong class="accent-price" data-pay-total>¥ 0.00</strong>
-          </div>
+      <!-- 商品明细 -->
+      <section class="cart-card" data-cart-card>
+        <h3 class="cc-title">商品明细</h3>
+        <div class="cart-items" data-cart-items></div>
+        <div class="cc-total" data-cc-total>
+          <span>共<strong data-total-qty>0</strong>件商品,总计 <span class="cc-total-price"><span>¥</span><strong data-total-amount>0</strong></span></span>
         </div>
       </section>
 
-      <section class="section-card hidden-card" data-cart-empty>
-        <div class="empty-state">
-          <strong>购物车暂时为空</strong>
-          <p>可以从菜单页继续选择商品，加入后会显示在这里。</p>
-          <a class="button button-primary" href="menu.html">返回点餐页</a>
+      <!-- 空购物车占位 -->
+      <section class="cart-card cart-empty-card" data-cart-empty style="display:none">
+        <div class="cart-empty-body">
+          <p>购物车空空,先去点点单</p>
+          <a class="cart-empty-btn" href="menu.html">去点餐</a>
         </div>
+      </section>
+
+      <!-- 超值加购 -->
+      <section class="cart-card">
+        <div class="cc-head">
+          <h3 class="cc-title">超值加购 <span class="cc-help">?</span></h3>
+          <span class="cc-meta">237008人加购</span>
+        </div>
+        <div class="addon-row">
+          <article class="addon-item">
+            <div class="ao-cover">
+              <img src="images/menu-product-grape.png" alt="葡萄大福">
+              <em class="ao-save">省¥1</em>
+            </div>
+            <div class="ao-info">
+              <h5 class="ao-name">葡萄大福</h5>
+              <div class="ao-row">
+                <div class="ao-price"><span class="ao-yuan">¥</span><span class="ao-int">3</span><span class="ao-dec">.9</span><span class="ao-origin">¥4.9</span></div>
+                <button class="ao-add" type="button" aria-label="加购"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+              </div>
+            </div>
+          </article>
+          <article class="addon-item">
+            <div class="ao-cover">
+              <img src="images/menu-product-wrap.png" alt="龙井马蹄绿豆糕">
+              <em class="ao-save">省¥1</em>
+            </div>
+            <div class="ao-info">
+              <h5 class="ao-name">龙井马蹄绿豆糕</h5>
+              <div class="ao-row">
+                <div class="ao-price"><span class="ao-yuan">¥</span><span class="ao-int">3</span><span class="ao-dec">.9</span><span class="ao-origin">¥4.9</span></div>
+                <button class="ao-add" type="button" aria-label="加购"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 优惠券入口 -->
+      <section class="cart-card coupon-entry" data-coupon-entry>
+        <div class="cc-head">
+          <h3 class="cc-title">优惠券</h3>
+          <span class="cc-meta" data-coupon-meta>选择优惠券 ›</span>
+        </div>
+        <div class="discount-row" data-coupon-row>
+          <span class="dr-name" data-dr-name>未选择优惠券</span>
+          <span class="dr-amount" data-dr-amount>-¥0.0</span>
+        </div>
+        <p class="dr-hint" data-dr-hint>点击右上角选择券</p>
       </section>
     </main>
 
-    <div class="floating-bar checkout-bar">
-      <div class="floating-summary">
-        <span class="floating-label">待结算金额</span>
-        <strong class="floating-price" data-bar-pay-total>¥ 0.00</strong>
-        <span class="floating-label"><span data-bar-item-count>0</span> 件商品</span>
+    <!-- 选优惠券抽屉 -->
+    <div class="coupon-mask" data-coupon-mask></div>
+    <aside class="coupon-drawer" data-coupon-drawer>
+      <div class="cd-head">
+        <strong>选择优惠券</strong>
+        <button class="cd-close" type="button" data-coupon-close>取消</button>
       </div>
-      <div class="floating-actions">
-        <a class="button button-primary" href="submit-order.html">去结算</a>
+      <div class="cd-list" data-coupon-list>
+        <p class="cd-empty">加载中...</p>
       </div>
-    </div>
+      <button class="cd-no-coupon" type="button" data-coupon-clear>不使用优惠券</button>
+    </aside>
 
-    <nav class="bottom-nav" aria-label="底部导航">
+    <!-- 底部支付条 -->
+    <footer class="pay-bar">
+      <div class="pb-bonus">
+        <span class="pb-bonus-icon">☕</span>
+        <span class="pb-bonus-text">本单预计得葫芦 <span class="pb-bonus-num">+0.6</span></span>
+        <span class="pb-bonus-help">?</span>
+      </div>
+      <div class="pb-main">
+        <div class="pb-left">
+          <div class="pb-pay-row">
+            <span class="pb-pay-label">实付 </span>
+            <span class="pb-yuan">¥</span>
+            <strong class="pb-pay-int" data-pay-int>13</strong>
+            <span class="pb-pay-dec" data-pay-dec>.9</span>
+            <span class="pb-pay-origin" data-pay-origin>¥17</span>
+          </div>
+          <div class="pb-saved">总计优惠 <strong data-saved>¥3.1</strong></div>
+        </div>
+        <button class="pb-go-btn" type="button" data-pay>立即支付</button>
+      </div>
+    </footer>
+
+    <nav class="bottom-nav cart-bottom-nav" aria-label="底部导航">
       <a class="nav-item" data-nav-key="home" href="index.html">
         <span class="nav-icon"><img class="nav-logo-icon" src="images/nav-home.svg" alt=""></span>
         <span>首页</span>
@@ -118,7 +171,7 @@
     </nav>
   </div>
 
-  <script src="js/common.js"></script>
-  <script src="js/cart.js"></script>
+  <script src="js/common.js?v=2"></script>
+  <script src="js/cart.js?v=9"></script>
 </body>
 </html>
