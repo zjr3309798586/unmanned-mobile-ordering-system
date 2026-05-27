@@ -1,134 +1,113 @@
-<view class="app-shell">
-  <view class="home-shop-header">
-    <view class="home-store-bar" wx:if="{{store}}">
-      <view>
-        <text class="store-label">当前门店</text>
-        <view class="store-name">{{store.name}}</view>
-      </view>
-      <text class="status-pill is-open">营业中</text>
-    </view>
+<view class="home-shell">
 
-    <view class="search-bar home-search">
-      <text class="search-icon">搜</text>
-      <input class="search-input" placeholder="搜索奶茶、果茶、咖啡、小食" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="goMenu" />
+  <view class="home-topbar">
+    <view class="ht-capsule">
+      <view class="ht-cap-btn"><text class="ht-icon-dots">···</text></view>
+      <view class="ht-cap-sep"></view>
+      <view class="ht-cap-btn"><text class="ht-icon-loc">⊙</text></view>
     </view>
   </view>
 
-  <view class="page-main home-main">
-    <view class="home-banner home-hero-card">
-      <view class="banner-content">
-        <text class="hero-badge">{{bannerTag}}</text>
-        <view class="banner-title">
-          <view wx:for="{{bannerTitleLines}}" wx:key="*this">{{item}}</view>
-        </view>
-        <view class="banner-text">{{bannerText}}</view>
-        <view class="hero-actions">
-          <button class="button button-primary" bindtap="goMenu">{{bannerActionText}}</button>
-        </view>
-      </view>
-      <view class="banner-visual">
-        <image class="banner-image" src="/images/product-orange-coffee.svg" mode="aspectFill" />
-        <image class="banner-side-image" src="/images/mascot-yunbao-144.png" mode="aspectFill" />
-      </view>
-    </view>
+  <swiper class="carousel" autoplay="true" interval="5000" duration="500" circular="true" current="{{slideIdx}}" bindchange="onSlide" indicator-dots="false">
 
-    <view class="order-mode-panel">
-      <view class="order-mode-card is-active" bindtap="goMenu">
-        <text class="mode-icon">取</text>
-        <view>
-          <text class="mode-title">门店自取</text>
-          <text class="mode-copy">提前下单，到店即取</text>
-        </view>
-      </view>
-      <view class="order-mode-card" bindtap="goMenu">
-        <text class="mode-icon">送</text>
-        <view>
-          <text class="mode-title">平台外送</text>
-          <text class="mode-copy">宿舍 / 办公室配送</text>
-        </view>
-      </view>
-    </view>
+    <swiper-item class="c-slide">
+      <image class="c-banner-img" src="/images/home-banner-1.png" mode="aspectFill"/>
+    </swiper-item>
 
-    <view class="quick-strip">
-      <navigator url="/pages/saving-card/index" open-type="redirect"><text>券</text><text>领券中心</text></navigator>
-      <navigator url="/pages/saving-card/index" open-type="redirect"><text>卡</text><text>省钱卡</text></navigator>
-      <navigator url="/pages/order/index" open-type="redirect"><text>单</text><text>我的订单</text></navigator>
-      <navigator url="/pages/cart/index" open-type="redirect"><text>车</text><text>购物车</text></navigator>
-    </view>
+    <swiper-item class="c-slide">
+      <image class="c-banner-img" src="/images/home-banner-2.png" mode="aspectFill"/>
+    </swiper-item>
 
-    <view class="coupon-ribbon" bindtap="goSavingCard">
-      <view>
-        <text class="ribbon-kicker">今日优惠</text>
-        <text class="ribbon-title">{{couponTitle}}</text>
-        <text class="ribbon-copy">{{couponCopy}}</text>
-      </view>
-      <text class="ribbon-action">{{couponActionText}}</text>
-    </view>
+    <swiper-item class="c-slide">
+      <image class="c-banner-img" src="/images/home-banner-3.png" mode="aspectFill"/>
+    </swiper-item>
 
-    <view class="section-card hot-section">
-      <view class="section-head">
-        <view>
-          <view class="section-title">本店热卖</view>
-          <view class="section-note">按销量优先推荐，点击可查看详情</view>
-        </view>
-        <text class="section-link" bindtap="goMenu">全部</text>
+  </swiper>
+
+  <view class="c-indicators">
+    <view class="c-dot {{slideIdx === 0 ? 'is-active' : ''}}"></view>
+    <view class="c-dot {{slideIdx === 1 ? 'is-active' : ''}}"></view>
+    <view class="c-dot {{slideIdx === 2 ? 'is-active' : ''}}"></view>
+  </view>
+
+  <view class="c-disclaim">*图片仅供参考,实际以出杯为准</view>
+
+  <view class="content-overlay">
+
+    <view class="member-progress-card">
+      <view class="mpc-avatar">
+        <text class="mpc-avatar-icon">👤</text>
       </view>
-      <scroll-view class="product-stack home-product-scroll" scroll-x="true">
-        <view class="product-card home-product-card" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
-          <view class="home-product-cover">
-            <image class="cover-thumb" src="{{item.imageUrl}}" mode="aspectFill" />
-            <text class="rank-badge">热卖 {{index + 1}}</text>
-          </view>
-          <view class="product-body">
-            <view class="product-name">{{item.name}}</view>
-            <view class="product-desc">{{item.description}}</view>
-            <view class="price-line">
-              <text class="price">{{item.priceText}}</text>
-              <text class="mini-link product-buy-link">去选购</text>
+      <view class="mpc-body">
+        <text class="mpc-name">爱嫩仙草满福的...</text>
+        <view class="mpc-row">
+          <view class="mpc-progress">
+            <view class="mpc-progress-bg">
+              <view class="mpc-progress-fill" style="width: 33%"></view>
             </view>
+            <text class="mpc-count">1/3杯</text>
           </view>
+          <view class="mpc-btn" bindtap="goPickup">去领取</view>
         </view>
-        <view class="section-note" wx:if="{{products.length === 0}}">暂无推荐商品。</view>
-      </scroll-view>
-    </view>
-
-    <view class="section-card task-card">
-      <view class="section-head compact-head">
-        <view>
-          <view class="section-title">集杯任务</view>
-          <view class="section-note">{{taskNote}}</view>
-        </view>
-        <navigator class="section-link" url="/pages/saving-card/index" open-type="redirect">查看</navigator>
-      </view>
-      <view class="task-progress">
-        <view class="progress-track"><view class="progress-fill" style="width: {{taskProgressWidth}}%;"></view></view>
-        <view class="task-footnote">{{taskFootnote}}</view>
       </view>
     </view>
 
-    <view class="section-card notice-card">
-      <view class="section-head compact-head">
-        <view>
-          <view class="section-title">门店公告</view>
-          <view class="section-note">当前门店通知</view>
-        </view>
+    <view class="home-divider"></view>
+
+    <view class="pickup-split">
+      <view class="ps-side" data-mode="pickup" bindtap="chooseMode">
+        <text class="ps-zh">自取</text>
+        <text class="ps-en">Pickup</text>
       </view>
-      <view class="announcement-list">
-        <view class="info-row">
-          <view>
-            <view class="info-title">门店公告</view>
-            <view class="info-text">{{notice}}</view>
-          </view>
-        </view>
+      <view class="ps-divider"></view>
+      <view class="ps-side" data-mode="delivery" bindtap="chooseMode">
+        <view class="ps-bubble"><text>最高享免配!</text></view>
+        <text class="ps-zh">外卖</text>
+        <text class="ps-en">Deliver</text>
       </view>
+    </view>
+
+    <view class="home-divider"></view>
+
+    <view class="quick-grid">
+      <navigator class="qg-item" url="/pages/menu/index" open-type="redirect">
+        <view class="qg-icon qg-icon-99">
+          <text class="qg-99-num">9.9</text>
+          <text class="qg-99-tag">喝咖啡</text>
+        </view>
+        <text class="qg-h">高品质咖啡</text>
+        <text class="qg-sub">全场9.9</text>
+      </navigator>
+      <navigator class="qg-item" url="/pages/saving-card/index" open-type="redirect">
+        <view class="qg-icon qg-icon-30">
+          <text class="qg-30-num">领30元</text>
+          <text class="qg-30-tag">券</text>
+        </view>
+        <text class="qg-h">领30元券包</text>
+        <text class="qg-sub">加入社群</text>
+      </navigator>
+      <navigator class="qg-item" url="/pages/mine/index" open-type="redirect">
+        <view class="qg-icon qg-icon-points">
+          <text class="qg-points-icon">🎁</text>
+        </view>
+        <text class="qg-h">积分兑换</text>
+        <text class="qg-sub">专享福利</text>
+      </navigator>
+      <navigator class="qg-item" url="/pages/saving-card/index" open-type="redirect">
+        <view class="qg-icon qg-icon-code">
+          <text class="qg-code-icon">🎟</text>
+        </view>
+        <text class="qg-h">券码兑换</text>
+        <text class="qg-sub">立享优惠</text>
+      </navigator>
     </view>
   </view>
 
-  <view class="bottom-nav">
-    <navigator class="nav-item is-active" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit" /></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit" /></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit" /></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit" /></view><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit" /></view><text>我的</text></navigator>
+  <view class="bottom-nav home-bottom-nav">
+    <navigator class="nav-item is-active" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

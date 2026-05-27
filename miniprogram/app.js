@@ -1,4 +1,5 @@
 const auth = require("./utils/auth");
+const config = require("./utils/config");
 
 App({
   globalData: {
@@ -7,5 +8,10 @@ App({
 
   onLaunch() {
     this.globalData.userSession = auth.getSession();
+    if (!auth.isLoggedIn() && config.useDevLogin) {
+      auth.devLogin().then((session) => {
+        this.globalData.userSession = session;
+      }).catch(() => {});
+    }
   }
 });

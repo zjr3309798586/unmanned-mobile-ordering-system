@@ -1,105 +1,183 @@
-<view class="app-shell">
-  <view class="top-area">
-    <view class="store-card compact-store">
-      <view class="store-header">
-        <view>
-          <text class="store-label">当前购物车</text>
-          <view class="store-name">{{storeName}}</view>
-        </view>
-        <text class="status-pill">支持继续加购</text>
-      </view>
-      <view class="store-address">已选商品将保存在当前门店购物车中，可直接跳转提交订单页。</view>
+<view class="cart-shell">
+
+  <view class="cart-topbar">
+    <view class="ct-back" bindtap="goBack">
+      <text class="ct-back-arrow">‹</text>
     </view>
+    <text class="ct-title">购物车</text>
+    <view class="ct-edit" bindtap="onEdit">编辑</view>
   </view>
 
-  <view class="page-main with-floating-bar">
-    <view class="section-card tip-card">
-      <view class="section-head compact-head">
-        <view>
-          <view class="section-title">优惠提示</view>
-          <view class="section-note">当前可用满减券与省钱卡优惠</view>
+  <view class="cart-main">
+
+    <!-- 门店卡 -->
+    <view class="store-card">
+      <view class="sc-main">
+        <view class="sc-head">
+          <text class="sc-pickup">自取</text>
+          <text class="sc-store-name">双流北京华联店</text>
+          <text class="sc-arrow">›</text>
         </view>
+        <text class="sc-addr">四川省成都市双流区西航港街道锦华路172号北京华联外广场亭子(华为斜对面)</text>
+        <view class="sc-divider"></view>
+        <text class="sc-queue">前方<text class="sc-queue-num">11杯</text>/<text class="sc-queue-num">6单</text>制作中</text>
       </view>
-      <view class="info-text">{{tipText}}</view>
+      <view class="sc-locate"><text class="sc-locate-icon">📍</text></view>
     </view>
 
-    <view class="section-card" wx:if="{{needsLogin}}">
-      <view class="empty-state">
-        <view class="empty-title">请先登录</view>
-        <view class="section-note">登录后购物车会按你的账号保存，之后可继续提交订单。</view>
-        <button class="button button-primary" bindtap="login">去登录</button>
-      </view>
-    </view>
-
-    <view wx:if="{{loggedIn}}">
-      <view class="section-card">
-        <view class="section-head">
-          <view>
-            <view class="section-title">已选商品</view>
-            <view class="section-note">支持数量修改与删除</view>
+    <!-- 商品明细 -->
+    <view class="cart-card" wx:if="{{!isEmpty}}">
+      <text class="cc-title">商品明细</text>
+      <view class="cart-items">
+        <view class="cart-item" wx:for="{{items}}" wx:key="id">
+          <view class="ci-thumb">
+            <image src="{{item.imageUrl}}" mode="aspectFill"/>
+            <text class="ci-new" wx:if="{{item.isNew}}">新</text>
           </view>
-          <navigator class="section-link" url="/pages/menu/index" open-type="redirect">继续点餐</navigator>
-        </view>
-        <view class="cart-item-list" wx:if="{{!cart.isEmpty}}">
-          <view class="cart-item" wx:for="{{cart.items}}" wx:key="id">
-            <image class="cover-thumb" src="{{item.imageUrl}}" mode="aspectFill" />
-            <view class="cart-item-main">
-              <view class="cart-item-head">
-                <view>
-                  <view class="product-name">{{item.productName}}</view>
-                  <view class="product-desc">{{item.specText}}</view>
-                </view>
-                <button class="text-action" data-id="{{item.id}}" bindtap="removeItem">删除</button>
-              </view>
-              <view class="price-line">
-                <text class="price small-price">{{item.subtotalText}}</text>
-                <view class="stepper">
-                  <button data-id="{{item.id}}" data-quantity="{{item.quantity}}" data-delta="-1" bindtap="changeQuantity">-</button>
-                  <text>{{item.quantity}}</text>
-                  <button data-id="{{item.id}}" data-quantity="{{item.quantity}}" data-delta="1" bindtap="changeQuantity">+</button>
-                </view>
-              </view>
+          <view class="ci-body">
+            <view class="ci-row1">
+              <text class="ci-name">{{item.name}}</text>
+              <view class="ci-price"><text class="ci-yuan">¥</text><text class="ci-int">{{item.priceText}}</text></view>
+            </view>
+            <text class="ci-spec">{{item.specText}}</text>
+            <view class="ci-row3">
+              <text class="ci-promo" wx:if="{{item.promoText}}">{{item.promoText}}</text>
+              <text class="ci-promo-placeholder" wx:else></text>
+              <text class="ci-qty">x{{item.quantity}}</text>
             </view>
           </view>
         </view>
-        <view class="empty-state" wx:if="{{cart.isEmpty}}">
-          <view class="empty-title">购物车暂时为空</view>
-          <view class="section-note">可以从菜单页继续选择商品，加入后会显示在这里。</view>
-          <button class="button button-primary" bindtap="goMenu">返回点餐页</button>
+      </view>
+      <view class="cc-total">
+        <text>共<text class="cc-strong">{{totalQty}}</text>件商品,总计 </text>
+        <view class="cc-total-price">
+          <text class="cc-tp-yuan">¥</text>
+          <text class="cc-tp-int">{{totalAmount}}</text>
         </view>
       </view>
+    </view>
 
-      <view class="section-card">
-        <view class="section-head compact-head">
-          <view>
-            <view class="section-title">费用明细</view>
-            <view class="section-note">当前金额来自购物车已选商品</view>
+    <!-- 空购物车占位 -->
+    <view class="cart-card cart-empty-card" wx:if="{{isEmpty}}">
+      <view class="cart-empty-body">
+        <text class="cart-empty-text">购物车空空,先去点点单</text>
+        <view class="cart-empty-btn" bindtap="goMenu">去点餐</view>
+      </view>
+    </view>
+
+    <!-- 超值加购 -->
+    <view class="cart-card">
+      <view class="cc-head">
+        <view class="cc-title-row">
+          <text class="cc-title">超值加购 </text>
+          <text class="cc-help">?</text>
+        </view>
+        <text class="cc-meta">237008人加购</text>
+      </view>
+      <view class="addon-row">
+        <view class="addon-item" wx:for="{{addons}}" wx:key="id" data-id="{{item.id}}" bindtap="addAddon">
+          <view class="ao-cover">
+            <image src="{{item.imageUrl}}" mode="aspectFill"/>
+            <text class="ao-save">省¥{{item.save}}</text>
+          </view>
+          <view class="ao-info">
+            <text class="ao-name">{{item.name}}</text>
+            <view class="ao-row">
+              <view class="ao-price">
+                <text class="ao-yuan">¥</text>
+                <text class="ao-int">{{item.priceInt}}</text>
+                <text class="ao-dec">.{{item.priceDec}}</text>
+                <text class="ao-origin">¥{{item.origin}}</text>
+              </view>
+              <view class="ao-add"><text>+</text></view>
+            </view>
           </view>
         </view>
-        <view class="summary-list">
-          <view class="summary-row"><text>商品总价</text><text>{{cart.totalText}}</text></view>
-          <view class="summary-row"><text>包装费</text><text>¥ 0.00</text></view>
-          <view class="summary-row"><text>优惠金额</text><text class="discount-price">- ¥ 0.00</text></view>
-          <view class="summary-row total-row"><text>应付金额</text><text class="accent-price">{{cart.totalText}}</text></view>
-        </view>
       </view>
     </view>
-  </view>
 
-  <view class="floating-bar checkout-bar" wx:if="{{loggedIn && !cart.isEmpty}}">
-    <view class="floating-summary">
-      <text class="floating-label">待结算金额</text>
-      <text class="floating-price">{{cart.totalText}}</text>
-      <text class="floating-label">{{cart.totalQuantity}} 件商品</text>
+    <!-- 优惠券入口 -->
+    <view class="cart-card coupon-entry" bindtap="openDrawer">
+      <view class="cc-head">
+        <text class="cc-title">优惠券</text>
+        <text class="cc-meta">选择优惠券 ›</text>
+      </view>
+      <view class="discount-row">
+        <text class="dr-name">{{drNameText}}</text>
+        <text class="dr-amount">{{drAmountText}}</text>
+      </view>
+      <text class="dr-hint">{{drHintText}}</text>
     </view>
-    <navigator class="button button-primary" url="/pages/submit-order/index" open-type="redirect">去结算</navigator>
   </view>
 
-  <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit" /></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit" /></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit" /></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit" /></view><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit" /></view><text>我的</text></navigator>
+  <!-- 选优惠券抽屉 -->
+  <view class="coupon-mask {{drawerOpen ? 'is-open' : ''}}" bindtap="closeDrawer"></view>
+  <view class="coupon-drawer {{drawerOpen ? 'is-open' : ''}}" catchtap="noop">
+    <view class="cd-head">
+      <text class="cd-head-title">选择优惠券</text>
+      <text class="cd-close" bindtap="closeDrawer">取消</text>
+    </view>
+    <view class="cd-list">
+      <block wx:if="{{couponDisplay.length === 0}}">
+        <view class="cd-coupon-empty">
+          <text>还没有可用优惠券</text>
+          <text class="cd-coupon-empty-sub">去省钱卡领一张</text>
+        </view>
+      </block>
+      <block wx:else>
+        <view
+          class="cd-coupon {{item.id === selectedCouponId ? 'is-selected' : ''}} {{item.usable ? '' : 'is-disabled'}}"
+          wx:for="{{couponDisplay}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          data-usable="{{item.usable}}"
+          data-gap="{{item.gap}}"
+          bindtap="pickCoupon"
+        >
+          <view class="cdc-amount">
+            <text class="cdc-yuan">¥</text>
+            <text class="cdc-int">{{item.discountAmount}}</text>
+          </view>
+          <view class="cdc-body">
+            <text class="cdc-title">{{item.title}}</text>
+            <view class="cdc-cond">
+              <text>{{item.conditionText}}</text>
+              <text class="cdc-gap" wx:if="{{!item.usable}}">还差 ¥{{item.gap}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="cd-no-coupon" bindtap="clearCoupon">不使用优惠券</view>
+  </view>
+
+  <!-- 底部支付条 -->
+  <view class="pay-bar">
+    <view class="pb-bonus">
+      <text class="pb-bonus-icon">☕</text>
+      <text>本单预计得葫芦 <text class="pb-bonus-num">+0.6</text></text>
+      <text class="pb-bonus-help">?</text>
+    </view>
+    <view class="pb-main">
+      <view class="pb-left">
+        <view class="pb-pay-row">
+          <text class="pb-pay-label">实付 </text>
+          <text class="pb-yuan">¥</text>
+          <text class="pb-pay-int">{{payInt}}</text>
+          <text class="pb-pay-dec">.{{payDec}}</text>
+          <text class="pb-pay-origin">¥{{totalAmount}}</text>
+        </view>
+        <text class="pb-saved">总计优惠 <text class="pb-saved-num">¥{{saved}}</text></text>
+      </view>
+      <view class="pb-go-btn" bindtap="onPay">立即支付</view>
+    </view>
+  </view>
+
+  <view class="bottom-nav cart-bottom-nav">
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

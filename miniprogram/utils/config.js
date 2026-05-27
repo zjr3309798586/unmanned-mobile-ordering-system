@@ -1,6 +1,8 @@
+const serverOrigin = "http://192.168.43.223:8080";
+
 module.exports = {
-  apiBaseUrl: "http://127.0.0.1:8080/api",
-  assetBaseUrl: "http://127.0.0.1:8080",
+  apiBaseUrl: serverOrigin + "/api",
+  assetBaseUrl: serverOrigin,
 
   // 微信登录配置完成前，工具内先使用游客账号。
   useDevLogin: true,

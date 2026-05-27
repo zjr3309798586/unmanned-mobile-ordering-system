@@ -1,74 +1,59 @@
-<view class="app-shell">
-  <view class="top-area">
-    <view class="store-card compact-store">
-      <view class="store-header">
-        <view>
-          <text class="store-label">订单中心</text>
-          <view class="store-name">我的订单</view>
-        </view>
-        <text class="status-pill is-open">可查看历史订单</text>
-      </view>
-      <view class="store-address">订单会保存在这里，支持查看进度、取消订单和再来一单。</view>
+<view class="order-shell">
+
+  <view class="order-topbar">
+    <view class="order-tab {{tab === 'self' ? 'is-active' : ''}}" data-tab="self" bindtap="switchTab">
+      <text>自取</text><view class="order-tab-bar"></view>
+    </view>
+    <view class="order-tab {{tab === 'delivery' ? 'is-active' : ''}}" data-tab="delivery" bindtap="switchTab">
+      <text>外卖</text><view class="order-tab-bar"></view>
     </view>
   </view>
 
-  <view class="page-main">
-    <view class="section-card" wx:if="{{needsLogin}}">
-      <view class="empty-state">
-        <view class="empty-title">请先登录</view>
-        <view class="section-note">登录后可以查看你的全部订单。</view>
-        <button class="button button-primary" bindtap="login">微信登录</button>
-      </view>
-    </view>
+  <view class="order-main">
+    <view class="order-list">
 
-    <view wx:if="{{loggedIn}}">
-      <view class="section-card">
-        <view class="order-tabs">
-          <button class="tab-chip {{item.active ? 'is-active' : ''}}" wx:for="{{tabs}}" wx:key="id" data-id="{{item.id}}" bindtap="selectTab">{{item.name}}</button>
-        </view>
-      </view>
-
-      <view class="order-list">
-        <view class="section-card order-card" wx:for="{{visibleOrders}}" wx:key="id">
-          <view class="order-card-head">
-            <view>
-              <view class="info-title">订单号 {{item.orderNo}}</view>
-              <view class="section-note">{{item.createdText}} · {{item.pickupTypeText}}</view>
-            </view>
-            <text class="status-pill {{item.statusClass}}">{{item.statusText}}</text>
+      <view class="order-card" wx:for="{{orders}}" wx:key="id">
+        <view class="oc-head">
+          <view class="oc-store">
+            <view class="oc-store-name">{{item.storeName}}</view>
+            <view class="oc-icon-btn"><image src="/images/icons/ord-call.svg" mode="aspectFit"/></view>
+            <view class="oc-icon-btn"><image src="/images/icons/ord-near.svg" mode="aspectFit"/></view>
           </view>
-          <view class="order-goods">
-            <view wx:for="{{item.items}}" wx:for-item="food" wx:key="productId">
-              <text>{{food.productName}} · {{food.spec}} × {{food.quantity}} · {{food.subtotalText}}</text>
+          <view class="oc-status">
+            <text>{{item.statusText}}</text>
+            <image src="/images/icons/chev-right.svg" mode="aspectFit"/>
+          </view>
+        </view>
+        <view class="oc-meta">
+          <text>{{item.timeText}}</text>
+          <text class="oc-meta-sep">|</text>
+          <text>取茶号 {{item.pickupNo}}</text>
+        </view>
+        <view class="oc-body">
+          <view class="oc-thumbs">
+            <view class="oc-thumb" wx:for="{{item.thumbs}}" wx:for-item="thumb" wx:key="*this">
+              <image src="{{thumb}}" mode="aspectFit"/>
             </view>
           </view>
-          <view class="summary-list mt">
-            <view class="summary-row"><text>合计</text><text>{{item.totalText}}</text></view>
-            <view class="summary-row"><text>优惠</text><text class="discount-price">- {{item.discountText}}</text></view>
-            <view class="summary-row total-row"><text>实付</text><text class="accent-price">{{item.payableText}}</text></view>
+          <view class="oc-price">
+            <view class="oc-pay">¥{{item.amount}}</view>
+            <text class="oc-qty">共{{item.qty}}件</text>
           </view>
-          <view class="order-actions">
-            <button class="button button-secondary" wx:if="{{item.canCancel}}" data-id="{{item.id}}" bindtap="cancelOrder">取消订单</button>
-            <button class="button button-primary" data-id="{{item.id}}" bindtap="repeatOrder">再来一单</button>
-          </view>
+        </view>
+        <view class="oc-actions">
+          <view class="oc-btn oc-btn-outline">评价一下</view>
+          <view class="oc-btn oc-btn-dark" data-id="{{item.id}}" bindtap="repeatOrder">再来一单</view>
         </view>
       </view>
 
-      <view class="section-card" wx:if="{{empty}}">
-        <view class="empty-state">
-          <view class="empty-title">暂无订单</view>
-          <view class="section-note">完成第一笔下单后会显示在这里。</view>
-          <button class="button button-primary" bindtap="goMenu">去点餐</button>
-        </view>
-      </view>
     </view>
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit" /></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit" /></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit" /></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit" /></view><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit" /></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

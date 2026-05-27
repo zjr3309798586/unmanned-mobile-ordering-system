@@ -4,174 +4,209 @@ const format = require("../../utils/format");
 
 Page({
   data: {
-    store: null,
     categories: [],
     products: [],
-    visibleProducts: [],
-    groupedProducts: [],
-    activeCategory: "all",
-    keyword: "",
-    promoNote: "正在读取当前可用优惠券...",
-    cartSummary: { items: [], totalAmount: 0, totalQuantity: 0, totalText: "¥ 0.00" },
-    productCounts: {},
-    cartExpanded: false,
-    orderMode: "pickup"
+    activeCat: "",
+    catTitle: "全部商品",
+    cartQty: 0,
+    cartTotal: "0.0",
+    couponCount: 0,
+    drawerOpen: false,
+    cartItems: [],
+    searchOpen: false,
+    searchKw: "",
+    searchHits: []
   },
 
+  _allProducts: [],
+  _cartItems: [],
+
   onShow() {
-    const keyword = wx.getStorageSync("menuKeyword") || "";
-    if (keyword) {
-      wx.removeStorageSync("menuKeyword");
-    }
-    this.setData({ keyword });
     this.loadData();
   },
 
   loadData() {
+    var self = this;
     Promise.all([
-      api.get("/store"),
       api.get("/categories"),
       api.get("/products"),
-      api.get("/coupons"),
-      auth.isLoggedIn() ? api.get("/cart") : Promise.resolve({ items: [], totalAmount: 0, totalQuantity: 0 })
-    ]).then(([store, categories, products, coupons, cartSummary]) => {
-      this.setData({
-        store,
-        categories: categories || [],
-        products: (products || []).map(this.decorateProduct),
-        promoNote: this.promoText(coupons || []),
-        cartSummary
-      }, () => {
-        this.updateProductCounts();
+      auth.isLoggedIn() ? api.get("/cart") : Promise.resolve(null),
+      api.get("/coupons")
+    ]).then(function (res) {
+      var cats = res[0] || [];
+      var products = res[1] || [];
+      var cart = res[2];
+      var coupons = (res[3] || []).filter(function (c) { return c.available; });
+      var activeCat = cats.length > 0 ? cats[0].id : "";
+      self._allProducts = products;
+      self._cartItems = cart ? (cart.items || []) : [];
+      self.setData({
+        categories: cats,
+        activeCat: activeCat,
+        catTitle: cats.length > 0 ? cats[0].name : "全部商品",
+        products: self.buildProducts(activeCat),
+        cartQty: cart ? (cart.totalQuantity || 0) : 0,
+        cartTotal: cart ? Number(cart.totalAmount || 0).toFixed(1) : "0.0",
+        couponCount: coupons.length,
+        cartItems: self.buildCartItems()
       });
-    }).catch((error) => {
-      wx.showToast({ title: error.message, icon: "none" });
+    }).catch(function () {});
+  },
+
+  buildProducts(catId) {
+    var cartItems = this._cartItems;
+    return (this._allProducts || []).filter(function (p) {
+      return !catId || p.categoryId === catId;
+    }).map(function (p) {
+      var price = Number(p.price || 0);
+      var ps = price.toFixed(1).split(".");
+      var qty = 0;
+      cartItems.forEach(function (ci) { if (ci.productId === p.id) qty += ci.quantity; });
+      return {
+        ...p,
+        imageUrl: api.imageUrl(p.image),
+        priceInt: ps[0],
+        priceDec: "." + ps[1],
+        qty: qty
+      };
     });
   },
 
-  decorateProduct(product) {
-    return {
-      ...product,
-      imageUrl: api.imageUrl(product.image),
-      priceText: format.money(product.price)
-    };
-  },
-
-  promoText(coupons) {
-    const coupon = coupons.find((item) => item.available);
-    return coupon
-      ? coupon.conditionText + "，下单可减 " + format.money(coupon.discountAmount)
-      : "当前暂无可用优惠券，下单金额按商品实付计算。";
-  },
-
-  onKeywordInput(event) {
-    this.setData({ keyword: event.detail.value });
-    this.filterProducts();
-  },
-
-  selectCategory(event) {
-    this.setData({ activeCategory: event.currentTarget.dataset.id });
-    this.filterProducts();
-  },
-
-  selectOrderMode(event) {
-    this.setData({ orderMode: event.currentTarget.dataset.mode });
-  },
-
-  filterProducts() {
-    const keyword = (this.data.keyword || "").toLowerCase();
-    const visibleProducts = this.data.products.filter((product) => {
-      const matchCategory = this.data.activeCategory === "all" || product.categoryId === this.data.activeCategory;
-      const matchKeyword = !keyword ||
-        product.name.toLowerCase().indexOf(keyword) >= 0 ||
-        (product.description || "").toLowerCase().indexOf(keyword) >= 0;
-      return matchCategory && matchKeyword;
-    }).map((product) => ({
-      ...product,
-      selectedCount: this.data.productCounts[product.id] || 0
-    }));
+  syncCart(cart) {
+    this._cartItems = cart ? (cart.items || []) : [];
     this.setData({
-      visibleProducts,
-      groupedProducts: this.groupProducts(visibleProducts)
+      cartQty: cart ? (cart.totalQuantity || 0) : 0,
+      cartTotal: cart ? Number(cart.totalAmount || 0).toFixed(1) : "0.0",
+      products: this.buildProducts(this.data.activeCat),
+      cartItems: this.buildCartItems()
     });
   },
 
-  groupProducts(products) {
-    const categoryNameMap = {};
-    this.data.categories.forEach((category) => {
-      categoryNameMap[category.id] = category.name;
+  buildCartItems() {
+    return (this._cartItems || []).map(function (it) {
+      var sub = Number((it.subtotal != null ? it.subtotal : Number(it.price) * it.quantity) || 0).toFixed(1);
+      return {
+        id: it.id,
+        productName: it.productName || it.name || "商品",
+        imageUrl: it.image ? (api.imageUrl ? api.imageUrl(it.image) : it.image) : "/images/food-placeholder.svg",
+        specText: it.specText || (typeof it.spec === "string" ? it.spec : "标准杯"),
+        subtotalText: sub,
+        quantity: it.quantity,
+        price: it.price
+      };
     });
-    const groups = [];
-    const groupMap = {};
-    products.forEach((product) => {
-      const key = product.categoryId || "other";
-      if (!groupMap[key]) {
-        groupMap[key] = {
-          id: key,
-          name: this.data.activeCategory === "all" ? (categoryNameMap[key] || "其他商品") : (categoryNameMap[key] || "商品列表"),
-          products: []
-        };
-        groups.push(groupMap[key]);
+  },
+
+  openDrawer() {
+    this.setData({ drawerOpen: true });
+  },
+
+  closeDrawer() {
+    this.setData({ drawerOpen: false });
+  },
+
+  drawerMinus(event) {
+    var self = this;
+    var id = event.currentTarget.dataset.id;
+    var quantity = Number(event.currentTarget.dataset.quantity || 1);
+    if (!auth.isLoggedIn()) return;
+    var promise = quantity <= 1
+      ? api.del("/cart/items/" + id)
+      : api.patch("/cart/items/" + id, { quantity: quantity - 1 });
+    promise
+      .then(function (data) { self.syncCart(data); })
+      .catch(function (e) { wx.showToast({ title: e.message, icon: "none" }); });
+  },
+
+  drawerPlus(event) {
+    var self = this;
+    var id = event.currentTarget.dataset.id;
+    var quantity = Number(event.currentTarget.dataset.quantity || 1);
+    if (!auth.isLoggedIn()) return;
+    api.patch("/cart/items/" + id, { quantity: quantity + 1 })
+      .then(function (data) { self.syncCart(data); })
+      .catch(function (e) { wx.showToast({ title: e.message, icon: "none" }); });
+  },
+
+  clearCart() {
+    var self = this;
+    if (!auth.isLoggedIn()) return;
+    wx.showModal({
+      title: "清空购物车",
+      content: "确定要清空所有已选商品吗?",
+      success: function (res) {
+        if (!res.confirm) return;
+        api.del("/cart")
+          .then(function (data) { self.syncCart(data || { items: [], totalQuantity: 0, totalAmount: 0 }); wx.showToast({ title: "已清空", icon: "success" }); })
+          .catch(function (e) { wx.showToast({ title: e.message, icon: "none" }); });
       }
-      groupMap[key].products.push(product);
     });
-    return groups;
   },
 
-  updateProductCounts() {
-    const productCounts = {};
-    (this.data.cartSummary.items || []).forEach((item) => {
-      productCounts[item.productId] = (productCounts[item.productId] || 0) + item.quantity;
-    });
+  switchCat(event) {
+    var catId = event.currentTarget.dataset.id;
+    var cat = this.data.categories.find(function (c) { return c.id === catId; });
     this.setData({
-      productCounts,
-      cartSummary: {
-        ...this.data.cartSummary,
-        items: (this.data.cartSummary.items || []).map((item) => ({
-          ...item,
-          spec: format.specText(item.spec),
-          subtotalText: format.money(Number(item.price || 0) * Number(item.quantity || 0))
-        })),
-        totalText: format.money(this.data.cartSummary.totalAmount)
-      }
-    }, () => {
-      this.filterProducts();
+      activeCat: catId,
+      catTitle: cat ? cat.name : "全部商品",
+      products: this.buildProducts(catId)
     });
   },
 
-  addToCart(event) {
-    if (!auth.isLoggedIn()) {
-      wx.showToast({ title: "请先登录", icon: "none" });
-      wx.redirectTo({ url: "/pages/mine/index" });
+  addCart(event) {
+    // 点 + 跳详情页让用户选规格,而不是直接按"标准杯"加购
+    var id = event.currentTarget.dataset.id;
+    wx.navigateTo({ url: "/pages/detail/index?id=" + encodeURIComponent(id) });
+  },
+
+  openSearch() {
+    this.setData({ searchOpen: true, searchKw: "", searchHits: [] });
+  },
+
+  closeSearch() {
+    this.setData({ searchOpen: false });
+  },
+
+  onSearchInput(event) {
+    var kw = (event.detail.value || "").trim().toLowerCase();
+    if (!kw) {
+      this.setData({ searchKw: "", searchHits: [] });
       return;
     }
-    api.post("/cart/items", {
-      productId: event.currentTarget.dataset.id,
-      spec: "标准杯 / 常温 / 正常糖",
-      quantity: 1
-    }).then((cartSummary) => {
-      this.setData({ cartSummary, cartExpanded: true }, () => {
-        this.updateProductCounts();
-      });
-      wx.showToast({ title: "已加入购物车", icon: "success" });
-    }).catch((error) => {
-      wx.showToast({ title: error.message, icon: "none" });
+    var hits = (this._allProducts || []).filter(function (p) {
+      var n = (p.name || "").toLowerCase();
+      var d = (p.description || "").toLowerCase();
+      return n.indexOf(kw) >= 0 || d.indexOf(kw) >= 0;
+    }).map(function (p) {
+      return {
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        imageUrl: p.image ? api.imageUrl(p.image) : "/images/food-placeholder.svg",
+        priceText: Number(p.price || 0).toFixed(1)
+      };
     });
+    this.setData({ searchKw: kw, searchHits: hits });
   },
 
-  toggleCart() {
-    if (this.data.cartSummary.totalQuantity) {
-      this.setData({ cartExpanded: !this.data.cartExpanded });
+  minusCart(event) {
+    var id = event.currentTarget.dataset.id;
+    var self = this;
+    if (!auth.isLoggedIn()) return;
+    var cartItem = this._cartItems.find(function (ci) { return ci.productId === id; });
+    if (!cartItem) return;
+    if (cartItem.quantity <= 1) {
+      api.del("/cart/items/" + cartItem.id)
+        .then(function (data) { self.syncCart(data); })
+        .catch(function (e) { wx.showToast({ title: e.message, icon: "none" }); });
+    } else {
+      api.patch("/cart/items/" + cartItem.id, { quantity: cartItem.quantity - 1 })
+        .then(function (data) { self.syncCart(data); })
+        .catch(function (e) { wx.showToast({ title: e.message, icon: "none" }); });
     }
   },
 
   goDetail(event) {
-    wx.navigateTo({
-      url: "/pages/detail/index?id=" + event.currentTarget.dataset.id
-    });
-  },
-
-  goCart() {
-    wx.navigateTo({ url: "/pages/cart/index" });
+    wx.navigateTo({ url: "/pages/detail/index?id=" + event.currentTarget.dataset.id });
   }
 });

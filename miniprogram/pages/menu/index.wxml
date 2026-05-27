@@ -1,112 +1,167 @@
-<view class="app-shell">
+<view class="menu-shell">
+
   <view class="menu-header">
-    <view class="menu-title-row">
-      <text>点单</text>
-      <text>先选取餐方式，再选择饮品</text>
-    </view>
 
-    <view class="menu-store-panel" wx:if="{{store}}">
-      <view>
-        <text class="store-label">当前门店</text>
-        <view class="store-name">{{store.name}}</view>
+    <view class="mh-top-row">
+      <view class="mh-tabs">
+        <view class="mh-tab is-active"><text>自取</text><view class="mh-tab-bar"></view></view>
+        <text class="mh-tab-sep">|</text>
+        <view class="mh-tab"><text>外卖</text></view>
       </view>
-      <view class="menu-store-status">
-        <text class="status-pill is-open">制作中</text>
-        <text>约 12 分钟</text>
+      <view class="mh-actions">
+        <view class="mh-icon-btn" bindtap="openSearch"><image src="/images/icons/mh-search.svg" mode="aspectFit"/></view>
+        <view class="mh-pill-group">
+          <view class="mh-pill-btn"><image src="/images/icons/mh-dots.svg" mode="aspectFit"/></view>
+          <view class="mh-pill-sep"></view>
+          <view class="mh-pill-btn"><image src="/images/icons/mh-scan.svg" mode="aspectFit"/></view>
+        </view>
       </view>
     </view>
 
-    <view class="menu-order-mode">
-      <button class="mode-pill {{orderMode === 'pickup' ? 'is-active' : ''}}" data-mode="pickup" bindtap="selectOrderMode">门店自取</button>
-      <button class="mode-pill {{orderMode === 'delivery' ? 'is-active' : ''}}" data-mode="delivery" bindtap="selectOrderMode">平台外送</button>
+    <view class="mh-store">
+      <image class="mh-store-star" src="/images/icons/mh-star.svg" mode="aspectFit"/>
+      <text class="mh-store-name">云豹双流北京华联店</text>
+      <image class="mh-store-arrow" src="/images/icons/mh-store-arrow.svg" mode="aspectFit"/>
     </view>
 
-    <view class="search-bar">
-      <text class="search-icon">搜</text>
-      <input class="search-input" placeholder="搜索商品、口味、套餐" value="{{keyword}}" bindinput="onKeywordInput" />
+    <view class="mh-meta">
+      <text>距离您1.10km</text>
+      <text class="mh-meta-sep">|</text>
+      <view class="mh-meta-tag">下单立即制作</view>
+    </view>
+
+    <view class="mh-promo-row">
+      <view class="mh-promo-text">
+        <image class="mh-promo-icon" src="/images/icons/mh-promo.svg" mode="aspectFit"/>
+        <text>高品质茶饮全场9.9元喝</text>
+        <image class="mh-promo-arrow" src="/images/icons/mh-down.svg" mode="aspectFit"/>
+      </view>
+      <view class="mh-promo-btn">拼单</view>
     </view>
   </view>
 
-  <view class="menu-main with-floating-bar">
-    <view class="menu-campaign-card">
-      <view>
-        <text class="campaign-tag">今日可用</text>
-        <view class="campaign-title">满减券已准备好</view>
+  <view class="menu-body">
+
+    <view class="menu-side">
+      <view class="ms-list">
+        <view class="ms-item {{activeCat === item.id ? 'is-active' : ''}}" wx:for="{{categories}}" wx:key="id" data-id="{{item.id}}" bindtap="switchCat">
+          <view class="ms-active-bar" wx:if="{{activeCat === item.id}}"></view>
+          <text class="ms-label">{{item.name}}</text>
+        </view>
       </view>
-      <view class="campaign-note">{{promoNote}}</view>
     </view>
 
-    <view class="menu-layout">
-      <view class="category-panel">
-        <view class="category-list">
-          <button class="category-button {{activeCategory === 'all' ? 'is-active' : ''}}" data-id="all" bindtap="selectCategory">全部商品</button>
-          <button class="category-button {{activeCategory === item.id ? 'is-active' : ''}}" wx:for="{{categories}}" wx:key="id" data-id="{{item.id}}" bindtap="selectCategory">{{item.name}}</button>
-        </view>
-      </view>
+    <view class="menu-list">
+      <view class="ml-cat-head">{{catTitle}}</view>
+      <view class="ml-items">
 
-      <view class="menu-content">
-        <view class="menu-group" wx:for="{{groupedProducts}}" wx:key="id">
-          <view class="section-head">
-            <view>
-              <view class="section-title">{{item.name}}</view>
-              <view class="section-note">来自当前门店商品数据</view>
-            </view>
+        <view class="m-card" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+          <view class="m-cover">
+            <image src="{{item.imageUrl}}" mode="aspectFill"/>
           </view>
-          <view class="menu-item-list">
-            <view class="menu-item-card" wx:for="{{item.products}}" wx:for-item="product" wx:key="id">
-              <view class="menu-cover-link" data-id="{{product.id}}" bindtap="goDetail">
-                <image class="cover-thumb" src="{{product.imageUrl}}" mode="aspectFill" />
+          <view class="m-body">
+            <view class="m-name">{{item.name}}</view>
+            <view class="m-attr-row">
+              <view class="m-tag-attr">{{item.description}}</view>
+            </view>
+            <view class="m-price-row">
+              <view class="m-price">
+                <text class="m-yuan">¥</text><text class="m-int">{{item.priceInt}}</text><text class="m-dec">{{item.priceDec}}</text>
               </view>
-              <view class="product-body">
-                <view class="tag-row">
-                  <text class="tag" wx:for="{{product.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
-                </view>
-                <view class="product-name" data-id="{{product.id}}" bindtap="goDetail">{{product.name}}</view>
-                <view class="product-desc">{{product.description}}</view>
-                <view class="sales-line">月售 {{product.sales}} · 可选温度 / 甜度 / 加料</view>
-                <view class="price-line">
-                  <text class="price">{{product.priceText}}</text>
-                  <view class="menu-item-action">
-                    <text class="item-counter">{{product.selectedCount}}</text>
-                    <button class="add-button" data-id="{{product.id}}" bindtap="addToCart">+</button>
-                  </view>
-                </view>
+              <view class="m-stepper" catchtap="">
+                <view class="m-minus {{item.qty > 0 ? 'is-show' : ''}}" catchtap="minusCart" data-id="{{item.id}}"><text>−</text></view>
+                <text class="m-qty" wx:if="{{item.qty > 0}}">{{item.qty}}</text>
+                <view class="m-add" catchtap="addCart" data-id="{{item.id}}"><text class="m-add-icon">+</text></view>
               </view>
             </view>
           </view>
         </view>
-        <view class="menu-group" wx:if="{{visibleProducts.length === 0}}">
-          <view class="section-note">暂无匹配商品，请换个关键词试试。</view>
+
+        <view class="ml-empty" wx:if="{{products.length === 0}}">
+          <text>该分类暂无商品</text>
         </view>
+
       </view>
     </view>
   </view>
 
-  <view class="floating-bar settlement-bar {{cartExpanded ? 'is-expanded' : ''}} {{cartSummary.totalQuantity ? 'is-visible' : 'is-hidden'}}" bindtap="toggleCart">
-    <view class="cart-preview" wx:if="{{cartExpanded}}">
-      <view class="cart-preview-row" wx:for="{{cartSummary.items}}" wx:key="id">
-        <text>{{item.productName}}</text>
-        <text class="preview-spec">{{item.spec}} × {{item.quantity}}</text>
-        <text class="preview-price">{{item.subtotalText}}</text>
+  <view class="coupon-float">
+    <text class="cf-num">{{couponCount || 0}}</text>
+    <text class="cf-label">优惠券</text>
+  </view>
+
+  <!-- 搜索 overlay -->
+  <view class="search-overlay {{searchOpen ? 'is-open' : ''}}">
+    <view class="so-bar">
+      <view class="so-input-wrap">
+        <text class="so-input-icon">🔍</text>
+        <input class="so-input" placeholder="搜索商品名称" value="{{searchKw}}" bindinput="onSearchInput" focus="{{searchOpen}}"/>
+      </view>
+      <view class="so-cancel" bindtap="closeSearch">取消</view>
+    </view>
+    <scroll-view class="so-results" scroll-y="true">
+      <view class="so-empty" wx:if="{{!searchKw}}">输入关键字搜索商品</view>
+      <view class="so-empty" wx:elif="{{searchHits.length === 0}}">没找到相关商品</view>
+      <block wx:else>
+        <navigator class="so-item" wx:for="{{searchHits}}" wx:key="id" url="/pages/detail/index?id={{item.id}}" hover-class="none">
+          <image class="so-thumb" src="{{item.imageUrl}}" mode="aspectFill"/>
+          <view class="so-body">
+            <text class="so-name">{{item.name}}</text>
+            <text class="so-desc">{{item.description}}</text>
+          </view>
+          <text class="so-price">¥{{item.priceText}}</text>
+        </navigator>
+      </block>
+    </scroll-view>
+  </view>
+
+  <!-- 购物车抽屉 -->
+  <view class="cart-mask {{drawerOpen ? 'is-open' : ''}}" bindtap="closeDrawer"></view>
+  <view class="cart-drawer {{drawerOpen ? 'is-open' : ''}}">
+    <view class="cd-head">
+      <text class="cd-title">已选商品</text>
+      <view class="cd-clear" bindtap="clearCart">
+        <text class="cd-clear-icon">🗑</text>
+        <text>清空</text>
       </view>
     </view>
-    <view class="settlement-main">
-      <button class="cart-bag">袋</button>
-      <view class="floating-summary">
-        <text class="floating-label">已选 {{cartSummary.totalQuantity}} 件</text>
-        <text class="floating-price">{{cartSummary.totalText}}</text>
+    <scroll-view class="cd-list" scroll-y="true">
+      <block wx:if="{{cartItems.length > 0}}">
+        <view class="cd-item" wx:for="{{cartItems}}" wx:key="id">
+          <image class="cd-thumb" src="{{item.imageUrl}}" mode="aspectFill"/>
+          <view class="cd-body">
+            <text class="cd-name">{{item.productName}}</text>
+            <text class="cd-spec">{{item.specText}}</text>
+            <text class="cd-price">¥{{item.subtotalText}}</text>
+          </view>
+          <view class="cd-stepper">
+            <view class="cd-step-minus" data-id="{{item.id}}" data-quantity="{{item.quantity}}" bindtap="drawerMinus">−</view>
+            <text class="cd-qty">{{item.quantity}}</text>
+            <view class="cd-step-plus" data-id="{{item.id}}" data-quantity="{{item.quantity}}" bindtap="drawerPlus">+</view>
+          </view>
+        </view>
+      </block>
+      <view class="cd-empty" wx:else>购物车空空,点商品旁的 + 加进来吧</view>
+    </scroll-view>
+  </view>
+
+  <view class="cart-bar">
+    <view class="cart-bar-left">
+      <view class="cart-bag-circle" bindtap="openDrawer">
+        <image src="/images/icons/cart-bag.svg" mode="aspectFit"/>
+        <text class="cart-bag-badge" wx:if="{{cartQty > 0}}">{{cartQty}}</text>
       </view>
-      <view class="floating-actions">
-        <navigator class="button button-primary" url="/pages/cart/index" open-type="redirect">去结算</navigator>
-      </view>
+      <text class="cart-bar-text" wx:if="{{cartQty === 0}}">未选购商品</text>
+      <text class="cart-bar-total" wx:if="{{cartQty > 0}}">¥{{cartTotal}}</text>
     </view>
+    <navigator class="cart-bar-btn {{cartQty > 0 ? '' : 'is-disabled'}}" url="/pages/cart/index" open-type="navigate">去结算</navigator>
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit" /></view><text>首页</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit" /></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit" /></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit" /></view><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit" /></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

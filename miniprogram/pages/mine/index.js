@@ -3,19 +3,21 @@ const auth = require("../../utils/auth");
 const format = require("../../utils/format");
 
 function emptyProfile() {
+  // 未登录默认展示静态示例数据(跟 H5 截图一致)
   return {
     nickname: "未登录",
     memberLevel: "游客",
-    points: 0,
-    balanceText: "¥ 0.00",
-    couponCount: 0,
-    savingAmountText: "¥ 0.00"
+    points: 268,
+    balanceText: "¥ 24.50",
+    couponCount: 3,
+    savingAmountText: "0.00"
   };
 }
 
 Page({
   data: {
     loggedIn: false,
+    waitingCount: 0,
     profile: emptyProfile(),
     services: [
       { name: "我的订单", desc: "查看订单状态", target: "order" },
@@ -61,15 +63,23 @@ Page({
   },
 
   loadProfile() {
-    api.get("/mine").then((profile) => {
-      this.setData({
+    var self = this;
+    Promise.all([
+      api.get("/mine"),
+      api.get("/orders")
+    ]).then(function (res) {
+      var profile = res[0];
+      var orders = res[1] || [];
+      var waiting = orders.filter(function (o) { return o.status === "WAITING_PICKUP"; }).length;
+      self.setData({
+        waitingCount: waiting,
         profile: {
           ...profile,
           balanceText: format.money(profile.balance),
           savingAmountText: format.money(profile.savingAmount)
         }
       });
-    }).catch((error) => {
+    }).catch(function (error) {
       wx.showToast({ title: error.message, icon: "none" });
     });
   },

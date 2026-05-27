@@ -1,119 +1,112 @@
 const api = require("../../utils/api");
 const auth = require("../../utils/auth");
-const format = require("../../utils/format");
 
 Page({
   data: {
-    productId: "",
-    product: null,
+    product: {
+      id: "P-1001",
+      name: "荔枝冰奶",
+      description: "手剥时令妃子笑 | 广西横州七窨茉莉花茶 | 冷链鲜奶",
+      imageUrl: "/images/menu-product-orange.png",
+      price: 13.9,
+      priceInt: "13"
+    },
+    tempOpts: ["正常冰", "少冰"],
+    tempIdx: 0,
+    sugarTypeOpts: ["默认糖"],
+    sugarTypeIdx: 0,
+    sweetOpts: ["十分甜", "不额外加糖", "七分甜", "五分甜"],
+    sweetIdx: 2,
     quantity: 1,
-    temperature: "冰饮",
-    sugar: "五分糖",
-    toppings: ["椰果 + ¥ 2"],
-    temperatureOptions: [],
-    sugarOptions: [],
-    toppingOptions: [],
-    totalText: "¥ 0.00"
+    totalPrice: "13.9",
+    specSummary: "中/正常冰/默认糖/七分甜",
+    isFav: false
   },
 
-  onLoad(options) {
-    this.setData({ productId: options.id || "" });
-    this.updateOptions();
-    this.loadProduct();
-  },
-
-  loadProduct() {
-    const loader = this.data.productId
-      ? api.get("/products/" + this.data.productId)
-      : api.get("/products").then((products) => products[0]);
-
-    loader.then((product) => {
-      this.setData({
-        product: {
-          ...product,
-          imageUrl: api.imageUrl(product.image),
-          priceText: format.money(product.price)
-        }
-      });
-      this.updateTotal();
-    }).catch((error) => {
-      wx.showToast({ title: error.message, icon: "none" });
-    });
-  },
-
-  updateTotal() {
-    const price = this.data.product ? Number(this.data.product.price || 0) : 0;
-    this.setData({ totalText: format.money(price * this.data.quantity) });
-  },
-
-  updateOptions() {
-    this.setData({
-      temperatureOptions: ["冰饮", "少冰", "常温"].map((value) => ({
-        value,
-        active: value === this.data.temperature
-      })),
-      sugarOptions: ["无糖", "三分糖", "五分糖", "正常糖"].map((value) => ({
-        value,
-        active: value === this.data.sugar
-      })),
-      toppingOptions: ["珍珠 + ¥ 2", "椰果 + ¥ 2", "奶盖 + ¥ 3"].map((value) => ({
-        value,
-        active: this.data.toppings.indexOf(value) >= 0
-      }))
-    });
-  },
-
-  chooseTemperature(event) {
-    this.setData({ temperature: event.currentTarget.dataset.value });
-    this.updateOptions();
-  },
-
-  chooseSugar(event) {
-    this.setData({ sugar: event.currentTarget.dataset.value });
-    this.updateOptions();
-  },
-
-  toggleTopping(event) {
-    const value = event.currentTarget.dataset.value;
-    const toppings = this.data.toppings.slice();
-    const index = toppings.indexOf(value);
-    if (index >= 0) {
-      toppings.splice(index, 1);
+  onLoad(query) {
+    var pid = (query && query.id) || "P-1001";
+    var self = this;
+    var favs = wx.getStorageSync("favoriteIds") || [];
+    this.setData({ isFav: favs.indexOf(pid) >= 0 });
+    if (api && api.get) {
+      api.get("/products/" + pid).then(function (p) {
+        if (!p) return;
+        self.setData({
+          product: {
+            id: p.id,
+            name: p.name,
+            description: p.description || "",
+            imageUrl: p.image ? api.imageUrl(p.image) : "/images/menu-product-orange.png",
+            price: Number(p.price || 0),
+            priceInt: String(Math.round(Number(p.price || 0)))
+          }
+        });
+        self.recalc();
+      }).catch(function () { self.recalc(); });
     } else {
-      toppings.push(value);
+      this.recalc();
     }
-    this.setData({ toppings });
-    this.updateOptions();
   },
 
-  changeQuantity(event) {
-    const next = Math.max(1, this.data.quantity + Number(event.currentTarget.dataset.delta));
-    this.setData({ quantity: next });
-    this.updateTotal();
+  chooseOpt(event) {
+    var group = event.currentTarget.dataset.group;
+    var idx = Number(event.currentTarget.dataset.idx);
+    var key = group + "Idx";
+    var update = {};
+    update[key] = idx;
+    this.setData(update, () => this.recalc());
   },
 
-  selectedSpec() {
-    const parts = ["标准杯", this.data.temperature, this.data.sugar].concat(this.data.toppings);
-    return parts.join(" / ");
-  },
-
-  addToCart(event) {
-    if (!auth.isLoggedIn()) {
-      wx.showToast({ title: "请先登录", icon: "none" });
-      wx.redirectTo({ url: "/pages/mine/index" });
-      return;
+  minusQty() {
+    if (this.data.quantity > 1) {
+      this.setData({ quantity: this.data.quantity - 1 }, () => this.recalc());
     }
-    api.post("/cart/items", {
-      productId: this.data.product.id,
-      spec: this.selectedSpec(),
-      quantity: this.data.quantity
-    }).then(() => {
-      wx.showToast({ title: "已加入购物车", icon: "success" });
-      if (event.currentTarget.dataset.buy === "true") {
-        wx.navigateTo({ url: "/pages/submit-order/index" });
-      }
-    }).catch((error) => {
-      wx.showToast({ title: error.message, icon: "none" });
-    });
+  },
+
+  plusQty() {
+    this.setData({ quantity: this.data.quantity + 1 }, () => this.recalc());
+  },
+
+  recalc() {
+    var total = (this.data.product.price * this.data.quantity).toFixed(1);
+    var summary = "中/" + this.data.tempOpts[this.data.tempIdx]
+      + "/" + this.data.sugarTypeOpts[this.data.sugarTypeIdx]
+      + "/" + this.data.sweetOpts[this.data.sweetIdx];
+    this.setData({ totalPrice: total, specSummary: summary });
+  },
+
+  goBack() {
+    wx.navigateBack({ delta: 1, fail: function () { wx.redirectTo({ url: "/pages/menu/index" }); } });
+  },
+
+  toggleFav() {
+    var pid = this.data.product.id;
+    var favs = wx.getStorageSync("favoriteIds") || [];
+    var i = favs.indexOf(pid);
+    if (i >= 0) {
+      favs.splice(i, 1);
+      wx.showToast({ title: "已取消收藏", icon: "none" });
+    } else {
+      favs.push(pid);
+      wx.showToast({ title: "已加入口味收藏", icon: "success" });
+    }
+    wx.setStorageSync("favoriteIds", favs);
+    this.setData({ isFav: i < 0 });
+  },
+
+  addToCart() {
+    var self = this;
+    var spec = this.data.specSummary;
+    var doAdd = function () {
+      api.post("/cart/items", { productId: self.data.product.id, spec: spec, quantity: self.data.quantity })
+        .then(function () {
+          wx.showToast({ title: "已加入购物车", icon: "success" });
+          setTimeout(function () { wx.navigateTo({ url: "/pages/cart/index" }); }, 350);
+        })
+        .catch(function (e) { wx.showToast({ title: e.message, icon: "none" }); });
+    };
+    if (auth && auth.isLoggedIn && auth.isLoggedIn()) doAdd();
+    else if (auth && auth.devLogin) auth.devLogin().then(doAdd).catch(function () { wx.showToast({ title: "登录失败", icon: "none" }); });
+    else doAdd();
   }
 });

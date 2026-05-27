@@ -1,83 +1,123 @@
-<view class="app-shell">
-  <view class="mine-header">
-    <view class="profile-hero">
-      <image class="avatar-thumb" src="/images/mascot-yunbao-144.png" mode="aspectFill" />
-      <view class="profile-copy">
-        <text class="store-label">个人中心</text>
-        <view class="profile-title">{{loggedIn ? profile.nickname : "欢迎来到云豹小点"}}</view>
-        <view class="profile-text">登录后可同步订单、优惠券、会员权益和常用门店。</view>
-        <view class="action-row">
-          <button class="button button-primary" wx:if="{{!loggedIn}}" bindtap="login">微信登录</button>
-          <button class="button button-secondary" wx:if="{{loggedIn}}" bindtap="logout">退出登录</button>
-        </view>
+<view class="mine-shell">
+
+  <view class="mine-hero">
+    <view class="hero-actions">
+      <view class="hero-icon-btn"><image src="/images/icons/chat.svg" mode="aspectFit"/></view>
+      <view class="hero-icon-btn"><image src="/images/icons/settings.svg" mode="aspectFit"/></view>
+    </view>
+
+    <image class="hero-mascot-cup" src="/images/home-mascot-cup.png" mode="widthFix"/>
+
+    <view class="hero-profile">
+      <image class="hero-avatar" src="/images/mascot-yunbao-144.png" mode="aspectFill"/>
+      <view class="hero-text">
+        <view class="hero-title">{{loggedIn ? profile.nickname : '登录 / 注册'}}</view>
+        <view class="hero-subtitle">{{loggedIn ? '已登录 · 同步订单与权益' : '登录后解锁更多权益'}}</view>
       </view>
     </view>
   </view>
 
-  <view class="page-main mine-main">
-    <view class="asset-panel">
+  <view class="mine-main">
+
+    <view class="member-card">
+      <view class="member-icon"><image src="/images/icons/diamond.svg" mode="aspectFit"/></view>
+      <view class="member-text">
+        <view class="member-title-line">云豹会员 <text class="member-arrow">›</text></view>
+        <view class="member-sub">享专属优惠 · 积分加倍 · 生日礼遇</view>
+      </view>
+      <navigator class="member-btn" url="/pages/saving-card/index" open-type="redirect">查看会员权益</navigator>
+    </view>
+
+    <view class="asset-card">
+      <view class="block-title">我的资产</view>
       <view class="asset-grid">
-        <view class="asset-card"><text>{{profile.couponCount}}</text><text>优惠券</text></view>
-        <view class="asset-card"><text>{{profile.points}}</text><text>积分</text></view>
-        <view class="asset-card"><text>{{profile.balanceText}}</text><text>余额</text></view>
-      </view>
-    </view>
-
-    <view class="member-entry">
-      <view>
-        <text class="member-kicker">YUNBAO PASS</text>
-        <view class="member-title">{{profile.memberLevel}}</view>
-        <view class="info-text">成长值 {{profile.points}}，预计本月已节省 {{profile.savingAmountText}}。</view>
-      </view>
-      <navigator class="button button-secondary" url="/pages/saving-card/index" open-type="redirect">查看权益</navigator>
-    </view>
-
-    <view class="section-card">
-      <view class="section-head compact-head">
-        <view>
-          <view class="section-title">我的订单</view>
-          <view class="section-note">查看订单进度与历史记录</view>
-        </view>
-        <navigator class="section-link" url="/pages/order/index" open-type="redirect">全部</navigator>
-      </view>
-      <view class="order-shortcuts">
-        <navigator url="/pages/order/index" open-type="redirect"><text>取</text><text>待取餐</text></navigator>
-        <navigator url="/pages/order/index" open-type="redirect"><text>完</text><text>已完成</text></navigator>
-        <navigator url="/pages/order/index" open-type="redirect"><text>退</text><text>退款</text></navigator>
-        <navigator url="/pages/menu/index" open-type="redirect"><text>再</text><text>再来一单</text></navigator>
-      </view>
-      <view class="service-list">
-        <navigator class="service-row" url="/pages/order/index" open-type="redirect">
-          <view>
-            <view class="info-title">待出餐订单</view>
-            <view class="info-text">当前订单状态、取餐号和下单时间会显示在这里。</view>
+        <view class="asset-item">
+          <view class="asset-icon"><image src="/images/icons/coupon.svg" mode="aspectFit"/></view>
+          <view class="asset-num-row">
+            <text class="asset-num">{{profile.couponCount}}</text>
+            <text class="asset-unit">张</text>
           </view>
-          <text class="row-arrow">›</text>
+          <view class="asset-label">优惠券 ›</view>
+        </view>
+        <view class="asset-item">
+          <view class="asset-icon"><image src="/images/icons/points.svg" mode="aspectFit"/></view>
+          <view class="asset-num-row">
+            <text class="asset-num">{{profile.points}}</text>
+          </view>
+          <view class="asset-label">积分 ›</view>
+        </view>
+        <view class="asset-item">
+          <view class="asset-icon"><image src="/images/icons/wallet.svg" mode="aspectFit"/></view>
+          <view class="asset-num-row">
+            <text class="asset-num balance">{{profile.balanceText}}</text>
+          </view>
+          <view class="asset-label">余额 ›</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="orders-card">
+      <view class="block-title">我的订单</view>
+      <view class="orders-grid">
+        <navigator class="order-item" url="/pages/order/index" open-type="redirect">
+          <view class="order-icon"><image src="/images/icons/ord-wallet.svg" mode="aspectFit"/></view>
+          <view class="order-label">待付款</view>
+        </navigator>
+        <navigator class="order-item" url="/pages/order/index" open-type="redirect">
+          <view class="order-icon order-icon-badge">
+            <image src="/images/icons/ord-cal.svg" mode="aspectFit"/>
+            <text class="badge-dot" wx:if="{{waitingCount > 0}}">{{waitingCount}}</text>
+          </view>
+          <view class="order-label">待取餐</view>
+        </navigator>
+        <navigator class="order-item" url="/pages/order/index" open-type="redirect">
+          <view class="order-icon"><image src="/images/icons/ord-check.svg" mode="aspectFit"/></view>
+          <view class="order-label">已完成</view>
+        </navigator>
+        <navigator class="order-item" url="/pages/order/index" open-type="redirect">
+          <view class="order-icon"><image src="/images/icons/ord-head.svg" mode="aspectFit"/></view>
+          <view class="order-label">售后</view>
         </navigator>
       </view>
     </view>
 
-    <view class="section-card">
-      <view class="section-head compact-head">
-        <view>
-          <view class="section-title">常用服务</view>
-          <view class="section-note">账户、权益、订单相关入口</view>
-        </view>
+    <view class="features-card">
+      <view class="block-title">我的功能</view>
+      <view class="features-grid">
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-pin.svg" mode="aspectFit"/></view><view class="feature-label">收货地址</view></view>
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-headset.svg" mode="aspectFit"/></view><view class="feature-label">联系客服</view></view>
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-receipt.svg" mode="aspectFit"/></view><view class="feature-label">发票助手</view></view>
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-hex.svg" mode="aspectFit"/></view><view class="feature-label">设置</view></view>
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-help.svg" mode="aspectFit"/></view><view class="feature-label">帮助中心</view></view>
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-star.svg" mode="aspectFit"/></view><view class="feature-label">口味收藏</view></view>
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-coin.svg" mode="aspectFit"/></view><view class="feature-label">积分记录</view></view>
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-gift.svg" mode="aspectFit"/></view><view class="feature-label">兑换记录</view></view>
       </view>
-      <view class="more-grid">
-        <navigator class="service-tile" url="/pages/saving-card/index" open-type="redirect"><text class="feature-icon">卡</text><text class="feature-strong">省钱卡</text><text class="feature-copy">专属券和会员价。</text></navigator>
-        <navigator class="service-tile" url="/pages/cart/index" open-type="redirect"><text class="feature-icon">车</text><text class="feature-strong">购物车</text><text class="feature-copy">查看已选商品。</text></navigator>
-        <navigator class="service-tile" url="/pages/submit-order/index" open-type="redirect"><text class="feature-icon">号</text><text class="feature-strong">桌号备注</text><text class="feature-copy">提交订单填写。</text></navigator>
-        <view class="service-tile" data-target="service" bindtap="goTarget"><text class="feature-icon">助</text><text class="feature-strong">帮助中心</text><text class="feature-copy">门店问题反馈。</text></view>
+    </view>
+
+    <view class="story-row">
+      <view class="story-card">
+        <view class="story-text">
+          <view class="story-title">云豹故事</view>
+          <view class="story-sub">了解云豹小点</view>
+        </view>
+        <image class="story-img" src="/images/mine-story-leopard.png" mode="widthFix"/>
+      </view>
+      <view class="story-card">
+        <view class="story-text">
+          <view class="story-title">加入云豹</view>
+          <view class="story-sub">成为校园合作伙伴</view>
+        </view>
+        <image class="story-cup" src="/images/mine-cup-cloud.png" mode="widthFix"/>
       </view>
     </view>
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit" /></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit" /></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit" /></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit" /></view><text>订单</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit" /></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine-active.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

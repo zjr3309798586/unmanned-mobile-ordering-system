@@ -2,132 +2,82 @@ const api = require("../../utils/api");
 const auth = require("../../utils/auth");
 const format = require("../../utils/format");
 
-function createdText(value) {
-  return value ? String(value).replace("T", " ").slice(0, 16) : "";
-}
-
-function decorateOrder(order) {
-  const items = (order.items || []).map((item) => ({
-    ...item,
-    priceText: format.money(item.price),
-    subtotalText: format.money(Number(item.price || 0) * Number(item.quantity || 0))
-  }));
-  return {
-    ...order,
-    items,
-    statusText: format.statusText(order.status),
-    pickupTypeText: format.pickupTypeText(order.pickupType),
-    totalText: format.money(order.totalAmount),
-    discountText: format.money(order.discountAmount),
-    payableText: format.money(order.payableAmount),
-    createdText: createdText(order.createdAt),
-    canCancel: order.status === "WAITING_PICKUP",
-    statusClass: order.status === "COMPLETED" ? "done" : order.status === "CANCELED" ? "cancel" : "waiting"
-  };
+function defaultOrders() {
+  return [
+    {
+      id: "demo-1",
+      storeName: "云豹小点·双流北京华联店",
+      statusText: "已完成",
+      timeText: "2026-03-09 22:14:21",
+      pickupNo: "915",
+      thumbs: ["/images/menu-product-milk-tea.png", "/images/menu-product-latte.png"],
+      amount: "34",
+      qty: 2
+    },
+    {
+      id: "demo-2",
+      storeName: "云豹小点·双流北京华联店",
+      statusText: "已完成",
+      timeText: "2025-11-27 11:20:04",
+      pickupNo: "535",
+      thumbs: ["/images/menu-product-orange.png"],
+      amount: "14",
+      qty: 1
+    },
+    {
+      id: "demo-3",
+      storeName: "云豹小点·双流北京华联店",
+      statusText: "已完成",
+      timeText: "2025-10-17 15:15:28",
+      pickupNo: "576",
+      thumbs: ["/images/menu-product-grape.png", "/images/menu-product-wrap.png"],
+      amount: "36",
+      qty: 2
+    }
+  ];
 }
 
 Page({
   data: {
-    loggedIn: false,
-    needsLogin: true,
-    tabs: [
-      { id: "all", name: "全部订单", active: true },
-      { id: "current", name: "进行中", active: false },
-      { id: "history", name: "历史订单", active: false }
-    ],
-    activeTab: "all",
-    orders: [],
-    visibleOrders: [],
-    empty: true
+    tab: "self",
+    orders: defaultOrders()
   },
 
   onShow() {
-    this.setData({
-      loggedIn: auth.isLoggedIn(),
-      needsLogin: !auth.isLoggedIn()
-    });
-    if (auth.isLoggedIn()) {
-      this.loadOrders();
-    }
+    if (auth.isLoggedIn && auth.isLoggedIn()) this.loadOrders();
   },
 
-  login() {
-    auth.wechatLogin().then(() => {
-      this.setData({ loggedIn: true, needsLogin: false });
-      this.loadOrders();
-    }).catch((error) => {
-      wx.showToast({ title: error.message, icon: "none" });
-    });
-  },
-
-  selectTab(event) {
-    const activeTab = event.currentTarget.dataset.id;
-    this.setData({
-      activeTab,
-      tabs: this.data.tabs.map((tab) => ({
-        ...tab,
-        active: tab.id === activeTab
-      }))
-    });
-    this.filterOrders();
+  switchTab(event) {
+    this.setData({ tab: event.currentTarget.dataset.tab });
   },
 
   loadOrders() {
+    if (!api || !api.get) return;
     api.get("/orders").then((orders) => {
-      this.setData({ orders: (orders || []).map(decorateOrder) });
-      this.filterOrders();
-    }).catch((error) => {
-      wx.showToast({ title: error.message, icon: "none" });
-    });
-  },
-
-  filterOrders() {
-    const visibleOrders = this.data.orders.filter((order) => {
-      if (this.data.activeTab === "history") {
-        return order.status === "COMPLETED" || order.status === "CANCELED";
-      }
-      if (this.data.activeTab === "current") {
-        return order.status === "WAITING_PICKUP";
-      }
-      return true;
-    });
-    this.setData({
-      visibleOrders,
-      empty: visibleOrders.length === 0
-    });
-  },
-
-  cancelOrder(event) {
-    const id = event.currentTarget.dataset.id;
-    wx.showModal({
-      title: "取消订单",
-      content: "确定取消这笔订单吗？",
-      success: (result) => {
-        if (!result.confirm) {
-          return;
-        }
-        api.patch("/orders/" + id + "/cancel", {}).then(() => {
-          wx.showToast({ title: "已取消", icon: "success" });
-          this.loadOrders();
-        }).catch((error) => {
-          wx.showToast({ title: error.message, icon: "none" });
-        });
-      }
-    });
+      if (!Array.isArray(orders) || orders.length === 0) return;
+      const decorated = orders.map((o) => ({
+        id: o.id,
+        storeName: o.storeName || "云豹小点",
+        statusText: format.statusText(o.status),
+        timeText: (o.createdAt || "").replace("T", " ").slice(0, 19),
+        pickupNo: o.pickupNo || o.orderNo || "—",
+        thumbs: (o.items || []).map((it) => it.image || "/images/menu-product-milk-tea.png").slice(0, 3),
+        amount: String(Math.round(Number(o.payableAmount || 0))),
+        qty: (o.items || []).reduce((s, it) => s + (it.quantity || 1), 0)
+      }));
+      this.setData({ orders: decorated });
+    }).catch(() => {});
   },
 
   repeatOrder(event) {
-    api.post("/orders/" + event.currentTarget.dataset.id + "/repeat", {}).then(() => {
+    const id = event.currentTarget.dataset.id;
+    if (!auth.isLoggedIn || !auth.isLoggedIn()) {
+      wx.showToast({ title: "演示数据,登录后可再来一单", icon: "none" });
+      return;
+    }
+    api.post("/orders/" + id + "/repeat", {}).then(() => {
       wx.showToast({ title: "已加入购物车", icon: "success" });
-      setTimeout(() => {
-        wx.navigateTo({ url: "/pages/cart/index" });
-      }, 500);
-    }).catch((error) => {
-      wx.showToast({ title: error.message, icon: "none" });
-    });
-  },
-
-  goMenu() {
-    wx.redirectTo({ url: "/pages/menu/index" });
+      setTimeout(() => { wx.navigateTo({ url: "/pages/cart/index" }); }, 500);
+    }).catch((e) => { wx.showToast({ title: e.message, icon: "none" }); });
   }
 });

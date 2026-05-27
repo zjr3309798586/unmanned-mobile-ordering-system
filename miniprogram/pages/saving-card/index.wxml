@@ -1,108 +1,134 @@
-<view class="app-shell">
-  <view class="pass-header">
+<view class="saving-shell">
+
+  <view class="saving-topbar">
+    <view class="saving-brand-mini">
+      <image class="sb-mini-icon" src="/images/icons/brand-cloud.svg" mode="aspectFit"/>
+      <text>云豹小点</text>
+    </view>
+    <view class="saving-page-title">省钱卡</view>
+    <view class="saving-rule">规则说明</view>
+  </view>
+
+  <view class="pass-hero">
     <view class="pass-card">
-      <view class="pass-card-head">
-        <text class="pass-brand">YUNBAO PASS</text>
-        <text class="pass-status">会员权益卡</text>
+      <image class="pass-mascot" src="/images/saving-mascot-card.png" mode="widthFix"/>
+
+      <view class="pass-card-row">
+        <view class="pass-card-title">云豹省钱卡</view>
+        <view class="pass-card-tag">月卡 ›</view>
       </view>
-      <view class="saving-title">云豹省钱卡</view>
-      <view class="saving-text">开通后可领取专属券，指定饮品享省钱价，下单自动校验可用优惠。</view>
-      <view class="hero-price-line">
-        <text class="hero-price">{{heroPriceText}}</text>
-        <text class="hero-price-note">/ 月卡 · 预计月省 28 元</text>
-      </view>
-      <view class="pass-actions">
-        <button class="button button-primary" disabled="{{opened}}" bindtap="openCard">{{openButtonText}}</button>
-        <button class="button button-secondary" bindtap="goMenu">去点餐</button>
+      <view class="pass-save-line">预计本月可省 <text class="pass-save-num">¥48</text></view>
+
+      <view class="pass-footer">
+        <view class="pass-price-block">
+          <view class="pass-price-amount">
+            <text class="pp-yuan">¥</text><text class="pp-int">18</text><text class="pp-mo">/月</text>
+          </view>
+          <view class="pass-price-badge">首月特惠</view>
+          <view class="pass-price-hint">查看全部券 ›</view>
+        </view>
+        <view class="pass-open-btn" bindtap="openCard">立即开通</view>
       </view>
     </view>
   </view>
 
-  <view class="page-main pass-main">
-    <view class="benefit-overview">
-      <view class="benefit-cell"><text>专属券</text><text>开卡领取</text></view>
-      <view class="benefit-cell"><text>省钱价</text><text>指定商品</text></view>
-      <view class="benefit-cell"><text>会员日</text><text>每周加码</text></view>
-    </view>
+  <view class="saving-main">
 
-    <view class="section-card">
-      <view class="section-head compact-head">
-        <view>
-          <view class="section-title">选择开通方案</view>
-          <view class="section-note">价格来自后端配置，可在后台维护</view>
+    <view class="block-card">
+      <view class="block-head">
+        <view class="block-h">专享优惠券</view>
+        <view class="block-link">查看全部 (8) ›</view>
+      </view>
+      <view class="saving-coupon-row">
+        <view class="saving-coupon" wx:for="{{coupons}}" wx:key="id">
+          <view class="sc-amount"><text class="sc-currency">¥</text>{{item.discountAmount}}</view>
+          <view class="sc-cond">{{item.conditionText}}</view>
+          <view class="sc-tag">饮品通用</view>
+          <view class="sc-btn" bindtap="claimCoupon" data-id="{{item.id}}">立即领取</view>
         </view>
-      </view>
-      <view class="plan-grid">
-        <button class="plan-card {{index === 0 ? 'is-active' : ''}}" wx:for="{{plans}}" wx:key="id">
-          <text class="plan-name">{{item.name}}</text>
-          <text class="plan-price">{{item.priceText}}</text>
-          <text class="plan-note">{{item.description}}</text>
-        </button>
-      </view>
-    </view>
-
-    <view class="section-card">
-      <view class="section-head">
-        <view>
-          <view class="section-title">专属优惠券</view>
-          <view class="section-note">必须先开通省钱卡，领取后提交订单可使用</view>
-        </view>
-      </view>
-      <view class="coupon-stack">
-        <view class="member-coupon" wx:for="{{coupons}}" wx:key="id">
-          <text class="coupon-value">减 {{item.discountAmountText}}</text>
-          <view>
-            <text class="member-coupon-title">{{item.title}}</text>
-            <text class="member-coupon-desc">{{item.conditionText}} · 减 {{item.discountText}}</text>
-          </view>
-          <button class="coupon-claim" data-id="{{item.id}}" disabled="{{item.claimed}}" bindtap="claimCoupon">{{item.claimText}}</button>
-        </view>
-      </view>
-    </view>
-
-    <view class="section-card">
-      <view class="section-head">
-        <view>
-          <view class="section-title">省钱价商品</view>
-          <view class="section-note">常点饮品优先展示</view>
-        </view>
-        <text class="section-link" bindtap="goMenu">全部商品</text>
-      </view>
-      <view class="product-stack">
-        <view class="product-card" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
-          <image class="cover-thumb" src="{{item.imageUrl}}" mode="aspectFill" />
-          <view class="product-body">
-            <view class="product-name">{{item.name}}</view>
-            <view class="product-desc">{{item.description}}</view>
-            <view class="price-line">
-              <text class="price">{{item.savingPriceText}}</text>
-              <text class="old-price">{{item.priceText}}</text>
-            </view>
+        <view wx:if="{{coupons.length === 0}}">
+          <view class="saving-coupon">
+            <view class="sc-amount"><text class="sc-currency">¥</text>5</view>
+            <view class="sc-cond">满 20 减</view>
+            <view class="sc-tag">开通后领取</view>
+            <view class="sc-btn" bindtap="claimCoupon" data-id="C-001">立即领取</view>
           </view>
         </view>
       </view>
     </view>
 
-    <view class="section-card">
-      <view class="section-head">
-        <view>
-          <view class="section-title">权益说明</view>
-          <view class="section-note">优惠券是否可用由订单金额和领取状态决定</view>
-        </view>
+    <view class="block-card">
+      <view class="block-head">
+        <view class="block-h">省钱价商品</view>
+        <navigator class="block-link" url="/pages/menu/index" open-type="redirect">查看更多 ›</navigator>
       </view>
-      <view class="benefit-list">
-        <view class="benefit-item"><text class="benefit-icon">券</text><view><view class="info-title">开卡后领取</view><view class="info-text">未开通时只能查看券，开通后才能领取专属券。</view></view></view>
-        <view class="benefit-item"><text class="benefit-icon">核</text><view><view class="info-title">下单自动校验</view><view class="info-text">提交订单时会根据满减门槛判断优惠券是否可用。</view></view></view>
-        <view class="benefit-item"><text class="benefit-icon">价</text><view><view class="info-title">专属商品价</view><view class="info-text">部分商品显示会员参考价，实际金额以后端订单结算为准。</view></view></view>
+      <view class="saving-product-row">
+        <navigator class="saving-product" url="/pages/detail/index?id=P-1003" open-type="navigate">
+          <image src="/images/menu-product-milk-tea.png" mode="aspectFit"/>
+          <view class="sp-name">满杯西柚绿茶</view>
+          <view class="sp-price-line">
+            <text class="sp-price">¥12.8</text>
+            <text class="sp-origin">¥13.9</text>
+          </view>
+        </navigator>
+        <navigator class="saving-product" url="/pages/detail/index?id=P-1001" open-type="navigate">
+          <image src="/images/menu-product-latte.png" mode="aspectFit"/>
+          <view class="sp-name">橙香美式</view>
+          <view class="sp-price-line">
+            <text class="sp-price">¥13.8</text>
+            <text class="sp-origin">¥15.9</text>
+          </view>
+        </navigator>
+        <navigator class="saving-product" url="/pages/detail/index?id=P-1006" open-type="navigate">
+          <image src="/images/menu-product-wrap.png" mode="aspectFit"/>
+          <view class="sp-name">芝士烤吐司</view>
+          <view class="sp-price-line">
+            <text class="sp-price">¥8.8</text>
+            <text class="sp-origin">¥9.9</text>
+          </view>
+        </navigator>
       </view>
+    </view>
+
+    <view class="block-card">
+      <view class="block-head"><view class="block-h">会员权益</view></view>
+      <view class="saving-benefit-grid">
+        <view class="sb-item"><view class="sb-icon"><image src="/images/icons/sb-cal.svg" mode="aspectFit"/></view><view class="sb-label">每周福利</view></view>
+        <view class="sb-item"><view class="sb-icon"><image src="/images/icons/sb-diam.svg" mode="aspectFit"/></view><view class="sb-label">专享折扣</view></view>
+        <view class="sb-item"><view class="sb-icon"><image src="/images/icons/sb-star.svg" mode="aspectFit"/></view><view class="sb-label">集邮加速</view></view>
+        <view class="sb-item"><view class="sb-icon"><image src="/images/icons/sb-tea.svg" mode="aspectFit"/></view><view class="sb-label">下午茶套餐</view></view>
+        <view class="sb-item"><view class="sb-icon"><image src="/images/icons/sb-gift.svg" mode="aspectFit"/></view><view class="sb-label">生日礼遇</view></view>
+      </view>
+    </view>
+
+    <view class="block-card">
+      <view class="block-head"><view class="block-h">开通须知</view></view>
+      <view class="saving-rule-list">
+        <view class="srl-item">1. 开通即享当月所有专享优惠券,到期自动失效;</view>
+        <view class="srl-item">2. 省钱价商品仅在会员有效期内享受优惠价;</view>
+        <view class="srl-item">3. 首月特惠仅限新会员,开通后不支持退款。</view>
+      </view>
+    </view>
+
+  </view>
+
+  <view class="saving-floating-bar">
+    <image class="sfb-mascot" src="/images/saving-mascot-card.png" mode="aspectFill"/>
+    <view class="sfb-text">
+      <view class="sfb-title">云豹省钱卡</view>
+      <view class="sfb-sub">预计本月可省 ¥48</view>
+    </view>
+    <view class="sfb-btn" bindtap="openCard">
+      <text class="sfb-yuan">¥18</text>
+      <text>立即开通</text>
     </view>
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit" /></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit" /></view><text>点餐</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit" /></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit" /></view><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit" /></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving-active.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>
