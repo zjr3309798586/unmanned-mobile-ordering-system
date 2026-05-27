@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
       productBox.innerHTML = items.map(function (p) {
         var saving = (Number(p.price || 0) * 0.85).toFixed(1);  // 省钱卡 85 折
         return '<a class="saving-product" href="detail.html?id=' + encodeURIComponent(p.id) + '">'
-          + '<img src="' + app.imageUrl(p.image) + '" alt="' + (app.escapeHtml ? app.escapeHtml(p.name) : p.name) + '" onerror="this.src=\'images/food-placeholder.svg\'">'
+          + '<img src="' + app.imageUrl(p.image) + '" alt="' + (app.escapeHtml ? app.escapeHtml(p.name) : p.name) + '" onerror="this.src=\'images/common/food-placeholder.svg\'">'
           + '<strong class="sp-name">' + (app.escapeHtml ? app.escapeHtml(p.name) : p.name) + '</strong>'
           + '<div class="sp-price-line"><span class="sp-price">¥' + saving + '</span><span class="sp-origin">¥' + Number(p.price).toFixed(1) + '</span></div>'
         + '</a>';

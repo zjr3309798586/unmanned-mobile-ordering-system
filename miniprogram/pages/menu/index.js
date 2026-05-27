@@ -88,7 +88,7 @@ Page({
       return {
         id: it.id,
         productName: it.productName || it.name || "商品",
-        imageUrl: it.image ? (api.imageUrl ? api.imageUrl(it.image) : it.image) : "/images/food-placeholder.svg",
+        imageUrl: it.image ? (api.imageUrl ? api.imageUrl(it.image) : it.image) : "/images/common/food-placeholder.svg",
         specText: it.specText || (typeof it.spec === "string" ? it.spec : "标准杯"),
         subtotalText: sub,
         quantity: it.quantity,
@@ -182,7 +182,7 @@ Page({
         id: p.id,
         name: p.name,
         description: p.description,
-        imageUrl: p.image ? api.imageUrl(p.image) : "/images/food-placeholder.svg",
+        imageUrl: p.image ? api.imageUrl(p.image) : "/images/common/food-placeholder.svg",
         priceText: Number(p.price || 0).toFixed(1)
       };
     });

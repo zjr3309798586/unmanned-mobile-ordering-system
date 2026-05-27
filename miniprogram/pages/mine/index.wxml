@@ -6,10 +6,10 @@
       <view class="hero-icon-btn"><image src="/images/icons/settings.svg" mode="aspectFit"/></view>
     </view>
 
-    <image class="hero-mascot-cup" src="/images/home-mascot-cup.png" mode="widthFix"/>
+    <image class="hero-mascot-cup" src="/images/home/home-mascot-cup.png" mode="widthFix"/>
 
     <view class="hero-profile">
-      <image class="hero-avatar" src="/images/mascot-yunbao-144.png" mode="aspectFill"/>
+      <image class="hero-avatar" src="/images/mascot/mascot-yunbao-144.png" mode="aspectFill"/>
       <view class="hero-text">
         <view class="hero-title">{{loggedIn ? profile.nickname : '登录 / 注册'}}</view>
         <view class="hero-subtitle">{{loggedIn ? '已登录 · 同步订单与权益' : '登录后解锁更多权益'}}</view>
@@ -101,23 +101,23 @@
           <view class="story-title">云豹故事</view>
           <view class="story-sub">了解云豹小点</view>
         </view>
-        <image class="story-img" src="/images/mine-story-leopard.png" mode="widthFix"/>
+        <image class="story-img" src="/images/mine/mine-story-leopard.png" mode="widthFix"/>
       </view>
       <view class="story-card">
         <view class="story-text">
           <view class="story-title">加入云豹</view>
           <view class="story-sub">成为校园合作伙伴</view>
         </view>
-        <image class="story-cup" src="/images/mine-cup-cloud.png" mode="widthFix"/>
+        <image class="story-cup" src="/images/mine/mine-cup-cloud.png" mode="widthFix"/>
       </view>
     </view>
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine-active.svg" mode="aspectFit"/></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine-active.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

@@ -41,10 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     drawerList.innerHTML = items.map(function (it) {
-      var img = it.image ? (app.imageUrl ? app.imageUrl(it.image) : it.image) : "images/food-placeholder.svg";
+      var img = it.image ? (app.imageUrl ? app.imageUrl(it.image) : it.image) : "images/common/food-placeholder.svg";
       var sub = Number((it.subtotal != null ? it.subtotal : (Number(it.price) * it.quantity)) || 0).toFixed(1);
       return '<div class="cd-item">'
-        + '<img class="cd-thumb" src="' + img + '" onerror="this.src=\'images/food-placeholder.svg\'">'
+        + '<img class="cd-thumb" src="' + img + '" onerror="this.src=\'images/common/food-placeholder.svg\'">'
         + '<div class="cd-body">'
         +   '<h4 class="cd-name">' + escape(it.productName || it.name || "商品") + '</h4>'
         +   '<div class="cd-spec">' + escape(it.specText || (typeof it.spec === "string" ? it.spec : "标准杯")) + '</div>'
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         : '';
       return '<article class="m-card" data-card-id="' + p.id + '">'
         + '<a class="m-cover" href="detail.html?id=' + encodeURIComponent(p.id) + '">'
-        +   '<img src="' + app.imageUrl(p.image) + '" alt="' + escape(p.name) + '" onerror="this.src=\'images/food-placeholder.svg\'">'
+        +   '<img src="' + app.imageUrl(p.image) + '" alt="' + escape(p.name) + '" onerror="this.src=\'images/common/food-placeholder.svg\'">'
         + '</a>'
         + '<div class="m-body">'
         +   '<h3 class="m-name"><a class="plain-link" href="detail.html?id=' + encodeURIComponent(p.id) + '">' + escape(p.name) + '</a></h3>'
@@ -321,7 +321,7 @@ document.addEventListener("DOMContentLoaded", function () {
     searchResults.innerHTML = hits.map(function (p) {
       var price = Number(p.price || 0).toFixed(1);
       return '<a class="so-item" href="detail.html?id=' + encodeURIComponent(p.id) + '">'
-        + '<img class="so-thumb" src="' + app.imageUrl(p.image) + '" onerror="this.src=\'images/food-placeholder.svg\'">'
+        + '<img class="so-thumb" src="' + app.imageUrl(p.image) + '" onerror="this.src=\'images/common/food-placeholder.svg\'">'
         + '<div class="so-body"><div class="so-name">' + escape(p.name) + '</div><div class="so-desc">' + escape(p.description) + '</div></div>'
         + '<div class="so-price">¥' + price + '</div>'
       + '</a>';

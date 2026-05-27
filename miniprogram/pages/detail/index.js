@@ -7,7 +7,7 @@ Page({
       id: "P-1001",
       name: "荔枝冰奶",
       description: "手剥时令妃子笑 | 广西横州七窨茉莉花茶 | 冷链鲜奶",
-      imageUrl: "/images/menu-product-orange.png",
+      imageUrl: "/images/menu/menu-product-orange.png",
       price: 13.9,
       priceInt: "13"
     },
@@ -36,7 +36,7 @@ Page({
             id: p.id,
             name: p.name,
             description: p.description || "",
-            imageUrl: p.image ? api.imageUrl(p.image) : "/images/menu-product-orange.png",
+            imageUrl: p.image ? api.imageUrl(p.image) : "/images/menu/menu-product-orange.png",
             price: Number(p.price || 0),
             priceInt: String(Math.round(Number(p.price || 0)))
           }

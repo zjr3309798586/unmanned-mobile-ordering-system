@@ -35,29 +35,38 @@ function request(path, options = {}) {
   });
 }
 
+// 已知的图片子目录(若路径已带子目录则不再补)
+const IMG_DIRS = ["nav", "home", "menu", "mine", "saving", "mascot", "common", "icons"];
+
+// 按文件名前缀推断子目录(用于把后端返回的旧扁平路径自动重写到子目录)
+function guessSubdir(filename) {
+  if (/^nav-/.test(filename)) return "nav";
+  if (/^home-/.test(filename)) return "home";
+  if (/^menu-product-/.test(filename)) return "menu";
+  if (/^product-/.test(filename)) return "menu";
+  if (/^mine-/.test(filename)) return "mine";
+  if (/^saving-/.test(filename)) return "saving";
+  if (/^icon-(delivery|pickup)-/.test(filename)) return "saving";
+  if (/^mascot-yunbao/.test(filename)) return "mascot";
+  if (/-placeholder\.svg$/.test(filename)) return "common";
+  return null;
+}
+
 function imageUrl(value) {
-  const localFallback = "/images/food-placeholder.svg";
-  const localAssets = {
-    "food-placeholder.svg": true,
-    "product-default.svg": true,
-    "product-orange-coffee.svg": true,
-    "product-coconut-latte.svg": true,
-    "product-grapefruit-tea.svg": true,
-    "product-milk-tea.svg": true,
-    "product-lemon-tea.svg": true,
-    "product-toast.svg": true,
-    "mascot-yunbao.png": true,
-    "mascot-yunbao-144.png": true
-  };
-  if (!value) {
+  const localFallback = "/images/common/food-placeholder.svg";
+  if (!value) return localFallback;
+  if (value.indexOf("http://") === 0 || value.indexOf("https://") === 0) {
     return localFallback;
   }
   if (value.indexOf("/images/") === 0) {
-    const filename = value.split("/").pop();
-    return localAssets[filename] ? "/images/" + filename : localFallback;
-  }
-  if (value.indexOf("http://") === 0 || value.indexOf("https://") === 0) {
-    return localFallback;
+    // 已带子目录(/images/menu/x.png),原样返回
+    const rest = value.substring("/images/".length);
+    const head = rest.split("/")[0];
+    if (IMG_DIRS.indexOf(head) !== -1) return value;
+    // 旧扁平路径(/images/x.png),按文件名前缀自动补子目录
+    const filename = rest.split("/").pop();
+    const sub = guessSubdir(filename);
+    return sub ? "/images/" + sub + "/" + filename : localFallback;
   }
   return value;
 }

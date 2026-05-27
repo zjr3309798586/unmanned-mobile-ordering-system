@@ -3,8 +3,8 @@ const auth = require("../../utils/auth");
 
 function defaultAddons() {
   return [
-    { id: "a1", name: "葡萄大福", imageUrl: "/images/menu-product-grape.png", priceInt: "3", priceDec: "9", origin: "4.9", save: "1" },
-    { id: "a2", name: "龙井马蹄绿豆糕", imageUrl: "/images/menu-product-wrap.png", priceInt: "3", priceDec: "9", origin: "4.9", save: "1" }
+    { id: "a1", name: "葡萄大福", imageUrl: "/images/menu/menu-product-grape.png", priceInt: "3", priceDec: "9", origin: "4.9", save: "1" },
+    { id: "a2", name: "龙井马蹄绿豆糕", imageUrl: "/images/menu/menu-product-wrap.png", priceInt: "3", priceDec: "9", origin: "4.9", save: "1" }
   ];
 }
 
@@ -67,7 +67,7 @@ Page({
         return {
           id: it.id,
           name: it.productName || it.name || "商品",
-          imageUrl: it.image ? api.imageUrl(it.image) : "/images/menu-product-milk-tea.png",
+          imageUrl: it.image ? api.imageUrl(it.image) : "/images/menu/menu-product-milk-tea.png",
           priceText: sub.toFixed(1),
           specText: it.specText || (typeof it.spec === "string" ? it.spec : "标准杯"),
           promoText: it.promoText || "",

@@ -89,15 +89,15 @@
 }
 
 .c-bg-1 {
-  background: #b8e6ff url("../images/home-banner-1.png") 20% center / cover no-repeat;
+  background: #b8e6ff url("../images/home/home-banner-1.png") 20% center / cover no-repeat;
 }
 
 .c-bg-2 {
-  background: #e6efff url("../images/home-banner-2.png") center/cover no-repeat;
+  background: #e6efff url("../images/home/home-banner-2.png") center/cover no-repeat;
 }
 
 .c-bg-3 {
-  background: #f5f7fb url("../images/home-banner-3.png") 30% center / cover no-repeat;
+  background: #f5f7fb url("../images/home/home-banner-3.png") 30% center / cover no-repeat;
 }
 
 .c-banner-content {

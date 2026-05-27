@@ -31,8 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
       var items = o.items || [];
       var qty = items.reduce(function (s, it) { return s + Number(it.quantity || 1); }, 0);
       var thumbs = items.slice(0, 3).map(function (it) {
-        var img = it.image ? (app.imageUrl ? app.imageUrl(it.image) : it.image) : "images/menu-product-milk-tea.png";
-        return '<span class="oc-thumb"><img src="' + img + '" onerror="this.src=\'images/food-placeholder.svg\'"></span>';
+        var img = it.image ? (app.imageUrl ? app.imageUrl(it.image) : it.image) : "images/menu/menu-product-milk-tea.png";
+        return '<span class="oc-thumb"><img src="' + img + '" onerror="this.src=\'images/common/food-placeholder.svg\'"></span>';
       }).join("");
       return '<article class="order-card">'
         + '<header class="oc-head">'

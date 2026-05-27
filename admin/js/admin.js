@@ -115,7 +115,7 @@
 
   function assetUrl(value) {
     if (!value) {
-      return "../images/food-placeholder.svg";
+      return "../images/common/food-placeholder.svg";
     }
     if (value.indexOf("/images/") === 0) {
       return ".." + value;
@@ -465,7 +465,7 @@
     }
     tableBody.innerHTML = state.products.map(function (product) {
       return '<tr>' +
-        '<td><img class="table-thumb" src="' + escapeHtml(assetUrl(product.image)) + '" alt="' + escapeHtml(product.name) + '" onerror="this.src=\'../images/food-placeholder.svg\'"></td>' +
+        '<td><img class="table-thumb" src="' + escapeHtml(assetUrl(product.image)) + '" alt="' + escapeHtml(product.name) + '" onerror="this.src=\'../images/common/food-placeholder.svg\'"></td>' +
         '<td>' + escapeHtml(product.name) + '</td>' +
         '<td>' + escapeHtml(categoryName(product.categoryId)) + '</td>' +
         '<td>' + money(product.price) + '</td>' +
@@ -516,7 +516,7 @@
       '<div class="field"><label>销量</label><input name="sales" type="number" min="0" placeholder="0"></div>' +
       '<div class="field"><label>标签</label><input name="tags" placeholder="新品,热销"></div>' +
       '<div class="field"><label>状态</label><select name="enabled"><option value="true">在售</option><option value="false">下架</option></select></div>' +
-      '<div class="field wide image-field"><label>商品图片</label><input name="image" placeholder="/images/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><img class="image-preview" alt="商品图片预览"></div>' +
+      '<div class="field wide image-field"><label>商品图片</label><input name="image" placeholder="/images/common/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><img class="image-preview" alt="商品图片预览"></div>' +
       '<div class="field wide"><label>商品描述</label><textarea name="description" placeholder="填写商品口味、卖点和备注"></textarea></div>';
   }
 
@@ -560,7 +560,7 @@
     form.querySelector("[name=sales]").value = product ? Number(product.sales || 0) : "0";
     form.querySelector("[name=tags]").value = product && product.tags ? product.tags.join(",") : "";
     form.querySelector("[name=enabled]").value = product && !product.enabled ? "false" : "true";
-    form.querySelector("[name=image]").value = product && product.image ? product.image : "/images/food-placeholder.svg";
+    form.querySelector("[name=image]").value = product && product.image ? product.image : "/images/common/food-placeholder.svg";
     form.querySelector(".image-preview").src = assetUrl(form.querySelector("[name=image]").value);
     form.querySelector("[name=description]").value = product ? product.description : "";
     var note = $(".card[style] .muted");
@@ -581,7 +581,7 @@
       categoryId: categoryId,
       name: name,
       description: form.querySelector("[name=description]").value.trim(),
-      image: form.querySelector("[name=image]").value.trim() || "/images/food-placeholder.svg",
+      image: form.querySelector("[name=image]").value.trim() || "/images/common/food-placeholder.svg",
       price: price,
       sales: Number(form.querySelector("[name=sales]").value || 0),
       tags: form.querySelector("[name=tags]").value.split(",").map(function (tag) {
@@ -1039,7 +1039,7 @@
       '<div class="field"><label>跳转地址</label><input name="linkUrl" placeholder="menu.html"></div>' +
       '<div class="field"><label>排序</label><input name="sort" type="number" min="0" placeholder="1"></div>' +
       '<div class="field"><label>状态</label><select name="enabled"><option value="true">启用</option><option value="false">停用</option></select></div>' +
-      '<div class="field wide image-field"><label>Banner 图片</label><input name="image" placeholder="/images/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><img class="image-preview" alt="Banner 图片预览"></div>';
+      '<div class="field wide image-field"><label>Banner 图片</label><input name="image" placeholder="/images/common/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><img class="image-preview" alt="Banner 图片预览"></div>';
     bindImagePreview(formGrid);
     saveButton.removeAttribute("data-toast");
     saveButton.textContent = "保存 Banner";
@@ -1082,7 +1082,7 @@
     form.querySelector("[name=linkUrl]").value = banner ? banner.linkUrl : "menu.html";
     form.querySelector("[name=sort]").value = banner ? Number(banner.sort || 0) : "1";
     form.querySelector("[name=enabled]").value = banner && !banner.enabled ? "false" : "true";
-    form.querySelector("[name=image]").value = banner && banner.image ? banner.image : "/images/food-placeholder.svg";
+    form.querySelector("[name=image]").value = banner && banner.image ? banner.image : "/images/common/food-placeholder.svg";
     form.querySelector(".image-preview").src = assetUrl(form.querySelector("[name=image]").value);
   }
 
@@ -1094,7 +1094,7 @@
       title: form.querySelector("[name=title]").value.trim(),
       subtitle: form.querySelector("[name=subtitle]").value.trim(),
       tagText: form.querySelector("[name=tagText]").value.trim(),
-      image: form.querySelector("[name=image]").value.trim() || "/images/food-placeholder.svg",
+      image: form.querySelector("[name=image]").value.trim() || "/images/common/food-placeholder.svg",
       linkText: form.querySelector("[name=linkText]").value.trim(),
       linkUrl: form.querySelector("[name=linkUrl]").value.trim(),
       sort: Number(form.querySelector("[name=sort]").value || 0),

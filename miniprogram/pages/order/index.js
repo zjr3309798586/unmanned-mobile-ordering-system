@@ -10,7 +10,7 @@ function defaultOrders() {
       statusText: "已完成",
       timeText: "2026-03-09 22:14:21",
       pickupNo: "915",
-      thumbs: ["/images/menu-product-milk-tea.png", "/images/menu-product-latte.png"],
+      thumbs: ["/images/menu/menu-product-milk-tea.png", "/images/menu/menu-product-latte.png"],
       amount: "34",
       qty: 2
     },
@@ -20,7 +20,7 @@ function defaultOrders() {
       statusText: "已完成",
       timeText: "2025-11-27 11:20:04",
       pickupNo: "535",
-      thumbs: ["/images/menu-product-orange.png"],
+      thumbs: ["/images/menu/menu-product-orange.png"],
       amount: "14",
       qty: 1
     },
@@ -30,7 +30,7 @@ function defaultOrders() {
       statusText: "已完成",
       timeText: "2025-10-17 15:15:28",
       pickupNo: "576",
-      thumbs: ["/images/menu-product-grape.png", "/images/menu-product-wrap.png"],
+      thumbs: ["/images/menu/menu-product-grape.png", "/images/menu/menu-product-wrap.png"],
       amount: "36",
       qty: 2
     }
@@ -61,7 +61,7 @@ Page({
         statusText: format.statusText(o.status),
         timeText: (o.createdAt || "").replace("T", " ").slice(0, 19),
         pickupNo: o.pickupNo || o.orderNo || "—",
-        thumbs: (o.items || []).map((it) => it.image || "/images/menu-product-milk-tea.png").slice(0, 3),
+        thumbs: (o.items || []).map((it) => it.image || "/images/menu/menu-product-milk-tea.png").slice(0, 3),
         amount: String(Math.round(Number(o.payableAmount || 0))),
         qty: (o.items || []).reduce((s, it) => s + (it.quantity || 1), 0)
       }));

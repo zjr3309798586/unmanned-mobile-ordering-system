@@ -11,7 +11,7 @@
 
   <view class="pass-hero">
     <view class="pass-card">
-      <image class="pass-mascot" src="/images/saving-mascot-card.png" mode="widthFix"/>
+      <image class="pass-mascot" src="/images/saving/saving-mascot-card.png" mode="widthFix"/>
 
       <view class="pass-card-row">
         <view class="pass-card-title">云豹省钱卡</view>
@@ -64,7 +64,7 @@
       </view>
       <view class="saving-product-row">
         <navigator class="saving-product" url="/pages/detail/index?id=P-1003" open-type="navigate">
-          <image src="/images/menu-product-milk-tea.png" mode="aspectFit"/>
+          <image src="/images/menu/menu-product-milk-tea.png" mode="aspectFit"/>
           <view class="sp-name">满杯西柚绿茶</view>
           <view class="sp-price-line">
             <text class="sp-price">¥12.8</text>
@@ -72,7 +72,7 @@
           </view>
         </navigator>
         <navigator class="saving-product" url="/pages/detail/index?id=P-1001" open-type="navigate">
-          <image src="/images/menu-product-latte.png" mode="aspectFit"/>
+          <image src="/images/menu/menu-product-latte.png" mode="aspectFit"/>
           <view class="sp-name">橙香美式</view>
           <view class="sp-price-line">
             <text class="sp-price">¥13.8</text>
@@ -80,7 +80,7 @@
           </view>
         </navigator>
         <navigator class="saving-product" url="/pages/detail/index?id=P-1006" open-type="navigate">
-          <image src="/images/menu-product-wrap.png" mode="aspectFit"/>
+          <image src="/images/menu/menu-product-wrap.png" mode="aspectFit"/>
           <view class="sp-name">芝士烤吐司</view>
           <view class="sp-price-line">
             <text class="sp-price">¥8.8</text>
@@ -113,7 +113,7 @@
   </view>
 
   <view class="saving-floating-bar">
-    <image class="sfb-mascot" src="/images/saving-mascot-card.png" mode="aspectFill"/>
+    <image class="sfb-mascot" src="/images/saving/saving-mascot-card.png" mode="aspectFill"/>
     <view class="sfb-text">
       <view class="sfb-title">云豹省钱卡</view>
       <view class="sfb-sub">预计本月可省 ¥48</view>
@@ -125,10 +125,10 @@
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-saving-active.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving-active.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>
