@@ -11,10 +11,22 @@ import org.apache.ibatis.annotations.Update;
 import java.math.BigDecimal;
 import java.util.List;
 
-// OrderMapper 负责操作 orders 订单表和 order_items 订单明细表。
+/**
+ * 订单表数据访问层 —— 操作 orders 订单主表 + order_items 订单明细表。
+ *
+ * 一笔订单 = 1 条 orders + N 条 order_items(每个商品规格一条)。
+ * 主表存订单的"全局信息"(订单号、状态、金额),
+ * 明细表存"当时下单时的商品快照"(名字、规格、价格冻结)。
+ */
 @Mapper
 public interface OrderMapper {
-    // 用户端订单页：查询当前用户订单，可按状态筛选。
+
+    // ===== 查询 =====
+
+    /**
+     * 前台订单列表:当前用户的订单,可按状态过滤。
+     * 用 <script> 动态拼:status 不传就返回该用户所有订单。
+     */
     @Select({
             "<script>",
             "SELECT * FROM orders",
@@ -27,7 +39,11 @@ public interface OrderMapper {
     })
     List<Order> listOrders(@Param("userId") String userId, @Param("status") String status);
 
-    // 查询订单详情。userId 不为空时会限制只能查自己的订单，后台查询时可以传 null。
+    /**
+     * 订单详情。
+     * userId 传值时限定"只能查自己的订单"(前台用,防越权)。
+     * userId 传 null 时不限制(后台用,任何订单都能查)。
+     */
     @Select({
             "<script>",
             "SELECT * FROM orders",
@@ -41,7 +57,7 @@ public interface OrderMapper {
     })
     Order findOrder(@Param("orderId") String orderId, @Param("userId") String userId);
 
-    // 后台订单管理：查询全部用户订单，可按状态筛选。
+    /** 后台订单管理:所有用户的订单,可按状态过滤。 */
     @Select({
             "<script>",
             "SELECT * FROM orders",
@@ -53,7 +69,7 @@ public interface OrderMapper {
     })
     List<Order> listOrdersForAdmin(@Param("status") String status);
 
-    // 查询订单里的商品明细。
+    /** 查订单里的商品明细(由 OrderingService.attachOrderItems 调用拼回主单)。 */
     @Select({
             "SELECT product_id, product_name, spec, price, quantity",
             "FROM order_items",
@@ -62,7 +78,9 @@ public interface OrderMapper {
     })
     List<OrderItem> listOrderItems(String orderId);
 
-    // 新建订单主表记录。
+    // ===== 写入 =====
+
+    /** 新建订单主表。订单号 / 状态 / 金额都已经在 Service 层算好。 */
     @Insert({
             "INSERT INTO orders (id, order_no, pickup_type, store_name, table_no, remark, status,",
             "user_id, total_amount, discount_amount, payable_amount, created_at)",
@@ -72,22 +90,24 @@ public interface OrderMapper {
     })
     int insertOrder(Order order);
 
-    // 新建订单明细记录。一个订单里有几个商品，就会插入几条 order_items。
+    /** 新建订单明细。一个订单有 N 个商品 → 调 N 次。 */
     @Insert({
             "INSERT INTO order_items (order_id, product_id, product_name, spec, price, quantity)",
             "VALUES (#{orderId}, #{item.productId}, #{item.productName}, #{item.spec}, #{item.price}, #{item.quantity})"
     })
     int insertOrderItem(@Param("orderId") String orderId, @Param("item") OrderItem item);
 
-    // 修改订单状态，比如 PENDING -> COMPLETED 或 CANCELED。
+    /** 修改订单状态。例如 WAITING_PICKUP → COMPLETED 或 CANCELED。 */
     @Update("UPDATE orders SET status = #{status} WHERE id = #{orderId}")
     int updateStatus(@Param("orderId") String orderId, @Param("status") String status);
 
-    // 后台首页统计订单数量。
+    // ===== 统计(后台首页看板) =====
+
+    /** 全平台订单总数。 */
     @Select("SELECT COUNT(*) FROM orders")
     int countOrders();
 
-    // 后台首页统计成交金额，取消订单不计入收入。
+    /** 已成交订单总金额(已取消订单不计入)。 */
     @Select("SELECT COALESCE(SUM(payable_amount), 0) FROM orders WHERE status <> 'CANCELED'")
     BigDecimal sumPayableAmount();
 }
