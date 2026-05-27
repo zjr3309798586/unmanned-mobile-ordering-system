@@ -11,6 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * 前台商品接口(不需要登录,任何人都能浏览)。
+ *
+ * 共 2 个端点:
+ *   GET /api/products              —— 商品列表(支持分类筛选 + 关键词搜索)
+ *   GET /api/products/{productId}  —— 商品详情
+ *
+ * 后台商品管理(增/改/下架)在 AdminController。
+ */
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -20,10 +29,14 @@ public class ProductController {
         this.orderingService = orderingService;
     }
 
-    // 前台点餐页调用这个接口读取商品列表。
-    // categoryId 和 keyword 都是可选参数：
-    // 1. categoryId 用来按分类筛选商品。
-    // 2. keyword 用来按关键词搜索商品。
+    /**
+     * 前台点餐页商品列表。
+     * categoryId 和 keyword 都是可选条件:
+     *   - 都不传 → 返回所有上架商品
+     *   - 只传 categoryId → 按分类筛选
+     *   - 只传 keyword → 按商品名模糊匹配
+     *   - 同时传 → 二者并用
+     */
     @GetMapping
     public ApiResponse<List<Product>> listProducts(
             @RequestParam(required = false) String categoryId,
@@ -31,8 +44,11 @@ public class ProductController {
         return ApiResponse.ok(orderingService.listProducts(categoryId, keyword));
     }
 
-    // 商品详情页调用这个接口。
-    // 路径里的 productId 表示商品编号，例如 /api/products/P-1001。
+    /**
+     * 商品详情页。
+     * 路径里的 productId 表示商品编号(如 /api/products/P-1001)。
+     * 下架商品在这里查不到,返回 404。
+     */
     @GetMapping("/{productId}")
     public ApiResponse<Product> getProduct(@PathVariable String productId) {
         return ApiResponse.ok(orderingService.getProduct(productId));

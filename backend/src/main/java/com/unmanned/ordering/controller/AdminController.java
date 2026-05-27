@@ -37,7 +37,26 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-// 后台管理端接口。后台 HTML 页面所有“增删改查”请求，基本都会进这个类。
+/**
+ * 后台管理端接口集合。
+ *
+ * 全部前缀 /api/admin/**,除 /login 外所有端点都被 AdminAuthInterceptor 拦截,
+ * 必须带 X-Admin-Token 才能访问。
+ *
+ * 管理领域:
+ *   1. 登录              POST  /api/admin/login
+ *   2. 数据看板          GET   /api/admin/dashboard
+ *   3. Banner 管理       /api/admin/banners(增/改/软删)
+ *   4. 图片上传          POST  /api/admin/uploads/images
+ *   5. 商品管理          /api/admin/products(增/改/软删)
+ *   6. 分类管理          /api/admin/categories(增/改/删)
+ *   7. 优惠券管理        /api/admin/coupons(增/改/软删)
+ *   8. 订单管理          /api/admin/orders(查/完成/取消)
+ *   9. 用户管理          GET   /api/admin/users
+ *
+ * 删除策略:商品 / Banner / 优惠券 都用"软删除"(把 enabled 置 false),
+ * 避免破坏历史订单数据;只有分类是真删,且要求该分类下没有商品。
+ */
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -49,31 +68,33 @@ public class AdminController {
         this.adminAuthService = adminAuthService;
     }
 
-    // 后台管理员登录。前端提交账号密码后，会拿到一个管理员 token。
+    /** 后台管理员登录。成功后返回管理员 token,后续接口必须带 X-Admin-Token 请求头。 */
     @PostMapping("/login")
     public ApiResponse<AdminSession> login(@Valid @RequestBody AdminLoginRequest request) {
         return ApiResponse.ok(adminAuthService.login(request));
     }
 
-    // 后台首页数据看板：订单数、商品数、用户数、销售额等统计数据。
+    /** 数据看板:商品数 / 订单数 / 购物车项数 / 销售总额。 */
     @GetMapping("/dashboard")
     public ApiResponse<AdminDashboard> getDashboard() {
         return ApiResponse.ok(orderingService.getDashboard());
     }
 
-    // Banner 管理：后台查看所有 Banner，包括已下架的 Banner。
+    // ===== Banner 管理 =====
+
+    /** Banner 列表:后台需要看到所有 Banner,包括已下架的。 */
     @GetMapping("/banners")
     public ApiResponse<List<Banner>> listBanners() {
         return ApiResponse.ok(orderingService.listAllBannersForAdmin());
     }
 
-    // 新增 Banner。@Valid 会检查 BannerRequest 里的必填字段。
+    /** 新增 Banner。@Valid 会校验 BannerRequest 必填字段。 */
     @PostMapping("/banners")
     public ApiResponse<Banner> createBanner(@Valid @RequestBody BannerRequest request) {
         return ApiResponse.created(orderingService.createBanner(request));
     }
 
-    // 修改 Banner。bannerId 来自浏览器地址，request 是页面表单提交的新内容。
+    /** 修改 Banner(整体覆盖)。 */
     @PatchMapping("/banners/{bannerId}")
     public ApiResponse<Banner> updateBanner(
             @PathVariable String bannerId,
@@ -81,13 +102,21 @@ public class AdminController {
         return ApiResponse.ok(orderingService.updateBanner(bannerId, request));
     }
 
-    // 删除 Banner 这里采用“软删除”：把 enabled 改成 false，数据还留在数据库里。
+    /** 软删除 Banner:把 enabled 置 false,数据仍保留。 */
     @DeleteMapping("/banners/{bannerId}")
     public ApiResponse<Banner> disableBanner(@PathVariable String bannerId) {
         return ApiResponse.ok(orderingService.disableBanner(bannerId));
     }
 
-    // 后台上传商品图 / Banner 图。图片会保存到项目根目录的 images/uploads 下面。
+    /**
+     * 后台上传商品图 / Banner 图。
+     *
+     * 上传到项目根目录的 images/uploads/ 下,文件名格式 img-{随机串}.{ext}。
+     * 上传成功后返回 { path: "/images/uploads/img-xxx.png" },前端把这个路径
+     * 填到商品/Banner 的 image 字段保存。
+     *
+     * 仅允许 png / jpg / jpeg / gif / webp / svg 6 种格式。
+     */
     @PostMapping("/uploads/images")
     public ApiResponse<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
@@ -98,7 +127,7 @@ public class AdminController {
         if (!ext.matches("\\.(png|jpg|jpeg|gif|webp|svg)$")) {
             return ApiResponse.fail(400, "仅支持 png、jpg、jpeg、gif、webp、svg 图片");
         }
-        // Spring Boot 是从 backend 目录启动的，图片需要放到父目录 images 下，前台和后台才能访问。
+        // backend 启动目录是 backend/,images/uploads/ 在父目录(项目根)下
         Path backendDir = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
         Path frontendDir = backendDir.getParent();
         Path uploadDir = (frontendDir == null ? backendDir : frontendDir).resolve("images").resolve("uploads");
@@ -108,19 +137,21 @@ public class AdminController {
         return ApiResponse.ok(Map.of("path", "/images/uploads/" + filename));
     }
 
-    // 商品管理：后台需要看到所有商品，包括已经下架的商品。
+    // ===== 商品管理 =====
+
+    /** 商品列表:后台需要看到所有商品,包括已下架的。 */
     @GetMapping("/products")
     public ApiResponse<List<Product>> listProducts() {
         return ApiResponse.ok(orderingService.listAllProductsForAdmin());
     }
 
-    // 新增商品。
+    /** 新增商品。 */
     @PostMapping("/products")
     public ApiResponse<Product> createProduct(@Valid @RequestBody ProductRequest request) {
         return ApiResponse.created(orderingService.createProduct(request));
     }
 
-    // 修改商品。
+    /** 修改商品(整体覆盖)。 */
     @PatchMapping("/products/{productId}")
     public ApiResponse<Product> updateProduct(
             @PathVariable String productId,
@@ -128,25 +159,27 @@ public class AdminController {
         return ApiResponse.ok(orderingService.updateProduct(productId, request));
     }
 
-    // 下架商品，同样是软删除，避免历史订单找不到商品信息。
+    /** 软删除商品。这样历史订单仍能找到商品信息(名字、规格、当时价格)。 */
     @DeleteMapping("/products/{productId}")
     public ApiResponse<Product> disableProduct(@PathVariable String productId) {
         return ApiResponse.ok(orderingService.disableProduct(productId));
     }
 
-    // 分类管理：点餐页左侧分类来自这里。
+    // ===== 分类管理 =====
+
+    /** 分类列表。前后台共用,因为分类无"下架"概念。 */
     @GetMapping("/categories")
     public ApiResponse<List<Category>> listCategories() {
         return ApiResponse.ok(orderingService.listAllCategoriesForAdmin());
     }
 
-    // 新增分类。
+    /** 新增分类。 */
     @PostMapping("/categories")
     public ApiResponse<Category> createCategory(@Valid @RequestBody CategoryRequest request) {
         return ApiResponse.created(orderingService.createCategory(request));
     }
 
-    // 修改分类名称和排序。
+    /** 修改分类名称和排序。 */
     @PatchMapping("/categories/{categoryId}")
     public ApiResponse<Category> updateCategory(
             @PathVariable String categoryId,
@@ -154,25 +187,27 @@ public class AdminController {
         return ApiResponse.ok(orderingService.updateCategory(categoryId, request));
     }
 
-    // 删除分类。Service 层会检查分类下是否还有商品，避免误删。
+    /** 删除分类。Service 层会检查:分类下还有商品时禁止删除。 */
     @DeleteMapping("/categories/{categoryId}")
     public ApiResponse<Category> deleteCategory(@PathVariable String categoryId) {
         return ApiResponse.ok(orderingService.deleteCategory(categoryId));
     }
 
-    // 优惠券管理：后台维护券规则，前台用户购买省钱卡后才能领取。
+    // ===== 优惠券管理 =====
+
+    /** 优惠券列表(含下架的)。后台维护券规则,用户买省钱卡后才能领。 */
     @GetMapping("/coupons")
     public ApiResponse<List<Coupon>> listCoupons() {
         return ApiResponse.ok(orderingService.listAllCouponsForAdmin());
     }
 
-    // 新增优惠券。
+    /** 新增优惠券。 */
     @PostMapping("/coupons")
     public ApiResponse<Coupon> createCoupon(@Valid @RequestBody CouponRequest request) {
         return ApiResponse.created(orderingService.createCoupon(request));
     }
 
-    // 修改优惠券，比如满减门槛、优惠金额、有效期。
+    /** 修改优惠券规则(满减门槛 / 优惠金额 / 有效期)。 */
     @PatchMapping("/coupons/{couponId}")
     public ApiResponse<Coupon> updateCoupon(
             @PathVariable String couponId,
@@ -180,31 +215,33 @@ public class AdminController {
         return ApiResponse.ok(orderingService.updateCoupon(couponId, request));
     }
 
-    // 下架优惠券。已经领取的券是否可用，还会在下单时再次校验。
+    /** 软删除优惠券。已经领取的券是否能用,会在下单时再次校验。 */
     @DeleteMapping("/coupons/{couponId}")
     public ApiResponse<Coupon> disableCoupon(@PathVariable String couponId) {
         return ApiResponse.ok(orderingService.disableCoupon(couponId));
     }
 
-    // 订单管理：后台查看所有用户提交的订单。
+    // ===== 订单管理 =====
+
+    /** 后台查看所有用户的订单。 */
     @GetMapping("/orders")
     public ApiResponse<List<Order>> listOrders() {
         return ApiResponse.ok(orderingService.listOrdersForAdmin(null));
     }
 
-    // 后台把订单改为已完成。
+    /** 店员手动把订单改为"已完成"。 */
     @PatchMapping("/orders/{orderId}/complete")
     public ApiResponse<Order> completeOrder(@PathVariable String orderId) {
         return ApiResponse.ok(orderingService.completeOrder(orderId));
     }
 
-    // 后台取消订单。Service 层会回滚销量、优惠券和用户积分统计。
+    /** 店员代客取消订单。Service 层会回滚销量、优惠券、用户积分统计。 */
     @PatchMapping("/orders/{orderId}/cancel")
     public ApiResponse<Order> cancelOrder(@PathVariable String orderId) {
         return ApiResponse.ok(orderingService.cancelOrderForAdmin(orderId));
     }
 
-    // 用户管理：后台查看用户昵称、会员等级、积分、优惠券数量等资料。
+    /** 后台用户管理:查看所有用户资料(昵称 / 会员等级 / 积分 / 券数)。 */
     @GetMapping("/users")
    public ApiResponse<List<UserProfile>> listUsers() {
         return ApiResponse.ok(orderingService.listUsersForAdmin());
