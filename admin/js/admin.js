@@ -113,12 +113,35 @@
     return "¥ " + Number(value || 0).toFixed(2);
   }
 
+  // 已知的图片子目录(若路径已带子目录则不再补)
+  var IMG_DIRS = ["nav", "home", "menu", "mine", "saving", "mascot", "common", "icons"];
+
+  // 按文件名前缀推断子目录(用于把后端返回的旧扁平路径自动重写到子目录)
+  function guessImgSubdir(filename) {
+    if (/^nav-/.test(filename)) return "nav";
+    if (/^home-/.test(filename)) return "home";
+    if (/^menu-product-/.test(filename)) return "menu";
+    if (/^product-/.test(filename)) return "menu";
+    if (/^mine-/.test(filename)) return "mine";
+    if (/^saving-/.test(filename)) return "saving";
+    if (/^icon-(delivery|pickup)-/.test(filename)) return "saving";
+    if (/^mascot-yunbao/.test(filename)) return "mascot";
+    if (/-placeholder\.svg$/.test(filename)) return "common";
+    return null;
+  }
+
   function assetUrl(value) {
-    if (!value) {
-      return "../images/common/food-placeholder.svg";
-    }
+    var fallback = "../images/common/food-placeholder.svg";
+    if (!value) return fallback;
     if (value.indexOf("/images/") === 0) {
-      return ".." + value;
+      var rest = value.substring("/images/".length);
+      var head = rest.split("/")[0];
+      // 已带子目录,直接拼上 ../
+      if (IMG_DIRS.indexOf(head) !== -1) return ".." + value;
+      // 旧扁平路径,按文件名前缀自动补子目录
+      var filename = rest.split("/").pop();
+      var sub = guessImgSubdir(filename);
+      return sub ? "../images/" + sub + "/" + filename : fallback;
     }
     return value;
   }
