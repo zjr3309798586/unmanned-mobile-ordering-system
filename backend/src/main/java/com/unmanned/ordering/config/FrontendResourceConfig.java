@@ -7,6 +7,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * 静态资源路径映射(与 CorsConfig.addResourceHandlers 功能重叠的备份)。
+ *
+ * Spring 会调用所有 WebMvcConfigurer 的 addResourceHandlers,
+ * 多个注册会按顺序匹配,CorsConfig 的实现先生效;本类作为兜底配置存在。
+ *
+ * 同样把 / index.html / css / js / images 映射到 h5/ 子目录,
+ * 把 /admin/** 映射到项目根的 admin/ 目录。
+ *
+ * 用 Path API 而不是 "file:../" 字符串拼接,更稳健,跨操作系统都能工作。
+ */
 @Configuration
 public class FrontendResourceConfig implements WebMvcConfigurer {
     @Override
