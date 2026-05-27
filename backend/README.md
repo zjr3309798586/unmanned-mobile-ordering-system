@@ -221,13 +221,28 @@ GET    /api/admin/users
   "categoryId": "coffee",
   "name": "Vanilla Latte",
   "description": "A light coffee drink with vanilla aroma.",
-  "image": "/images/product-vanilla-latte.svg",
+  "image": "/images/menu/product-vanilla-latte.svg",
   "price": 16.9,
   "sales": 0,
   "tags": ["New"],
   "enabled": true
 }
 ```
+
+`image` 字段填前端静态资源的 URL 路径。前台图片已按用途分子目录：
+
+```text
+/images/nav/      底部导航图标
+/images/home/     首页 banner / 装饰
+/images/menu/     商品图(menu-*.png + product-*.svg)
+/images/mine/     我的页素材
+/images/saving/   省钱卡素材 + 自取/外卖图标
+/images/mascot/   全局吉祥物
+/images/common/   占位图
+```
+
+为兼容历史数据,旧的扁平路径(例如 `/images/product-vanilla-latte.svg`)
+仍然可用——前端的 `assetUrl` / `imageUrl` 会按文件名前缀自动重写到子目录。
 
 ## 统一响应格式
 
