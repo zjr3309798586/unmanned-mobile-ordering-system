@@ -7,6 +7,18 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 // 后台新增 / 修改优惠券时，页面表单提交的数据结构。
+
+/**
+ * 新增/修改优惠券请求体(后台用)。
+ *
+ * 字段:
+ *   title           券标题
+ *   conditionText   满减说明文案(如"满 20 减 5")
+ *   minAmount       满减门槛
+ *   discountAmount  抵扣金额
+ *   validUntil      有效期截止时间
+ *   available       是否启用
+ */
 public class CouponRequest {
     // 优惠券名称，例如“满 30 减 6”。
     @NotBlank

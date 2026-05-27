@@ -3,6 +3,17 @@ package com.unmanned.ordering.request;
 import javax.validation.constraints.NotBlank;
 
 // 小程序微信登录请求。小程序端通过 wx.login 拿到 code 后提交给后端。
+
+/**
+ * 微信小程序登录请求体。
+ *
+ * 字段:
+ *   code        小程序 wx.login() 返回的一次性 code
+ *   nickname    用户昵称(可空,默认"微信用户")
+ *   avatarUrl   头像 URL(可空)
+ *
+ * code 由后端拿去微信换 openid。
+ */
 public class WechatLoginRequest {
     // 必填：wx.login 返回的临时登录凭证。
     @NotBlank

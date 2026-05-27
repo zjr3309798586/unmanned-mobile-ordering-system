@@ -4,6 +4,13 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 // 加入购物车时，前端传给后端的数据结构。
+
+/**
+ * 加入购物车请求体。
+ *
+ * 前端提交:productId(商品 ID)+ spec(规格,如"中杯/温/默认糖")+ quantity(数量)。
+ * 注意:不接受前端传 price,价格由后端从 Product 表读取,防篡改。
+ */
 public class AddCartItemRequest {
     // 必填：要加入购物车的商品 id，对应 products 表的 id。
     @NotBlank

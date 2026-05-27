@@ -9,6 +9,20 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 // 后台新增 / 修改商品时，页面表单提交的数据结构。
+
+/**
+ * 新增/修改商品请求体(后台用)。
+ *
+ * 字段:
+ *   categoryId    所属分类(必须已存在)
+ *   name          商品名
+ *   description   描述
+ *   image         图片路径(/images/menu/X.png)
+ *   price         单价
+ *   sales         初始销量
+ *   tags          标签列表
+ *   enabled       是否上架
+ */
 public class ProductRequest {
     // 必填：商品所属分类 id，对应 categories 表的 id。
     @NotBlank

@@ -3,6 +3,18 @@ package com.unmanned.ordering.request;
 import javax.validation.constraints.NotBlank;
 
 // 提交订单时，前端传给后端的数据结构。
+
+/**
+ * 提交订单请求体。
+ *
+ * 前端只提交:
+ *   pickupType    取餐方式("SELF_PICKUP"/"DELIVERY")
+ *   couponId      用的优惠券 ID(可空)
+ *   tableNo       桌号(可空)
+ *   remark        备注(可空)
+ *
+ * 商品清单不由前端传,后端直接读取当前用户购物车,防价格篡改。
+ */
 public class CreateOrderRequest {
     // 必填：取餐方式，例如 PICKUP 表示到店自取，DELIVERY 表示外送。
     @NotBlank

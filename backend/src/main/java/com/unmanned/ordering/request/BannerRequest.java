@@ -3,6 +3,13 @@ package com.unmanned.ordering.request;
 import javax.validation.constraints.NotBlank;
 
 // 后台新增 / 修改首页 Banner 时，页面表单提交的数据结构。
+
+/**
+ * 新增/修改 Banner 请求体(后台用)。
+ *
+ * 包含 title / subtitle / tagText / image / linkText / linkUrl /
+ *      sort(排序权重)/ enabled(是否启用)。
+ */
 public class BannerRequest {
     // Banner 主标题。
     @NotBlank
