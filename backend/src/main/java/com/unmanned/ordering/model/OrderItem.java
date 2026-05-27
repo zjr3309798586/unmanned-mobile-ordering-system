@@ -2,6 +2,14 @@ package com.unmanned.ordering.model;
 
 import java.math.BigDecimal;
 
+/**
+ * 订单明细单项,对应 order_items 表。
+ *
+ * 这是"下单时的商品快照":productName / spec / price 在下单瞬间冻结,
+ * 之后商品改名或改价都不影响历史订单。
+ *
+ * subtotal = price × quantity,由 getter 计算。
+ */
 public class OrderItem {
     private String productId;
     private String productName;

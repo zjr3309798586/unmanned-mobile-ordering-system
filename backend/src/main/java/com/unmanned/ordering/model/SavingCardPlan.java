@@ -4,6 +4,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 省钱卡套餐,对应 saving_card_plans 表。
+ *
+ * benefits 在 DB 里是字符串(JSON 或逗号分隔),
+ * Java 里是 List<String>,通过 StringListTypeHandler 双向转换。
+ *
+ * 当前用于展示"月卡 / 季卡 / 年卡 + 含哪些权益"。
+ */
 public class SavingCardPlan {
     private String id;
     private String name;

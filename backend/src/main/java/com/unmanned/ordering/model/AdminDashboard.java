@@ -2,6 +2,15 @@ package com.unmanned.ordering.model;
 
 import java.math.BigDecimal;
 
+/**
+ * 后台首页数据看板的统计 DTO。
+ *
+ * 由 OrderingService.getDashboard 组装,包含:
+ *   - productCount: 上架商品数
+ *   - orderCount: 总订单数
+ *   - cartItemCount: 全平台购物车条目数
+ *   - totalOrderAmount: 已成交订单总金额(已取消订单不计入)
+ */
 public class AdminDashboard {
     private int productCount;
     private int orderCount;

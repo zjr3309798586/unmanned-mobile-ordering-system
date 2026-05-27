@@ -1,5 +1,9 @@
 package com.unmanned.ordering.model;
 
+/**
+ * 商品分类,对应 categories 表。
+ * sort 用于点餐页左侧分类栏排序,数值小的排前。
+ */
 public class Category {
     private String id;
     private String name;

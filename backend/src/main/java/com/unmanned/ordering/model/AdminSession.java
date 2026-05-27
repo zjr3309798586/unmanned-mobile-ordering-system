@@ -1,5 +1,10 @@
 package com.unmanned.ordering.model;
 
+/**
+ * 后台管理员登录后返回给前端的会话信息。
+ *
+ * 包含 username(显示用)+ token(后续接口的 X-Admin-Token 请求头)。
+ */
 public class AdminSession {
     private String username;
     private String token;

@@ -2,6 +2,14 @@ package com.unmanned.ordering.model;
 
 import java.math.BigDecimal;
 
+/**
+ * 购物车单项实体,对应 cart_items 表(经 JOIN products 后)。
+ *
+ * 数据库表里只存 product_id + spec + quantity,
+ * 商品名 / 图 / 价 通过 JOIN products 实时拿,保证商品改价时购物车价格也更新。
+ *
+ * subtotal = price × quantity,由 getter 计算,不存表。
+ */
 public class CartItem {
     private String id;
     private String productId;

@@ -4,6 +4,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 购物车页接口返回结构(包装多项 + 汇总)。
+ *
+ * 包含:
+ *   items          购物车明细列表
+ *   totalQuantity  总件数(用于点餐页底部"已选 X 件")
+ *   totalAmount    总金额(用于购物车页支付条)
+ *   hint           前端展示用的提示文案
+ */
 public class CartSummary {
     private List<CartItem> items = new ArrayList<>();
     private int totalQuantity;

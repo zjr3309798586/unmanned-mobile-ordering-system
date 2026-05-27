@@ -3,6 +3,16 @@ package com.unmanned.ordering.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * 用户优惠券实体,对应 user_coupons 表(经 JOIN coupons 后)。
+ *
+ * 一个用户领一张券就生成一条记录。状态机:
+ *   AVAILABLE → 已领取未使用
+ *   USED      → 已用于某订单(orderId 记录订单)
+ *
+ * couponAvailable 字段是 JOIN 来的 coupons.available,
+ * 表示券本身是否还在上架。即使用户领过,如果券被后台下架也不能用。
+ */
 public class UserCoupon {
     private String id;
     private String userId;

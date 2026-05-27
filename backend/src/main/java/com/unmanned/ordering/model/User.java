@@ -2,6 +2,18 @@ package com.unmanned.ordering.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * 用户登录会话实体,对应 users 表。
+ *
+ * 一个 User 唯一标识一个用户,字段:
+ *   openid       微信 openid(devLogin 时为 null)
+ *   nickname     昵称
+ *   avatarUrl    头像
+ *   token        当前登录 token(退出登录时清空,过期前一直有效)
+ *
+ * 注意区分:User 是"登录会话",UserProfile 是"会员资料",
+ * 一对一关联(user_id 外键)。
+ */
 public class User {
     private String id;
     private String openid;

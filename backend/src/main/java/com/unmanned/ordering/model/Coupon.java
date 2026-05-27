@@ -2,6 +2,17 @@ package com.unmanned.ordering.model;
 
 import java.math.BigDecimal;
 
+/**
+ * 优惠券规则实体,对应 coupons 表。
+ *
+ * 字段说明:
+ *   minAmount        满减门槛(订单金额需 >= 才可用)
+ *   discountAmount   抵扣金额
+ *   validUntil       有效期(过期券不能使用)
+ *   available        是否启用(后台软删除标志)
+ *
+ * 这是"券规则",不是某个用户领的券。用户领后会写入 user_coupons 表。
+ */
 public class Coupon {
     private String id;
     private String title;

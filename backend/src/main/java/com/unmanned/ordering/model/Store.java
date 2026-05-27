@@ -1,5 +1,11 @@
 package com.unmanned.ordering.model;
 
+/**
+ * 门店实体,对应 stores 表。
+ *
+ * 项目当前只配置了一个门店(云豹双流北京华联店),
+ * 所有页面顶部显示的门店名 / 地址 / 营业时间都来自这条记录。
+ */
 public class Store {
     private String id;
     private String name;

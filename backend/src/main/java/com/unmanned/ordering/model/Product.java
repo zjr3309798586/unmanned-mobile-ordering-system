@@ -4,6 +4,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 商品实体,对应 products 表。
+ *
+ * 关键字段:
+ *   categoryId    所属分类
+ *   image         商品图(/images/menu/X.png)
+ *   price         单价(BigDecimal)
+ *   sales         销量(下单 +N,取消订单 -N,不能为负)
+ *   tags          标签列表(在 DB 里存字符串,通过 StringListTypeHandler 转 List)
+ *   enabled       是否上架(false 表示已下架)
+ */
 public class Product {
     private String id;
     private String categoryId;

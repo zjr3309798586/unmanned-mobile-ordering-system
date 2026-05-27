@@ -1,5 +1,14 @@
 package com.unmanned.ordering.model;
 
+/**
+ * 首页轮播 Banner 实体,对应 banners 表。
+ *
+ * 字段说明:
+ *   image / linkUrl  Banner 图与点击跳转地址
+ *   tagText          左上角小角标(例如"NEW"/"限时")
+ *   sort             排序权重,数值小的排前面
+ *   enabled          是否启用(后台软删除标志)
+ */
 public class Banner {
     private String id;
     private String title;
