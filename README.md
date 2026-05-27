@@ -240,6 +240,15 @@ backend/README.md
 | `/admin/**`           | `admin/**`        |
 | `/api/**`             | Spring 控制器     |
 
+## 学习资料
+
+新手或想看懂某一块代码,推荐这两份文档:
+
+- [docs/SQL学习教程.md](docs/SQL学习教程.md) ★ 用本项目真实 SQL 讲解
+  数据库设计 + WHERE/JOIN/动态 SQL/状态机/防御性写法 等共 13 章,
+  对照 `backend/src/main/java/.../mapper/` 看代码一边读一边学。
+- [docs/编码规范.md](docs/编码规范.md) 项目代码规范(命名/格式/Git Commit 等)。
+
 ## 开发规范
 
 本项目所有代码必须遵循 [`docs/编码规范.md`](docs/编码规范.md)。

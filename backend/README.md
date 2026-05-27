@@ -18,6 +18,10 @@ src/main/java/com/unmanned/ordering
 └── exception    异常处理
 ```
 
+> 看不懂 Mapper 里的 SQL?**先看 [`../docs/SQL学习教程.md`](../docs/SQL学习教程.md)**,
+> 这份文档把本项目 Mapper 里每条 SQL 都拆开讲过一遍(WHERE / JOIN / 动态 SQL /
+> 状态机 / 防 SQL 注入 / 防越权 / 防负数 等等)。
+
 一次下单流程可以这样讲：
 
 1. 前端请求 `POST /api/cart/items`。
