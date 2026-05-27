@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     drawerList.innerHTML = items.map(function (it) {
-      var img = it.image ? (app.imageUrl ? app.imageUrl(it.image) : it.image) : "images/common/food-placeholder.svg";
+      var img = it.image ? (app.imageUrl ? app.imageUrl(it.image) : it.image) : "/images/common/food-placeholder.svg";
       var sub = Number((it.subtotal != null ? it.subtotal : (Number(it.price) * it.quantity)) || 0).toFixed(1);
       return '<div class="cd-item">'
         + '<img class="cd-thumb" src="' + img + '" onerror="this.src=\'images/common/food-placeholder.svg\'">'

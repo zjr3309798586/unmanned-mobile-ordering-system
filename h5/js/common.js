@@ -48,7 +48,7 @@ window.OrderingApp = (function () {
 
   function imageUrl(value) {
     if (!value) {
-      return "images/common/food-placeholder.svg";
+      return "/images/common/food-placeholder.svg";
     }
     if (value.indexOf("/images/") === 0) {
       return value.replace("/images/", "images/");

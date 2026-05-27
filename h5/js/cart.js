@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (itemsBox) {
       itemsBox.innerHTML = items.map(function (it) {
         var sub = Number(it.subtotal != null ? it.subtotal : Number(it.price) * Number(it.quantity)) || 0;
-        var img = it.image ? (app.imageUrl ? app.imageUrl(it.image) : it.image) : "images/menu/menu-product-milk-tea.png";
+        var img = it.image ? (app.imageUrl ? app.imageUrl(it.image) : it.image) : "/images/menu/menu-product-milk-tea.png";
         return '<article class="cart-item" data-default-item data-id="' + escapeHtml(it.id) + '" data-price="' + Number(it.price || 0) + '" data-qty="' + Number(it.quantity || 1) + '">'
           + '<div class="ci-thumb"><img src="' + img + '" onerror="this.src=\'images/common/food-placeholder.svg\'"></div>'
           + '<div class="ci-body">'
