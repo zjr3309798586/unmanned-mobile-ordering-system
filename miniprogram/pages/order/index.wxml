@@ -11,40 +11,52 @@
 
   <view class="order-main">
     <view class="order-list">
+      <view class="order-empty-card" wx:if="{{loading}}">
+        <view class="order-empty-title">订单加载中</view>
+        <view class="order-empty-desc">正在同步你的订单记录</view>
+      </view>
 
-      <view class="order-card" wx:for="{{orders}}" wx:key="id">
-        <view class="oc-head">
-          <view class="oc-store">
-            <view class="oc-store-name">{{item.storeName}}</view>
-            <view class="oc-icon-btn"><image src="/images/icons/ord-call.svg" mode="aspectFit"/></view>
-            <view class="oc-icon-btn"><image src="/images/icons/ord-near.svg" mode="aspectFit"/></view>
-          </view>
-          <view class="oc-status">
-            <text>{{item.statusText}}</text>
-            <image src="/images/icons/chev-right.svg" mode="aspectFit"/>
-          </view>
-        </view>
-        <view class="oc-meta">
-          <text>{{item.timeText}}</text>
-          <text class="oc-meta-sep">|</text>
-          <text>取茶号 {{item.pickupNo}}</text>
-        </view>
-        <view class="oc-body">
-          <view class="oc-thumbs">
-            <view class="oc-thumb" wx:for="{{item.thumbs}}" wx:for-item="thumb" wx:key="*this">
-              <image src="{{thumb}}" mode="aspectFit"/>
+      <view class="order-empty-card" wx:elif="{{orders.length === 0}}">
+        <view class="order-empty-title">{{emptyText}}</view>
+        <view class="order-empty-desc">下单后可在这里查看状态和再次购买</view>
+        <view class="order-empty-btn" bindtap="handleEmptyAction">{{emptyButtonText}}</view>
+      </view>
+
+      <block wx:else>
+        <view class="order-card" wx:for="{{orders}}" wx:key="id">
+          <view class="oc-head">
+            <view class="oc-store">
+              <view class="oc-store-name">{{item.storeName}}</view>
+              <view class="oc-icon-btn"><image src="/images/icons/ord-call.svg" mode="aspectFit"/></view>
+              <view class="oc-icon-btn"><image src="/images/icons/ord-near.svg" mode="aspectFit"/></view>
+            </view>
+            <view class="oc-status">
+              <text>{{item.statusText}}</text>
+              <image src="/images/icons/chev-right.svg" mode="aspectFit"/>
             </view>
           </view>
-          <view class="oc-price">
-            <view class="oc-pay">¥{{item.amount}}</view>
-            <text class="oc-qty">共{{item.qty}}件</text>
+          <view class="oc-meta">
+            <text>{{item.timeText}}</text>
+            <text class="oc-meta-sep">|</text>
+            <text>取茶号 {{item.pickupNo}}</text>
+          </view>
+          <view class="oc-body">
+            <view class="oc-thumbs">
+              <view class="oc-thumb" wx:for="{{item.thumbs}}" wx:for-item="thumb" wx:key="*this">
+                <image src="{{thumb}}" mode="aspectFit"/>
+              </view>
+            </view>
+            <view class="oc-price">
+              <view class="oc-pay">¥{{item.amount}}</view>
+              <text class="oc-qty">共{{item.qty}}件</text>
+            </view>
+          </view>
+          <view class="oc-actions">
+            <view class="oc-btn oc-btn-outline">评价一下</view>
+            <view class="oc-btn oc-btn-dark" data-id="{{item.id}}" bindtap="repeatOrder">再来一单</view>
           </view>
         </view>
-        <view class="oc-actions">
-          <view class="oc-btn oc-btn-outline">评价一下</view>
-          <view class="oc-btn oc-btn-dark" data-id="{{item.id}}" bindtap="repeatOrder">再来一单</view>
-        </view>
-      </view>
+      </block>
 
     </view>
   </view>

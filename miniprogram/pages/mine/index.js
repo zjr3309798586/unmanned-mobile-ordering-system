@@ -3,13 +3,12 @@ const auth = require("../../utils/auth");
 const format = require("../../utils/format");
 
 function emptyProfile() {
-  // 未登录默认展示静态示例数据(跟 H5 截图一致)
   return {
     nickname: "未登录",
     memberLevel: "游客",
-    points: 268,
-    balanceText: "¥ 24.50",
-    couponCount: 3,
+    points: 0,
+    balanceText: "¥ 0.00",
+    couponCount: 0,
     savingAmountText: "0.00"
   };
 }
@@ -17,6 +16,7 @@ function emptyProfile() {
 Page({
   data: {
     loggedIn: false,
+    loginSubtitle: "登录后解锁更多权益",
     waitingCount: 0,
     profile: emptyProfile(),
     services: [
@@ -29,12 +29,13 @@ Page({
 
   onShow() {
     this.setData({
-      loggedIn: auth.isLoggedIn()
+      loggedIn: auth.isLoggedIn(),
+      loginSubtitle: auth.isLoggedIn() ? "正在同步订单与权益" : "登录后解锁更多权益"
     });
     if (auth.isLoggedIn()) {
       this.loadProfile();
     } else {
-      this.setData({ profile: emptyProfile() });
+      this.setData({ profile: emptyProfile(), waitingCount: 0, loginSubtitle: "登录后解锁更多权益" });
     }
   },
 
@@ -77,7 +78,8 @@ Page({
           ...profile,
           balanceText: format.money(profile.balance),
           savingAmountText: format.money(profile.savingAmount)
-        }
+        },
+        loginSubtitle: /游客/.test(profile.nickname || "") ? "游客模式 · 本机订单可用" : "已登录 · 同步订单与权益"
       });
     }).catch(function (error) {
       wx.showToast({ title: error.message, icon: "none" });

@@ -27,6 +27,13 @@
         <div class="top-actions"><div class="admin-user"><span class="avatar">J</span><span>管理员</span></div><button class="btn ghost" id="logoutBtn">退出</button></div>
       </header>
 
+      <section class="admin-kpi-grid order-kpis" aria-label="订单运营概览">
+        <div class="admin-kpi-card" data-order-kpi="waiting"><span>待取餐</span><strong class="order-kpi-value">0</strong><em>需要店员处理</em></div>
+        <div class="admin-kpi-card" data-order-kpi="completed"><span>已完成</span><strong class="order-kpi-value">0</strong><em>今日经营沉淀</em></div>
+        <div class="admin-kpi-card" data-order-kpi="canceled"><span>已取消</span><strong class="order-kpi-value">0</strong><em>异常订单跟进</em></div>
+        <div class="admin-kpi-card is-strong" data-order-kpi="amount"><span>有效实付</span><strong class="order-kpi-value">¥ 0.00</strong><em>不含已取消订单</em></div>
+      </section>
+
       <section class="card">
         <div class="toolbar">
           <div class="tabs">

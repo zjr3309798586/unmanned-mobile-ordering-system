@@ -136,7 +136,7 @@ $env:ADMIN_TOKEN_SECRET="一段随机密钥"
 
 当前已启用后台登录校验，未登录或 token 无效时不能访问 `/api/admin/**` 管理接口。
 
-前台用户端当前提供 H5 调试登录，用于浏览器开发和联调。以后改成微信小程序时，使用小程序端 `wx.login()` 获取 `code`，再调用后端 `/api/auth/wechat-login`。需要先配置：
+前台用户端当前提供 H5 游客登录，用于浏览器端完成点餐、购物车和下单流程。以后改成微信小程序正式登录时，使用小程序端 `wx.login()` 获取 `code`，再调用后端 `/api/auth/wechat-login`。需要先配置：
 
 ```powershell
 $env:WECHAT_APP_ID="你的微信小程序AppID"

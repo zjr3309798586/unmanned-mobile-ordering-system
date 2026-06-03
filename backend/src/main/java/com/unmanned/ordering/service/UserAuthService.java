@@ -25,7 +25,7 @@ import java.util.UUID;
  * 前台用户登录服务。
  *
  * 提供两种登录方式:
- *   1. devLogin: H5 浏览器调试用,直接给一个游客 token,不验证身份。
+ *   1. devLogin: H5 游客登录,直接给一个游客 token,不验证微信身份。
  *   2. wechatLogin: 正式微信小程序登录,通过 wx.login() 拿 code,
  *      后端拿 code + appid + secret 调微信接口换 openid,以此识别用户。
  *
@@ -55,10 +55,10 @@ public class UserAuthService {
     }
 
     /**
-     * H5 浏览器开发阶段使用的"游客登录"。
+     * H5 浏览器使用的"游客登录"。
      *
      * 不校验身份,直接创建临时用户 + 默认会员资料并返回 token。
-     * 真实上线时不应暴露这个接口,只在 dev 环境用。
+     * 微信小程序正式登录仍使用 wechatLogin。
      */
     @Transactional
     public UserSession devLogin(DevLoginRequest request) {

@@ -154,9 +154,30 @@ Page({
   },
 
   addCart(event) {
-    // 点 + 跳详情页让用户选规格,而不是直接按"标准杯"加购
+    // 点 + 直接加入购物车并停留在点餐页;点商品卡片才进详情选择规格。
+    var self = this;
     var id = event.currentTarget.dataset.id;
-    wx.navigateTo({ url: "/pages/detail/index?id=" + encodeURIComponent(id) });
+    var doAdd = function () {
+      api.post("/cart/items", {
+        productId: id,
+        spec: "标准杯 / 常温 / 正常糖",
+        quantity: 1
+      }).then(function (cart) {
+        self.syncCart(cart);
+        wx.showToast({ title: "已加入购物车", icon: "success" });
+      }).catch(function (error) {
+        wx.showToast({ title: error.message || "加购失败", icon: "none" });
+      });
+    };
+    if (auth.isLoggedIn && auth.isLoggedIn()) {
+      doAdd();
+    } else if (auth.devLogin) {
+      auth.devLogin().then(doAdd).catch(function () {
+        wx.showToast({ title: "登录失败", icon: "none" });
+      });
+    } else {
+      wx.showToast({ title: "请先登录", icon: "none" });
+    }
   },
 
   openSearch() {

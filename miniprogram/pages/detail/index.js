@@ -101,7 +101,12 @@ Page({
       api.post("/cart/items", { productId: self.data.product.id, spec: spec, quantity: self.data.quantity })
         .then(function () {
           wx.showToast({ title: "已加入购物车", icon: "success" });
-          setTimeout(function () { wx.navigateTo({ url: "/pages/cart/index" }); }, 350);
+          setTimeout(function () {
+            wx.navigateBack({
+              delta: 1,
+              fail: function () { wx.redirectTo({ url: "/pages/menu/index" }); }
+            });
+          }, 350);
         })
         .catch(function (e) { wx.showToast({ title: e.message, icon: "none" }); });
     };

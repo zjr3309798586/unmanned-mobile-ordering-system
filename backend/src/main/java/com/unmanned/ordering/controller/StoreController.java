@@ -48,7 +48,7 @@ public class StoreController {
         this.userAuthService = userAuthService;
     }
 
-    /** 门店基础信息,首页 / 点餐页 / 提交订单页 / 购物车页 都会用到。 */
+    /** 门店基础信息,首页 / 点餐页 / 购物车结算页 都会用到。 */
     @GetMapping("/store")
     public ApiResponse<Store> getStore() {
         return ApiResponse.ok(orderingService.getStore());

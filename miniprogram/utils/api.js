@@ -36,7 +36,7 @@ function request(path, options = {}) {
 }
 
 // 已知的图片子目录(若路径已带子目录则不再补)
-const IMG_DIRS = ["nav", "home", "menu", "mine", "saving", "mascot", "common", "icons"];
+const IMG_DIRS = ["nav", "home", "menu", "mine", "saving", "mascot", "common", "icons", "uploads"];
 
 // 按文件名前缀推断子目录(用于把后端返回的旧扁平路径自动重写到子目录)
 function guessSubdir(filename) {

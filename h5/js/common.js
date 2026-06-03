@@ -78,17 +78,39 @@ window.OrderingApp = (function () {
     return value;
   }
 
+  var imageDirs = ["nav", "home", "menu", "mine", "saving", "mascot", "common", "icons", "uploads"];
+
+  function guessImageSubdir(filename) {
+    if (/^nav-/.test(filename)) return "nav";
+    if (/^home-/.test(filename)) return "home";
+    if (/^menu-product-/.test(filename)) return "menu";
+    if (/^product-/.test(filename)) return "menu";
+    if (/^mine-/.test(filename)) return "mine";
+    if (/^saving-/.test(filename)) return "saving";
+    if (/^icon-(delivery|pickup)-/.test(filename)) return "saving";
+    if (/^mascot-yunbao/.test(filename)) return "mascot";
+    if (/-placeholder\.svg$/.test(filename)) return "common";
+    return null;
+  }
+
   /**
-   * 图片路径转换:后端返回的 /images/X 路径需要转成相对路径 images/X,
-   * 因为 H5 页面是从 h5/pages/ 下访问的,绝对路径 / 会指向域名根。
-   * 这是为了兼容旧的图片字段(后端数据库里存的是 /images/...)。
+   * 图片路径转换:兼容数据库里的旧扁平路径(/images/product-x.svg),
+   * 自动映射到当前整理后的图片目录(images/menu/product-x.svg)。
    */
   function imageUrl(value) {
+    var fallback = "images/common/food-placeholder.svg";
     if (!value) {
-      return "/images/common/food-placeholder.svg";
+      return fallback;
     }
     if (value.indexOf("/images/") === 0) {
-      return value.replace("/images/", "images/");
+      var rest = value.substring("/images/".length);
+      var head = rest.split("/")[0];
+      if (imageDirs.indexOf(head) !== -1) {
+        return "images/" + rest;
+      }
+      var filename = rest.split("/").pop();
+      var subdir = guessImageSubdir(filename);
+      return subdir ? "images/" + subdir + "/" + filename : fallback;
     }
     return value;
   }
@@ -238,12 +260,11 @@ document.addEventListener("DOMContentLoaded", function () {
   // 现在让 mine 页登录入口、cart 加购流程按需触发登录。
 
   // 当前页对应的导航高亮。
-  // detail/cart/submit-order 都属于"点餐"流程,共用 menu 高亮。
+  // detail/cart 都属于"点餐"流程,共用 menu 高亮。
   var currentPage = document.body.dataset.page || "";
   var navPageMap = {
     detail: "menu",
-    cart: "menu",
-    "submit-order": "menu"
+    cart: "menu"
   };
   var activeKey = navPageMap[currentPage] || currentPage;
 

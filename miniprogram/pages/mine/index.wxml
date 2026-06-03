@@ -12,7 +12,7 @@
       <image class="hero-avatar" src="/images/mascot/mascot-yunbao-144.png" mode="aspectFill"/>
       <view class="hero-text">
         <view class="hero-title">{{loggedIn ? profile.nickname : '登录 / 注册'}}</view>
-        <view class="hero-subtitle">{{loggedIn ? '已登录 · 同步订单与权益' : '登录后解锁更多权益'}}</view>
+        <view class="hero-subtitle">{{loginSubtitle}}</view>
       </view>
     </view>
   </view>

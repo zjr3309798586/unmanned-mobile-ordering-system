@@ -10,24 +10,18 @@
 
   <swiper class="carousel" autoplay="true" interval="5000" duration="500" circular="true" current="{{slideIdx}}" bindchange="onSlide" indicator-dots="false">
 
-    <swiper-item class="c-slide">
-      <image class="c-banner-img" src="/images/home/home-banner-1.png" mode="aspectFill"/>
-    </swiper-item>
-
-    <swiper-item class="c-slide">
-      <image class="c-banner-img" src="/images/home/home-banner-2.png" mode="aspectFill"/>
-    </swiper-item>
-
-    <swiper-item class="c-slide">
-      <image class="c-banner-img" src="/images/home/home-banner-3.png" mode="aspectFill"/>
+    <swiper-item class="c-slide" wx:for="{{slides}}" wx:key="id">
+      <image class="c-banner-img" src="{{item.image}}" mode="aspectFill"/>
+      <view class="c-banner-caption" wx:if="{{item.title || item.subtitle}}">
+        <text class="c-banner-title">{{item.title}}</text>
+        <text class="c-banner-subtitle">{{item.subtitle}}</text>
+      </view>
     </swiper-item>
 
   </swiper>
 
   <view class="c-indicators">
-    <view class="c-dot {{slideIdx === 0 ? 'is-active' : ''}}"></view>
-    <view class="c-dot {{slideIdx === 1 ? 'is-active' : ''}}"></view>
-    <view class="c-dot {{slideIdx === 2 ? 'is-active' : ''}}"></view>
+    <view class="c-dot {{slideIdx === index ? 'is-active' : ''}}" wx:for="{{slides}}" wx:key="id"></view>
   </view>
 
   <view class="c-disclaim">*图片仅供参考,实际以出杯为准</view>
@@ -100,6 +94,32 @@
         <text class="qg-h">券码兑换</text>
         <text class="qg-sub">立享优惠</text>
       </navigator>
+    </view>
+
+    <view class="home-recommend">
+      <view class="home-section-head">
+        <view>
+          <text class="home-eyebrow">Popular</text>
+          <text class="home-section-title">热门推荐</text>
+        </view>
+        <navigator class="home-section-more" url="/pages/menu/index" open-type="redirect">查看全部</navigator>
+      </view>
+      <scroll-view class="home-product-row" scroll-x="true" show-scrollbar="false">
+        <navigator class="home-product-card" wx:for="{{recommendProducts}}" wx:key="id" url="/pages/detail/index?id={{item.id}}" open-type="navigate">
+          <image src="{{item.imageUrl}}" mode="aspectFill"/>
+          <text class="home-product-name">{{item.name}}</text>
+          <text class="home-product-desc">{{item.description}}</text>
+          <text class="home-product-price">¥{{item.priceText}}</text>
+        </navigator>
+      </scroll-view>
+    </view>
+
+    <view class="home-notice-card">
+      <view class="home-notice-icon">!</view>
+      <view class="home-notice-main">
+        <text class="home-notice-title">门店公告</text>
+        <text class="home-notice-text">{{store.notice}}</text>
+      </view>
     </view>
   </view>
 

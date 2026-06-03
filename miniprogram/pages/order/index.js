@@ -2,82 +2,113 @@ const api = require("../../utils/api");
 const auth = require("../../utils/auth");
 const format = require("../../utils/format");
 
-function defaultOrders() {
-  return [
-    {
-      id: "demo-1",
-      storeName: "云豹小点·双流北京华联店",
-      statusText: "已完成",
-      timeText: "2026-03-09 22:14:21",
-      pickupNo: "915",
-      thumbs: ["/images/menu/menu-product-milk-tea.png", "/images/menu/menu-product-latte.png"],
-      amount: "34",
-      qty: 2
-    },
-    {
-      id: "demo-2",
-      storeName: "云豹小点·双流北京华联店",
-      statusText: "已完成",
-      timeText: "2025-11-27 11:20:04",
-      pickupNo: "535",
-      thumbs: ["/images/menu/menu-product-orange.png"],
-      amount: "14",
-      qty: 1
-    },
-    {
-      id: "demo-3",
-      storeName: "云豹小点·双流北京华联店",
-      statusText: "已完成",
-      timeText: "2025-10-17 15:15:28",
-      pickupNo: "576",
-      thumbs: ["/images/menu/menu-product-grape.png", "/images/menu/menu-product-wrap.png"],
-      amount: "36",
-      qty: 2
-    }
-  ];
-}
-
 Page({
   data: {
     tab: "self",
-    orders: defaultOrders()
+    loading: false,
+    loggedIn: false,
+    orders: [],
+    emptyText: "登录后查看订单",
+    emptyButtonText: "去登录",
+    emptyTarget: "mine"
   },
 
+  _allOrders: [],
+
   onShow() {
-    if (auth.isLoggedIn && auth.isLoggedIn()) this.loadOrders();
+    const loggedIn = auth.isLoggedIn && auth.isLoggedIn();
+    this.setData({ loggedIn });
+    if (loggedIn) {
+      this.loadOrders();
+    } else {
+      this._allOrders = [];
+      this.setData({
+        orders: [],
+        emptyText: "登录后查看订单",
+        emptyButtonText: "去登录",
+        emptyTarget: "mine"
+      });
+    }
   },
 
   switchTab(event) {
-    this.setData({ tab: event.currentTarget.dataset.tab });
+    this.setData({ tab: event.currentTarget.dataset.tab }, () => {
+      this.applyTab();
+    });
   },
 
   loadOrders() {
-    if (!api || !api.get) return;
+    this.setData({ loading: true });
     api.get("/orders").then((orders) => {
-      if (!Array.isArray(orders) || orders.length === 0) return;
-      const decorated = orders.map((o) => ({
-        id: o.id,
-        storeName: o.storeName || "云豹小点",
-        statusText: format.statusText(o.status),
-        timeText: (o.createdAt || "").replace("T", " ").slice(0, 19),
-        pickupNo: o.pickupNo || o.orderNo || "—",
-        thumbs: (o.items || []).map((it) => it.image || "/images/menu/menu-product-milk-tea.png").slice(0, 3),
-        amount: String(Math.round(Number(o.payableAmount || 0))),
-        qty: (o.items || []).reduce((s, it) => s + (it.quantity || 1), 0)
-      }));
-      this.setData({ orders: decorated });
-    }).catch(() => {});
+      this._allOrders = (orders || []).map((order) => this.decorateOrder(order));
+      this.applyTab();
+    }).catch((error) => {
+      this.setData({
+        orders: [],
+        emptyText: error.message || "订单加载失败",
+        emptyButtonText: "重新加载",
+        emptyTarget: "reload"
+      });
+    }).finally(() => {
+      this.setData({ loading: false });
+    });
+  },
+
+  applyTab() {
+    const currentTab = this.data.tab;
+    const filtered = this._allOrders.filter((order) => {
+      if (currentTab === "delivery") return order.pickupType === "DELIVERY";
+      return order.pickupType !== "DELIVERY";
+    });
+    this.setData({
+      orders: filtered,
+      emptyText: currentTab === "delivery" ? "暂无外卖订单" : "暂无自取订单",
+      emptyButtonText: "去点餐",
+      emptyTarget: "menu"
+    });
+  },
+
+  decorateOrder(order) {
+    const items = order.items || [];
+    return {
+      id: order.id,
+      pickupType: order.pickupType || "SELF_PICKUP",
+      storeName: order.storeName || "云豹小点·校园店",
+      statusText: format.statusText(order.status),
+      timeText: (order.createdAt || "").replace("T", " ").slice(0, 19) || "—",
+      pickupNo: order.pickupNo || order.orderNo || "—",
+      thumbs: items.length
+        ? items.map((item) => api.imageUrl(item.image || "")).slice(0, 3)
+        : ["/images/common/food-placeholder.svg"],
+      amount: Number(order.payableAmount || 0).toFixed(1),
+      qty: items.reduce((sum, item) => sum + Number(item.quantity || 1), 0)
+    };
+  },
+
+  handleEmptyAction() {
+    if (this.data.emptyTarget === "mine") {
+      wx.redirectTo({ url: "/pages/mine/index" });
+      return;
+    }
+    if (this.data.emptyTarget === "reload") {
+      this.loadOrders();
+      return;
+    }
+    wx.redirectTo({ url: "/pages/menu/index" });
   },
 
   repeatOrder(event) {
     const id = event.currentTarget.dataset.id;
     if (!auth.isLoggedIn || !auth.isLoggedIn()) {
-      wx.showToast({ title: "演示数据,登录后可再来一单", icon: "none" });
+      wx.showToast({ title: "请先登录", icon: "none" });
+      wx.redirectTo({ url: "/pages/mine/index" });
       return;
     }
     api.post("/orders/" + id + "/repeat", {}).then(() => {
       wx.showToast({ title: "已加入购物车", icon: "success" });
       setTimeout(() => { wx.navigateTo({ url: "/pages/cart/index" }); }, 500);
-    }).catch((e) => { wx.showToast({ title: e.message, icon: "none" }); });
+    }).catch((error) => {
+      wx.showToast({ title: error.message || "操作失败", icon: "none" });
+    });
   }
 });

@@ -1,23 +1,27 @@
 const api = require("../../utils/api");
 const auth = require("../../utils/auth");
-const format = require("../../utils/format");
 
 Page({
   data: {
     loggedIn: false,
     opened: false,
+    opening: false,
     openButtonText: "立即开通",
-    heroPriceText: "¥ 0.00",
+    heroPlanName: "月卡权益 · 校园专享",
+    heroPriceText: "¥18",
+    couponCountText: "最多 4 张",
     plans: [],
     coupons: [],
     products: []
   },
 
   onShow() {
+    const cachedOpened = !!wx.getStorageSync("savingCardOpened");
     this.setData({
       loggedIn: auth.isLoggedIn(),
-      opened: !!wx.getStorageSync("savingCardOpened"),
-      openButtonText: wx.getStorageSync("savingCardOpened") ? "已开通" : "立即开通"
+      opened: cachedOpened,
+      opening: false,
+      openButtonText: cachedOpened ? "已开通" : "立即开通"
     });
     this.loadData();
   },
@@ -34,28 +38,41 @@ Page({
       (userCoupons || []).forEach((coupon) => {
         couponStatus[coupon.couponId || coupon.id] = coupon.status;
       });
+
       const backendOpened = !!(profile && /省钱卡/.test(profile.memberLevel || ""));
+      const opened = this.data.opened || backendOpened;
       const decoratedPlans = (plans || []).map((plan) => ({
-          ...plan,
-          priceText: format.money(plan.price)
-        }));
+        ...plan,
+        priceText: this.compactMoney(plan.price, "¥18")
+      }));
+      const availableCoupons = (coupons || []).filter((coupon) => coupon.available !== false);
+
       this.setData({
-        opened: this.data.opened || backendOpened,
-        openButtonText: this.data.opened || backendOpened ? "已开通" : "立即开通",
+        opened,
+        opening: false,
+        openButtonText: opened ? "已开通" : "立即开通",
         plans: decoratedPlans,
-        heroPriceText: decoratedPlans.length ? decoratedPlans[0].priceText : "¥ 0.00",
-        coupons: (coupons || []).filter((coupon) => coupon.available).map((coupon) => ({
-          ...coupon,
-          discountText: format.money(coupon.discountAmount),
-          discountAmountText: Number(coupon.discountAmount || 0).toFixed(0),
-          claimed: couponStatus[coupon.id] === "AVAILABLE" || couponStatus[coupon.id] === "USED",
-          claimText: couponStatus[coupon.id] === "USED" ? "已使用" : (couponStatus[coupon.id] === "AVAILABLE" ? "已领取" : "领取")
-        })),
+        heroPlanName: decoratedPlans.length ? decoratedPlans[0].name : "月卡权益 · 校园专享",
+        heroPriceText: decoratedPlans.length ? decoratedPlans[0].priceText : "¥18",
+        couponCountText: availableCoupons.length ? "共 " + Math.min(availableCoupons.length, 4) + " 张" : "暂无可领",
+        coupons: availableCoupons.slice(0, 4).map((coupon, index) => {
+          const status = couponStatus[coupon.id];
+          const claimed = status === "AVAILABLE" || status === "USED";
+          return {
+            ...coupon,
+            ticketTone: index % 2 === 1 ? "is-warm" : "",
+            discountAmountText: Number(coupon.discountAmount || 0).toFixed(0),
+            conditionText: coupon.conditionText || ("满 " + Number(coupon.minAmount || 0).toFixed(0) + " 元可用"),
+            claimed,
+            claimText: status === "USED" ? "已使用" : (claimed ? "已领取" : (opened ? "立即领取" : "开通后领取"))
+          };
+        }),
         products: (products || []).slice(0, 3).map((product) => ({
           ...product,
           imageUrl: api.imageUrl(product.image),
-          priceText: format.money(product.price),
-          savingPriceText: format.money(Math.max(Number(product.price || 0) - 2, 0))
+          priceText: this.compactMoney(product.price, "¥0"),
+          savingPriceText: this.compactMoney(Math.max(Number(product.price || 0) * 0.85, 0), "¥0"),
+          savedText: "会员省 " + this.compactMoney(Math.max(Number(product.price || 0) * 0.15, 0), "¥0")
         }))
       });
     }).catch((error) => {
@@ -63,17 +80,29 @@ Page({
     });
   },
 
+  compactMoney(value, fallback) {
+    const num = Number(value);
+    if (!Number.isFinite(num)) return fallback;
+    const text = num % 1 === 0 ? num.toFixed(0) : num.toFixed(1);
+    return "¥" + text;
+  },
+
   openCard() {
+    if (this.data.opening || this.data.opened) return;
     if (!auth.isLoggedIn()) {
       wx.showToast({ title: "请先登录", icon: "none" });
       wx.redirectTo({ url: "/pages/mine/index" });
       return;
     }
+
+    this.setData({ opening: true, openButtonText: "开通中..." });
     api.post("/saving-card/open", {}).then(() => {
       wx.setStorageSync("savingCardOpened", true);
-      this.setData({ opened: true, openButtonText: "已开通" });
+      this.setData({ opened: true, opening: false, openButtonText: "已开通" });
       wx.showToast({ title: "省钱卡已开通", icon: "success" });
+      this.loadData();
     }).catch((error) => {
+      this.setData({ opening: false, openButtonText: "立即开通" });
       wx.showToast({ title: error.message, icon: "none" });
     });
   },
@@ -88,17 +117,20 @@ Page({
       wx.showToast({ title: "请先开通省钱卡", icon: "none" });
       return;
     }
+
     const couponId = event.currentTarget.dataset.id;
+    const coupon = this.data.coupons.find((item) => String(item.id) === String(couponId));
+    if (coupon && coupon.claimed) {
+      wx.showToast({ title: coupon.claimText, icon: "none" });
+      return;
+    }
+
     api.post(`/user/coupons/${couponId}/claim`, {}).then(() => {
       wx.showToast({ title: "优惠券已领取", icon: "success" });
       this.loadData();
     }).catch((error) => {
       wx.showToast({ title: error.message, icon: "none" });
     });
-  },
-
-  goMenu() {
-    wx.redirectTo({ url: "/pages/menu/index" });
   },
 
   goDetail(event) {

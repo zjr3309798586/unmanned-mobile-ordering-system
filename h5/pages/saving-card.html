@@ -5,163 +5,192 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
   <title>省钱卡 - 云豹小点</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;900&family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/common.css?v=2">
-  <link rel="stylesheet" href="/css/saving-card.css?v=3">
+  <link rel="stylesheet" href="/css/saving-card.css?v=5">
 </head>
 <body data-page="saving-card">
   <div class="app-shell saving-shell">
-
     <header class="saving-topbar">
-      <span class="saving-brand-mini">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="#1f6fff" aria-hidden="true">
-          <path d="M5 14c0-3 2.4-5.5 5.4-5.5.6-2 2.5-3.5 4.7-3.5 2.7 0 4.9 2.2 4.9 5 0 .2 0 .4-.05.6 1.5.5 2.6 2 2.6 3.8 0 2.2-1.8 4-4 4H6c-1.7 0-3-1.4-3-3 0-.5.1-1 .3-1.4z"/>
+      <a class="saving-back" href="/index.html" aria-label="返回首页">
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 19 8 12l7-7"/>
         </svg>
-        云豹小点
-      </span>
+      </a>
       <h1 class="saving-page-title">省钱卡</h1>
-      <a class="saving-rule" href="#">规则说明</a>
+      <a class="saving-rule" href="#saving-rules">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 5h10M9 12h10M9 19h10"/>
+          <path d="M5 5h.01M5 12h.01M5 19h.01"/>
+        </svg>
+        <span>规则</span>
+      </a>
     </header>
 
-    <section class="pass-hero">
-      <div class="pass-card">
-        <img class="pass-mascot" src="/images/saving/saving-mascot-card.png" alt="云豹省钱卡">
-        <div class="pass-deco-cloud pass-deco-cloud-a"></div>
-        <div class="pass-deco-cloud pass-deco-cloud-b"></div>
-        <div class="pass-card-row">
-          <h2 class="pass-card-title">云豹省钱卡</h2>
-          <span class="pass-card-tag">月卡 ›</span>
-        </div>
-        <p class="pass-save-line">预计本月可省 <strong>¥48</strong></p>
+    <main class="saving-main">
+      <section class="saving-pass-card" aria-label="云豹省钱卡">
+        <div class="pass-ambient pass-ambient-a"></div>
+        <div class="pass-ambient pass-ambient-b"></div>
 
-        <div class="pass-footer">
-          <div class="pass-price-block">
-            <span class="pass-price-amount"><em>¥</em>18<small>/月</small></span>
-            <span class="pass-price-badge">首月特惠</span>
-            <span class="pass-price-hint">查看全部券 ›</span>
+        <div class="pass-head">
+          <div class="pass-brand">
+            <span class="pass-brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 40 40" width="22" height="22" fill="none">
+                <path d="M20 7c4.5 5.7 11.3 4.5 13 11.3 1.7 7-4 12.6-13 15.7C11 30.9 5.3 25.3 7 18.3 8.7 11.5 15.5 12.7 20 7Z" fill="currentColor"/>
+                <path d="M14.5 22.5h11" stroke="#126DFF" stroke-width="3.2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span>云豹小点</span>
           </div>
-          <button class="pass-open-btn" type="button" data-open-saving-card>立即开通</button>
+          <span class="pass-status" data-member-status>校园月卡</span>
         </div>
-      </div>
-    </section>
 
-    <main class="page-main saving-main">
-
-      <section class="block-card coupon-block">
-        <div class="block-head">
-          <h3 class="block-h">专享优惠券</h3>
-          <a class="block-link" href="#">查看全部 (8) ›</a>
+        <div class="pass-content">
+          <div class="pass-copy">
+            <p class="pass-kicker" data-plan-name>月卡权益 · 校园专享</p>
+            <h2>云豹省钱卡</h2>
+            <p class="pass-save">预计本月可省 <strong>¥48</strong></p>
+            <div class="pass-tags">
+              <span>每月券包</span>
+              <span>专属价格</span>
+              <span>集杯加速</span>
+            </div>
+          </div>
+          <img class="pass-mascot" src="/images/saving/saving-mascot-card.png" alt="云豹省钱卡形象">
         </div>
-        <div class="coupon-stack saving-coupon-row">
-          <div class="saving-coupon">
-            <div class="sc-amount"><span class="sc-currency">¥</span>6</div>
-            <div class="sc-cond">满 20 减</div>
-            <div class="sc-tag">饮品通用</div>
-            <button class="sc-btn" type="button">立即领取</button>
+
+        <div class="pass-buy-panel">
+          <div class="pass-price">
+            <strong data-plan-price>¥18</strong>
+            <span>/月</span>
+            <em>首月特惠</em>
+            <del>原价 ¥28</del>
           </div>
-          <div class="saving-coupon">
-            <div class="sc-amount"><span class="sc-currency">¥</span>8</div>
-            <div class="sc-cond">满 38 减</div>
-            <div class="sc-tag">饮品满减</div>
-            <button class="sc-btn" type="button">立即领取</button>
-          </div>
-          <div class="saving-coupon">
-            <div class="sc-amount"><span class="sc-currency">¥</span>3</div>
-            <div class="sc-cond">满 20 减</div>
-            <div class="sc-tag">轻食专享</div>
-            <button class="sc-btn" type="button">立即领取</button>
-          </div>
+          <button class="pass-open-btn" type="button" data-open-saving-card>
+            <span data-open-label>立即开通</span>
+          </button>
         </div>
       </section>
 
-      <section class="block-card product-block">
-        <div class="block-head">
-          <h3 class="block-h">省钱价商品</h3>
-          <a class="block-link" href="/menu.html">查看更多 ›</a>
+      <section class="saving-stats" aria-label="省钱卡权益概览">
+        <div class="stat-card">
+          <strong>4 张</strong>
+          <span>每月券包</span>
         </div>
-        <div class="product-stack saving-product-row" data-saving-products></div>
-      </section>
-
-      <section class="block-card benefit-block">
-        <div class="block-head">
-          <h3 class="block-h">会员权益</h3>
+        <div class="stat-card">
+          <strong>85 折</strong>
+          <span>省钱价</span>
         </div>
-        <div class="benefit-list saving-benefit-grid">
-          <div class="sb-item">
-            <span class="sb-icon">
-              <svg viewBox="0 0 28 28" width="26" height="26" fill="none" stroke="#1f6fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4.5" y="6" width="19" height="17" rx="2.5"/>
-                <path d="M4.5 11h19M9 4v4M19 4v4"/>
-                <circle cx="14" cy="16.5" r="1.6" fill="#1f6fff" stroke="none"/>
-              </svg>
-            </span>
-            <span class="sb-label">每周福利</span>
-          </div>
-          <div class="sb-item">
-            <span class="sb-icon">
-              <svg viewBox="0 0 28 28" width="26" height="26" fill="none" stroke="#1f6fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 6h12l2 4-10 14L6 10l2-4z"/>
-                <path d="M10 10h8M14 6v18"/>
-              </svg>
-            </span>
-            <span class="sb-label">专享折扣</span>
-          </div>
-          <div class="sb-item">
-            <span class="sb-icon">
-              <svg viewBox="0 0 28 28" width="26" height="26" fill="none" stroke="#1f6fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 4l3 6 6.5.9-4.7 4.6 1.1 6.5L14 19l-5.9 3 1.1-6.5L4.5 10.9 11 10z"/>
-              </svg>
-            </span>
-            <span class="sb-label">集邮加速</span>
-          </div>
-          <div class="sb-item">
-            <span class="sb-icon">
-              <svg viewBox="0 0 28 28" width="26" height="26" fill="none" stroke="#1f6fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 11h13a3 3 0 0 1 0 6h-1c-.4 3-3 5-6 5s-5.6-2-6-5V11z"/>
-                <path d="M19 13h2a2 2 0 0 1 0 4h-2"/>
-                <path d="M10 8c-.5-1.5 .5-2.5 1-3M14 8c-.5-1.5 .5-2.5 1-3"/>
-              </svg>
-            </span>
-            <span class="sb-label">下午茶套餐</span>
-          </div>
-          <div class="sb-item">
-            <span class="sb-icon">
-              <svg viewBox="0 0 28 28" width="26" height="26" fill="none" stroke="#1f6fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4" y="11" width="20" height="4" rx="1"/>
-                <path d="M5 15v8h18v-8M14 11v12"/>
-                <path d="M14 11c-2-3-6-3-6 0s4 0 6 0zM14 11c2-3 6-3 6 0s-4 0-6 0z"/>
-              </svg>
-            </span>
-            <span class="sb-label">生日礼遇</span>
-          </div>
+        <div class="stat-card">
+          <strong>2 倍</strong>
+          <span>集杯加速</span>
         </div>
       </section>
 
-      <section class="block-card rule-block">
-        <div class="block-head">
-          <h3 class="block-h">开通须知</h3>
+      <section class="saving-block ticket-block">
+        <div class="saving-section-head">
+          <div>
+            <p>Coupons</p>
+            <h3>本月券包</h3>
+          </div>
+          <span data-coupon-count-text>最多 4 张</span>
         </div>
-        <ol class="saving-rule-list">
-          <li>开通即享当月所有专享优惠券，到期自动失效；</li>
-          <li>省钱价商品仅在会员有效期内享受优惠价；</li>
-          <li>首月特惠仅限新会员,开通后不支持退款。</li>
+        <div class="ticket-list" data-saving-coupons>
+          <div class="ticket-skeleton"></div>
+          <div class="ticket-skeleton"></div>
+        </div>
+      </section>
+
+      <section class="saving-block">
+        <div class="saving-section-head">
+          <div>
+            <p>Member Price</p>
+            <h3>省钱价商品</h3>
+          </div>
+          <a href="/menu.html">查看更多</a>
+        </div>
+        <div class="saving-product-list" data-saving-products></div>
+      </section>
+
+      <section class="saving-block benefit-block">
+        <div class="saving-section-head">
+          <div>
+            <p>Benefits</p>
+            <h3>会员权益</h3>
+          </div>
+        </div>
+        <div class="benefit-grid">
+          <article class="benefit-card">
+            <span class="benefit-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 7h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V7Z"/>
+                <path d="M9 9h6M9 15h6"/>
+              </svg>
+            </span>
+            <strong>每月券包</strong>
+            <em>饮品、轻食满减券免费领</em>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5"/>
+                <path d="M14 6h6v6"/>
+              </svg>
+            </span>
+            <strong>专属价格</strong>
+            <em>热门商品开卡后更划算</em>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 21h8"/>
+                <path d="M12 17v4"/>
+                <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/>
+                <path d="M5 6H3v2a4 4 0 0 0 4 4"/>
+                <path d="M19 6h2v2a4 4 0 0 1-4 4"/>
+              </svg>
+            </span>
+            <strong>集杯加速</strong>
+            <em>集杯任务进度更快完成</em>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7"/>
+                <path d="M12 21V8"/>
+                <path d="M4 8h16v4H4z"/>
+                <path d="M12 8H8.5a2.5 2.5 0 1 1 2.1-3.85L12 8Zm0 0h3.5a2.5 2.5 0 1 0-2.1-3.85L12 8Z"/>
+              </svg>
+            </span>
+            <strong>生日福利</strong>
+            <em>生日当月享专属好礼</em>
+          </article>
+        </div>
+      </section>
+
+      <section class="saving-block rule-block" id="saving-rules">
+        <div class="saving-section-head">
+          <div>
+            <p>Rules</p>
+            <h3>开通须知</h3>
+          </div>
+        </div>
+        <ol class="saving-rules">
+          <li>开通后可领取省钱卡专属优惠券，优惠券有效期以页面展示为准。</li>
+          <li>省钱价商品仅在会员有效期内享受，实际价格以下单页为准。</li>
+          <li>当前项目未接入真实支付，开通按钮用于模拟会员状态。</li>
         </ol>
       </section>
-
-      <div class="page-main-bottom-spacer"></div>
     </main>
 
     <div class="saving-floating-bar">
-      <img class="sfb-mascot" src="/images/saving/saving-mascot-card.png" alt="">
-      <div class="sfb-text">
+      <img src="/images/saving/saving-mascot-card.png" alt="" class="floating-mascot">
+      <div class="floating-copy">
         <strong>云豹省钱卡</strong>
-        <span>预计本月可省 ¥48</span>
+        <span data-floating-saving>预计本月可省 ¥48</span>
       </div>
-      <button class="sfb-btn" type="button" data-open-saving-card>
-        <em>¥18</em>
-        <span>立即开通</span>
+      <button class="floating-open-btn" type="button" data-open-saving-card>
+        <span data-floating-price>¥18</span>
+        <strong data-open-label>立即开通</strong>
       </button>
     </div>
 
@@ -190,6 +219,6 @@
   </div>
 
   <script src="/js/common.js?v=2"></script>
-  <script src="/js/saving-card.js?v=3"></script>
+  <script src="/js/saving-card.js?v=5"></script>
 </body>
 </html>

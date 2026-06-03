@@ -27,6 +27,46 @@ page { background: #F4F8FF; }
 .order-main { padding: 32rpx; }
 .order-list { display: flex; flex-direction: column; gap: 32rpx; }
 
+.order-empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 360rpx;
+  padding: 56rpx 32rpx;
+  border: 1rpx solid #e6e8f2;
+  border-radius: 32rpx;
+  background: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(0,91,191,0.04);
+  text-align: center;
+}
+
+.order-empty-title {
+  color: #191c23;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.order-empty-desc {
+  margin-top: 14rpx;
+  color: #697386;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.order-empty-btn {
+  margin-top: 32rpx;
+  min-width: 180rpx;
+  min-height: 68rpx;
+  padding: 0 32rpx;
+  border-radius: 999rpx;
+  line-height: 68rpx;
+  color: #fff;
+  background: #1f6fff;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
 /* 订单卡 */
 .order-card {
   position: relative;

@@ -524,6 +524,56 @@ button:active {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.admin-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.admin-kpi-card {
+  min-height: 112px;
+  padding: 18px;
+  border: 1px solid rgba(217, 230, 245, 0.88);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-kpi-card span {
+  color: var(--text-sub);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-kpi-card strong {
+  display: block;
+  margin-top: 10px;
+  color: #102033;
+  font-size: 26px;
+  letter-spacing: -0.4px;
+}
+
+.admin-kpi-card em {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-style: normal;
+}
+
+.admin-kpi-card.is-strong {
+  color: #ffffff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #0f2f85 0%, #2563eb 100%);
+}
+
+.admin-kpi-card.is-strong span,
+.admin-kpi-card.is-strong strong,
+.admin-kpi-card.is-strong em {
+  color: #ffffff;
+}
+
 .content-grid {
   grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.88fr);
 }
@@ -840,6 +890,13 @@ tr:hover td {
 
 .image-field {
   gap: 10px;
+}
+
+.image-help {
+  margin: -2px 0 2px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
 }
 
 .image-preview {
@@ -1196,6 +1253,7 @@ th {
   .stats-grid,
   .quick-action-grid,
   .form-grid,
+  .admin-kpi-grid,
   .category-list,
   .coupon-list,
   .activity-list {

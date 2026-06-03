@@ -111,9 +111,10 @@ public class AdminController {
     /**
      * 后台上传商品图 / Banner 图。
      *
-     * 上传到项目根目录的 images/uploads/ 下,文件名格式 img-{随机串}.{ext}。
+     * 上传到 h5/images/uploads/ 下,文件名格式 img-{随机串}.{ext}。
      * 上传成功后返回 { path: "/images/uploads/img-xxx.png" },前端把这个路径
      * 填到商品/Banner 的 image 字段保存。
+     * 本地开发时会同步一份到 miniprogram/images/uploads/,方便微信开发者工具预览。
      *
      * 仅允许 png / jpg / jpeg / gif / webp / svg 6 种格式。
      */
@@ -127,13 +128,22 @@ public class AdminController {
         if (!ext.matches("\\.(png|jpg|jpeg|gif|webp|svg)$")) {
             return ApiResponse.fail(400, "仅支持 png、jpg、jpeg、gif、webp、svg 图片");
         }
-        // backend 启动目录是 backend/,images/uploads/ 在父目录(项目根)下
-        Path backendDir = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
-        Path frontendDir = backendDir.getParent();
-        Path uploadDir = (frontendDir == null ? backendDir : frontendDir).resolve("images").resolve("uploads");
+        Path cwd = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
+        Path projectRoot = Files.exists(cwd.resolve("h5")) ? cwd : cwd.getParent();
+        if (projectRoot == null) {
+            projectRoot = cwd;
+        }
+        Path uploadDir = projectRoot.resolve("h5").resolve("images").resolve("uploads");
         Files.createDirectories(uploadDir);
         String filename = "img-" + UUID.randomUUID().toString().replace("-", "") + ext;
-        Files.copy(file.getInputStream(), uploadDir.resolve(filename));
+        byte[] bytes = file.getBytes();
+        Files.write(uploadDir.resolve(filename), bytes);
+        Path miniprogramImagesDir = projectRoot.resolve("miniprogram").resolve("images");
+        if (Files.exists(miniprogramImagesDir)) {
+            Path miniprogramUploadDir = miniprogramImagesDir.resolve("uploads");
+            Files.createDirectories(miniprogramUploadDir);
+            Files.write(miniprogramUploadDir.resolve(filename), bytes);
+        }
         return ApiResponse.ok(Map.of("path", "/images/uploads/" + filename));
     }
 

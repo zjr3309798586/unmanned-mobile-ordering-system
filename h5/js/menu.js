@@ -7,7 +7,7 @@
  *   3. 底部购物车 bar(数量/总价/去结算按钮)
  *   4. 购物车抽屉(点底部购物袋图标弹出,可加减/清空)
  *   5. 商品卡上的 "+/−" 按钮:
- *       + → 跳详情页让用户选规格(不直接加购)
+ *       + → 使用默认规格直接加入购物车,停留在点餐页
  *       − → 减少数量或删除
  *   6. 左下角悬浮优惠券球 + 优惠券抽屉
  *   7. 顶部搜索 overlay(按商品名/描述模糊匹配)
@@ -138,6 +138,46 @@ document.addEventListener("DOMContentLoaded", function () {
     return app.escapeHtml ? app.escapeHtml(v == null ? "" : v) : String(v || "");
   }
 
+  /** 未登录时创建游客会话,保证用户能直接完成加购流程。 */
+  function ensureLogin() {
+    if (app && app.isLoggedIn && app.isLoggedIn()) {
+      return Promise.resolve();
+    }
+    if (app && app.devLogin) {
+      return app.devLogin("游客用户");
+    }
+    if (app && app.showMessage) {
+      app.showMessage("请先登录后加购");
+    }
+    return Promise.reject(new Error("请先登录"));
+  }
+
+  /** 点餐页快捷加购:不跳结算,只刷新购物车数量和底部金额。 */
+  function addProductToCart(productId, button) {
+    if (!productId || !app || !app.post) return;
+    if (button) button.disabled = true;
+    ensureLogin()
+      .then(function () {
+        return app.post("/cart/items", {
+          productId: productId,
+          spec: app.defaultSpec || "标准杯 / 常温 / 正常糖",
+          quantity: 1
+        });
+      })
+      .then(function (data) {
+        cartSummary = data || cartSummary;
+        updateCartBar();
+        rerenderCurrentCat();
+        if (app.showMessage) app.showMessage("已加入购物车");
+      })
+      .catch(function (err) {
+        if (app && app.showMessage) app.showMessage(err.message || "加购失败");
+      })
+      .finally(function () {
+        if (button) button.disabled = false;
+      });
+  }
+
   /** 算指定商品在购物车里的总数量(同一商品多规格合并)。 */
   function getProductQty(productId) {
     var qty = 0;
@@ -246,11 +286,10 @@ document.addEventListener("DOMContentLoaded", function () {
       var addBtn = e.target.closest("[data-add-product]");
       var minusBtn = e.target.closest("[data-minus-product]");
 
-      // ★ 关键设计:点 "+" 跳详情让用户选规格,而不是直接按"标准杯"加购
-      // 因为同商品不同规格(中/大/冰/热)在数据库里是独立的购物车项
+      // 点 "+" 只加购并停留在点餐页;点商品图/名称才进入详情选择规格。
       if (addBtn) {
         e.preventDefault();
-        window.location.href = "detail.html?id=" + encodeURIComponent(addBtn.dataset.addProduct);
+        addProductToCart(addBtn.dataset.addProduct, addBtn);
         return;
       }
 

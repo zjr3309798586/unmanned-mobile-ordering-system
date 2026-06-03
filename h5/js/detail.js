@@ -5,7 +5,7 @@
  *   1. 按 URL ?id= 拉商品数据填充页面(图/名/描述/价格)
  *   2. 规格选项切换(规格/温度/糖度/甜度,单选高亮)
  *   3. 数量加减(底部 - / + 按钮)
- *   4. 加入购物车(未登录自动走 devLogin 兜底,加完跳购物车页)
+ *   4. 加入购物车(未登录自动走 devLogin 兜底,加完返回点餐页)
  *   5. 口味收藏(★ / ☆,纯前端 localStorage,不调后端)
  */
 document.addEventListener("DOMContentLoaded", function () {
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /** 真实的加购请求 —— 上传 productId / spec / quantity 到后端,成功后跳购物车。 */
+  /** 真实的加购请求 —— 上传 productId / spec / quantity 到后端,成功后回到点餐页继续点。 */
   function realAdd(s) {
     addCartBtn.disabled = true;   // 防止用户在请求中重复点击
     // pid 兜底:URL 没 id 时给一个默认商品 P-1001(开发时方便)
@@ -124,8 +124,8 @@ document.addEventListener("DOMContentLoaded", function () {
     app.post("/cart/items", { productId: pid, spec: s.summary, quantity: qty })
       .then(function () {
         if (app.showMessage) app.showMessage("已加入购物车");
-        // 350ms 后跳购物车页(给 toast 留时间)
-        window.setTimeout(function () { window.location.href = "cart.html"; }, 350);
+        // 350ms 后回点餐页,让用户继续加购;只有点底部"去结算"才进购物车/结算。
+        window.setTimeout(function () { window.location.href = "menu.html"; }, 350);
       })
       .catch(function (e) {
         if (app.showMessage) app.showMessage(e.message);

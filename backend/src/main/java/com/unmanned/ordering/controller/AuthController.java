@@ -19,7 +19,7 @@ import javax.validation.Valid;
  * 前台用户登录相关接口。
  *
  * 共 4 个端点:
- *   POST /api/auth/dev-login     —— H5 浏览器调试用的游客登录
+ *   POST /api/auth/dev-login     —— H5 游客登录
  *   POST /api/auth/wechat-login  —— 微信小程序登录
  *   GET  /api/auth/me            —— 查当前用户资料(需要 token)
  *   POST /api/auth/logout        —— 退出登录(需要 token)
@@ -28,7 +28,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/auth")
-public class   AuthController {
+public class AuthController {
     private final UserAuthService userAuthService;
 
     public AuthController(UserAuthService userAuthService) {
@@ -36,8 +36,8 @@ public class   AuthController {
     }
 
     /**
-     * H5 开发阶段登录:不需要真实微信授权,方便在浏览器里测试完整下单流程。
-     * 上线后必须关闭这个接口。
+     * H5 游客登录:浏览器端没有 wx.login,因此使用游客会话完成点餐流程。
+     * 正式微信小程序端仍走 /wechat-login。
      */
     @PostMapping("/dev-login")
     public ApiResponse<UserSession> devLogin(@RequestBody(required = false) DevLoginRequest request) {

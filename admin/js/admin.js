@@ -114,7 +114,7 @@
   }
 
   // 已知的图片子目录(若路径已带子目录则不再补)
-  var IMG_DIRS = ["nav", "home", "menu", "mine", "saving", "mascot", "common", "icons"];
+  var IMG_DIRS = ["nav", "home", "menu", "mine", "saving", "mascot", "common", "icons", "uploads"];
 
   // 按文件名前缀推断子目录(用于把后端返回的旧扁平路径自动重写到子目录)
   function guessImgSubdir(filename) {
@@ -394,7 +394,7 @@
         var orders = result[2] || [];
         var statCards = $all(".stat-card");
         setStatCard(statCards[0], "营业额", money(dashboard.orderAmount), "来自订单实付金额汇总");
-        setStatCard(statCards[1], "订单总数", dashboard.orderCount, "前台提交订单后这里会增加");
+        setStatCard(statCards[1], "订单总数", dashboard.orderCount, "购物车结算后这里会增加");
         setStatCard(statCards[2], "在售商品", dashboard.productCount, "商品管理下架后会减少");
         setStatCard(statCards[3], "购物车商品", dashboard.cartItemCount, "前台加入购物车后会变化");
         renderHotProducts(products);
@@ -539,7 +539,7 @@
       '<div class="field"><label>销量</label><input name="sales" type="number" min="0" placeholder="0"></div>' +
       '<div class="field"><label>标签</label><input name="tags" placeholder="新品,热销"></div>' +
       '<div class="field"><label>状态</label><select name="enabled"><option value="true">在售</option><option value="false">下架</option></select></div>' +
-      '<div class="field wide image-field"><label>商品图片</label><input name="image" placeholder="/images/common/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><img class="image-preview" alt="商品图片预览"></div>' +
+      '<div class="field wide image-field"><label>商品图片</label><input name="image" placeholder="/images/common/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><p class="image-help">可填写图片路径,也可以直接选择本地图片上传;保存后前台 H5 和小程序都会使用这张图。</p><img class="image-preview" alt="商品图片预览"></div>' +
       '<div class="field wide"><label>商品描述</label><textarea name="description" placeholder="填写商品口味、卖点和备注"></textarea></div>';
   }
 
@@ -588,7 +588,7 @@
     form.querySelector("[name=description]").value = product ? product.description : "";
     var note = $(".card[style] .muted");
     if (note) {
-  note.textContent = product ? "正在编辑：" + product.name : "新增商品保存后会显示到前台点餐页";
+      note.textContent = product ? "正在编辑：" + product.name : "新增商品保存后会显示到前台点餐页";
     }
   }
 
@@ -676,9 +676,11 @@
       return;
     }
     if (!state.orders.length) {
+      renderOrderKpis([]);
       showLoading(tableBody, "暂无订单数据，前台提交订单后这里会出现");
       return;
     }
+    renderOrderKpis(state.orders);
     tableBody.innerHTML = state.orders.map(function (order) {
       var goods = (order.items || []).map(function (item) {
         return item.productName + " x" + item.quantity;
@@ -698,6 +700,36 @@
       '</tr>';
     }).join("");
     tableBody.onclick = handleOrderTableClick;
+  }
+
+  function renderOrderKpis(orders) {
+    var cards = $all("[data-order-kpi]");
+    if (!cards.length) {
+      return;
+    }
+    var waiting = 0;
+    var completed = 0;
+    var canceled = 0;
+    var totalAmount = 0;
+    (orders || []).forEach(function (order) {
+      if (order.status === "WAITING_PICKUP") waiting += 1;
+      if (order.status === "COMPLETED") completed += 1;
+      if (order.status === "CANCELED") canceled += 1;
+      if (order.status !== "CANCELED") totalAmount += Number(order.payableAmount || 0);
+    });
+    var values = {
+      waiting: waiting,
+      completed: completed,
+      canceled: canceled,
+      amount: money(totalAmount)
+    };
+    cards.forEach(function (card) {
+      var key = card.getAttribute("data-order-kpi");
+      var valueNode = $(".order-kpi-value", card);
+      if (valueNode) {
+        valueNode.textContent = values[key] != null ? values[key] : "0";
+      }
+    });
   }
 
   function handleOrderTableClick(event) {
@@ -948,7 +980,7 @@
       }
       del("/admin/coupons/" + encodeURIComponent(disable.dataset.disableCoupon))
         .then(function () {
-          showToast("优惠券已停用，提交订单页不会再使用");
+          showToast("优惠券已停用，购物车结算时不会再使用");
           return reloadCoupons();
         })
         .catch(function (error) { showToast(error.message); });
@@ -969,7 +1001,7 @@
     form.querySelector("[name=available]").value = coupon && !coupon.available ? "false" : "true";
     var note = $(".card[style] .muted");
     if (note) {
-  note.textContent = coupon ? "正在编辑：" + coupon.title : "新增优惠券保存后可在提交订单页使用";
+      note.textContent = coupon ? "正在编辑：" + coupon.title : "新增优惠券保存后可在购物车结算页使用";
     }
   }
 
@@ -1062,7 +1094,7 @@
       '<div class="field"><label>跳转地址</label><input name="linkUrl" placeholder="menu.html"></div>' +
       '<div class="field"><label>排序</label><input name="sort" type="number" min="0" placeholder="1"></div>' +
       '<div class="field"><label>状态</label><select name="enabled"><option value="true">启用</option><option value="false">停用</option></select></div>' +
-      '<div class="field wide image-field"><label>Banner 图片</label><input name="image" placeholder="/images/common/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><img class="image-preview" alt="Banner 图片预览"></div>';
+      '<div class="field wide image-field"><label>Banner 图片</label><input name="image" placeholder="/images/common/food-placeholder.svg"><input name="imageFile" type="file" accept="image/*"><p class="image-help">建议使用横向活动图,保存后会同步到首页活动位;本地上传会自动保存到图片目录。</p><img class="image-preview" alt="Banner 图片预览"></div>';
     bindImagePreview(formGrid);
     saveButton.removeAttribute("data-toast");
     saveButton.textContent = "保存 Banner";

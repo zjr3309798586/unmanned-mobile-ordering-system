@@ -1,0 +1,157 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="0" y2="844" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EAF4FF"/>
+      <stop offset="0.45" stop-color="#F8FBFF"/>
+      <stop offset="1" stop-color="#F2F7FF"/>
+    </linearGradient>
+    <linearGradient id="cardBlue" x1="28" y1="78" x2="362" y2="318" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#064DE8"/>
+      <stop offset="0.45" stop-color="#1273FF"/>
+      <stop offset="1" stop-color="#65B3FF"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="42" y1="230" x2="348" y2="318" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F4F9FF"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#F04B1F"/>
+    </linearGradient>
+    <filter id="softShadow" x="6" y="52" width="378" height="772" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="10"/>
+      <feGaussianBlur stdDeviation="12"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.117647 0 0 0 0 0.435294 0 0 0 0 1 0 0 0 0.11 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect" result="shape"/>
+    </filter>
+    <style>
+      .font { font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif; }
+      .title { font-weight: 900; fill: #102033; }
+      .muted { fill: #71819A; }
+      .blue { fill: #126DFF; }
+      .price { fill: #F04B1F; font-weight: 900; }
+    </style>
+  </defs>
+
+  <rect width="390" height="844" fill="url(#pageBg)"/>
+  <circle cx="318" cy="58" r="92" fill="#D9ECFF" opacity="0.75"/>
+  <circle cx="68" cy="185" r="112" fill="#FFFFFF" opacity="0.58"/>
+  <path d="M-22 736C50 692 115 726 178 704C245 680 294 650 415 704V844H-22V736Z" fill="#E6F1FF" opacity="0.52"/>
+
+  <text x="195" y="42" text-anchor="middle" class="font title" font-size="22">省钱卡</text>
+  <g>
+    <rect x="286" y="18" width="76" height="34" rx="17" fill="#FFFFFF" stroke="#D9E6F7"/>
+    <text x="324" y="40" text-anchor="middle" class="font title" font-size="13">规则说明</text>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="24" y="76" width="342" height="248" rx="28" fill="url(#cardBlue)"/>
+    <path d="M42 126C72 95 106 95 133 119C151 136 169 140 194 123C239 92 303 96 362 143V101C362 87 351 76 338 76H52C37 76 24 88 24 104V166C30 150 35 137 42 126Z" fill="#FFFFFF" opacity="0.12"/>
+    <circle cx="322" cy="117" r="68" fill="#FFFFFF" opacity="0.13"/>
+    <circle cx="338" cy="235" r="94" fill="#FFFFFF" opacity="0.09"/>
+
+    <g transform="translate(44 101)">
+      <rect width="46" height="46" rx="16" fill="#FFFFFF" opacity="0.18"/>
+      <path d="M23 12C27.5 17.8 34.7 16.5 36 23.7C37.2 30.2 31.9 35 23 38C14.1 35 8.8 30.2 10 23.7C11.3 16.5 18.5 17.8 23 12Z" fill="#FFFFFF"/>
+      <path d="M17 25H29" stroke="#126DFF" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <text x="101" y="120" class="font" font-size="15" font-weight="800" fill="#DCEBFF">云豹小点</text>
+    <text x="44" y="165" class="font" font-size="34" font-weight="900" fill="#FFFFFF">云豹省钱卡</text>
+    <text x="44" y="199" class="font" font-size="17" font-weight="700" fill="#EAF4FF">本月预计可省</text>
+    <text x="162" y="203" class="font" font-size="44" font-weight="900" fill="#FFE36B">¥48</text>
+    <rect x="44" y="219" width="82" height="30" rx="15" fill="#FFFFFF" opacity="0.18"/>
+    <text x="85" y="239" text-anchor="middle" class="font" font-size="12" font-weight="800" fill="#FFFFFF">每月券包</text>
+    <rect x="134" y="219" width="82" height="30" rx="15" fill="#FFFFFF" opacity="0.18"/>
+    <text x="175" y="239" text-anchor="middle" class="font" font-size="12" font-weight="800" fill="#FFFFFF">专属价格</text>
+    <rect x="224" y="219" width="82" height="30" rx="15" fill="#FFFFFF" opacity="0.18"/>
+    <text x="265" y="239" text-anchor="middle" class="font" font-size="12" font-weight="800" fill="#FFFFFF">集杯加速</text>
+
+    <g transform="translate(250 114)">
+      <ellipse cx="49" cy="57" rx="44" ry="41" fill="#FFFFFF"/>
+      <path d="M10 50C-1 30 8 14 26 19C35 3 64 3 73 19C92 14 100 31 88 51" fill="#FFFFFF"/>
+      <path d="M20 30C16 14 29 12 36 25" stroke="#0A4CA5" stroke-width="4" stroke-linecap="round"/>
+      <path d="M63 25C70 12 83 14 79 30" stroke="#0A4CA5" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="35" cy="56" r="8" fill="#0B2C70"/>
+      <circle cx="63" cy="56" r="8" fill="#0B2C70"/>
+      <circle cx="38" cy="52" r="2.8" fill="#FFFFFF"/>
+      <circle cx="66" cy="52" r="2.8" fill="#FFFFFF"/>
+      <path d="M46 66C50 69 54 69 58 66" stroke="#0B2C70" stroke-width="3" stroke-linecap="round"/>
+      <path d="M48 63C51 59 55 59 58 63" fill="#126DFF"/>
+      <circle cx="28" cy="39" r="4" fill="#74A9FF"/>
+      <circle cx="50" cy="30" r="5" fill="#74A9FF"/>
+      <circle cx="72" cy="39" r="4" fill="#74A9FF"/>
+      <path d="M4 80H94L83 121H16L4 80Z" fill="#0E6DFF"/>
+      <rect x="22" y="88" width="47" height="13" rx="6.5" fill="#FFFFFF" opacity="0.95"/>
+    </g>
+
+    <rect x="42" y="264" width="306" height="54" rx="22" fill="url(#glass)"/>
+    <text x="61" y="299" class="font price" font-size="30">¥18</text>
+    <text x="122" y="297" class="font price" font-size="15">/月</text>
+    <rect x="153" y="279" width="72" height="26" rx="9" fill="#FFF2EA" stroke="#FFB08D"/>
+    <text x="189" y="297" text-anchor="middle" class="font" font-size="12" font-weight="800" fill="#F04B1F">首月特惠</text>
+    <rect x="238" y="273" width="94" height="36" rx="18" fill="#126DFF"/>
+    <text x="285" y="296" text-anchor="middle" class="font" font-size="16" font-weight="900" fill="#FFFFFF">立即开通</text>
+  </g>
+
+  <text x="24" y="366" class="font title" font-size="21">本月券包</text>
+  <text x="340" y="366" text-anchor="middle" class="font muted" font-size="13" font-weight="700">共 4 张 〉</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="24" y="383" width="342" height="92" rx="20" fill="#FFFFFF"/>
+    <circle cx="246" cy="383" r="8" fill="#F8FBFF"/>
+    <circle cx="246" cy="475" r="8" fill="#F8FBFF"/>
+    <path d="M246 397V461" stroke="#DCE7F6" stroke-width="1" stroke-dasharray="5 6"/>
+    <text x="47" y="431" class="font price" font-size="36">¥6</text>
+    <text x="108" y="419" class="font title" font-size="17">饮品通用券</text>
+    <text x="108" y="445" class="font muted" font-size="13">满 20 元可用 · 今日可领</text>
+    <rect x="272" y="411" width="68" height="34" rx="17" fill="#126DFF"/>
+    <text x="306" y="433" text-anchor="middle" class="font" font-size="13" font-weight="900" fill="#FFFFFF">领取</text>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="24" y="489" width="342" height="92" rx="20" fill="#FFF9F3"/>
+    <circle cx="246" cy="489" r="8" fill="#F8FBFF"/>
+    <circle cx="246" cy="581" r="8" fill="#F8FBFF"/>
+    <path d="M246 503V567" stroke="#F4D8C7" stroke-width="1" stroke-dasharray="5 6"/>
+    <text x="47" y="537" class="font price" font-size="36">¥8</text>
+    <text x="108" y="525" class="font title" font-size="17">轻食搭配券</text>
+    <text x="108" y="551" class="font muted" font-size="13">满 30 元可用 · 开通后领</text>
+    <rect x="272" y="517" width="68" height="34" rx="17" fill="#FFEDE5"/>
+    <text x="306" y="539" text-anchor="middle" class="font" font-size="13" font-weight="900" fill="#F04B1F">待开通</text>
+  </g>
+
+  <text x="24" y="627" class="font title" font-size="21">省钱价商品</text>
+  <text x="340" y="627" text-anchor="middle" class="font muted" font-size="13" font-weight="700">查看更多 〉</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="24" y="644" width="342" height="96" rx="22" fill="#FFFFFF"/>
+    <rect x="42" y="660" width="72" height="64" rx="16" fill="#EAF4FF"/>
+    <rect x="62" y="667" width="32" height="50" rx="12" fill="#F7D7BA"/>
+    <circle cx="78" cy="662" r="14" fill="#FFFFFF" opacity="0.9"/>
+    <text x="129" y="679" class="font title" font-size="17">云顶轻乳茶</text>
+    <text x="129" y="704" class="font muted" font-size="13">会员省 ¥6 · 清爽茶香</text>
+    <text x="129" y="730" class="font price" font-size="20">¥12.8</text>
+    <text x="184" y="730" class="font muted" font-size="13" text-decoration="line-through">¥18.8</text>
+    <rect x="299" y="685" width="42" height="42" rx="21" fill="#126DFF"/>
+    <text x="320" y="714" text-anchor="middle" font-family="Arial" font-size="28" font-weight="700" fill="#FFFFFF">+</text>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="24" y="756" width="342" height="58" rx="22" fill="#FFFFFF" stroke="#DCE8F8"/>
+    <rect x="42" y="770" width="30" height="30" rx="10" fill="#EAF4FF"/>
+    <path d="M50 785L56 791L67 777" stroke="#126DFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="85" y="779" class="font title" font-size="15">开通立享权益</text>
+    <text x="85" y="800" class="font muted" font-size="12">券包、专属价、集杯加速、生日福利</text>
+    <text x="337" y="792" text-anchor="middle" class="font" font-size="22" font-weight="900" fill="#126DFF">〉</text>
+  </g>
+
+  <rect x="0" y="792" width="390" height="52" fill="#F7FBFF" opacity="0.92"/>
+  <rect x="20" y="781" width="350" height="52" rx="26" fill="#126DFF"/>
+  <text x="67" y="813" class="font" font-size="15" font-weight="800" fill="#DCEBFF">首月特惠</text>
+  <text x="148" y="816" class="font" font-size="25" font-weight="900" fill="#FFFFFF">¥18/月</text>
+  <text x="294" y="814" text-anchor="middle" class="font" font-size="18" font-weight="900" fill="#FFFFFF">立即开通</text>
+</svg>

@@ -31,8 +31,10 @@ document.addEventListener("DOMContentLoaded", function () {
   /** 已登录态:把 /api/mine 返回的资料填到页面上。 */
   function renderLoggedIn(user) {
     if (!user) return;
-    setText(heroTitle, user.nickname || "微信用户");
-    setText(heroSubtitle, "已登录 · 同步订单与会员权益");
+    var nickname = user.nickname || "微信用户";
+    var isGuest = /游客/.test(nickname);
+    setText(heroTitle, nickname);
+    setText(heroSubtitle, isGuest ? "游客模式 · 可点这里退出或切换账号" : "已登录 · 同步订单与会员权益");
     setText(couponNum, user.couponCount != null ? user.couponCount : 0);
     setText(pointsNum, user.points != null ? user.points : 0);
     // 余额需要格式化成 "¥ X.XX",用 app.money;app 没加载时跳过
@@ -101,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var sess = app.getUserSession ? app.getUserSession() : null;
     if (sess && sess.nickname) {
       setText(heroTitle, sess.nickname);
-      setText(heroSubtitle, "已登录 · 点这里退出");
+      setText(heroSubtitle, /游客/.test(sess.nickname) ? "游客模式 · 可点这里退出或切换账号" : "已登录 · 点这里退出");
     }
   } else {
     setText(heroSubtitle, "点这里登录,解锁更多权益");
