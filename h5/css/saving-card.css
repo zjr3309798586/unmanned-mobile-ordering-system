@@ -1,21 +1,21 @@
 .saving-shell {
   --saving-blue: #126dff;
-  --saving-blue-soft: #e9f3ff;
+  --saving-blue-soft: #eaf3ff;
   --saving-blue-deep: #064de8;
   --saving-ink: #102033;
-  --saving-muted: #71819a;
+  --saving-muted: #687995;
   --saving-line: #dce8f7;
   --saving-red: #f04b1f;
   --saving-orange: #ff6b2c;
-  --saving-shadow: 0 16px 36px rgba(31, 111, 255, 0.12);
+  --saving-shadow: 0 18px 38px rgba(31, 111, 255, 0.12);
 
   min-height: 100vh;
-  padding-bottom: calc(var(--nav-height) + 100px);
+  padding-bottom: calc(var(--nav-height) + 118px);
   color: var(--saving-ink);
   background:
-    radial-gradient(circle at 82% 0%, rgba(203, 229, 255, 0.9), transparent 28%),
-    radial-gradient(circle at 10% 18%, rgba(255, 255, 255, 0.9), transparent 28%),
-    linear-gradient(180deg, #eaf4ff 0%, #f8fbff 42%, #f2f7ff 100%);
+    radial-gradient(circle at 76% -30px, rgba(160, 210, 255, 0.86), transparent 30%),
+    radial-gradient(circle at 10% 150px, rgba(255, 255, 255, 0.92), transparent 32%),
+    linear-gradient(180deg, #eaf4ff 0%, #f8fbff 38%, #f3f8ff 100%);
   font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
   overflow-x: hidden;
 }
@@ -25,96 +25,107 @@
   top: 0;
   z-index: 30;
   display: grid;
-  grid-template-columns: 44px 1fr 76px;
+  grid-template-columns: 72px 1fr 72px;
   align-items: center;
-  min-height: 56px;
-  padding: 8px 16px 4px;
-  background: linear-gradient(180deg, rgba(234, 244, 255, 0.96), rgba(234, 244, 255, 0.7));
-  backdrop-filter: blur(16px);
-}
-
-.saving-back,
-.saving-rule {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--saving-ink);
-  text-decoration: none;
-}
-
-.saving-back {
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: 0 10px 24px rgba(31, 111, 255, 0.1);
+  min-height: 58px;
+  padding: 8px 16px 5px;
+  background: linear-gradient(180deg, rgba(235, 245, 255, 0.98), rgba(235, 245, 255, 0.76));
+  backdrop-filter: blur(18px);
 }
 
 .saving-page-title {
+  grid-column: 2;
   margin: 0;
   text-align: center;
-  font-size: 22px;
+  color: #061a3f;
+  font-size: 23px;
   font-weight: 900;
   letter-spacing: -0.4px;
 }
 
 .saving-rule {
+  grid-column: 3;
   justify-self: end;
-  gap: 4px;
-  height: 34px;
-  padding: 0 10px;
-  border: 1px solid #d7e6f8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 70px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(31, 111, 255, 0.16);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
-  color: #2d3c56;
+  color: #20314e;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 8px 18px rgba(31, 111, 255, 0.08);
   font-size: 13px;
   font-weight: 800;
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.saving-rule:active,
+.pass-open-btn:active,
+.floating-open-btn:active,
+.ticket-btn:active,
+.saving-product:active,
+.section-more:active {
+  transform: scale(0.98);
 }
 
 .saving-main {
-  padding: 12px 16px 0;
+  padding: 11px 16px 0;
 }
 
 .saving-pass-card {
   position: relative;
-  min-height: 260px;
+  min-height: 332px;
   overflow: hidden;
-  border-radius: 28px;
+  border-radius: 30px;
   color: #fff;
   background:
-    radial-gradient(circle at 90% 12%, rgba(255, 255, 255, 0.28), transparent 26%),
-    radial-gradient(circle at 20% 110%, rgba(91, 170, 255, 0.45), transparent 38%),
-    linear-gradient(135deg, #064de8 0%, #1273ff 54%, #65b3ff 100%);
-  box-shadow: 0 24px 54px rgba(18, 109, 255, 0.24);
+    radial-gradient(circle at 85% 18%, rgba(255, 255, 255, 0.28), transparent 24%),
+    linear-gradient(135deg, #0551e8 0%, #126dff 56%, #5eb8ff 100%);
+  box-shadow: 0 24px 54px rgba(18, 109, 255, 0.26);
 }
 
 .saving-pass-card::before {
   content: "";
   position: absolute;
   inset: 1px;
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  border-radius: 27px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 29px;
   pointer-events: none;
 }
 
-.pass-ambient {
+.pass-pattern {
   position: absolute;
   border-radius: 999px;
+  pointer-events: none;
+}
+
+.pass-pattern-a {
+  width: 164px;
+  height: 164px;
+  top: -58px;
+  right: -42px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.pass-pattern-b {
+  width: 96px;
+  height: 96px;
+  left: -28px;
+  bottom: 70px;
   background: rgba(255, 255, 255, 0.13);
 }
 
-.pass-ambient-a {
-  width: 150px;
-  height: 150px;
-  right: -48px;
-  top: -46px;
-}
-
-.pass-ambient-b {
-  width: 98px;
-  height: 98px;
-  left: -26px;
-  bottom: 58px;
+.pass-pattern-c {
+  width: 118px;
+  height: 118px;
+  right: 66px;
+  bottom: -54px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .pass-head {
@@ -123,6 +134,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: 18px 18px 0;
 }
 
@@ -135,25 +147,26 @@
 
 .pass-brand {
   gap: 8px;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .pass-brand-mark {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 15px;
   color: #fff;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
 }
 
 .pass-status {
-  min-height: 28px;
-  padding: 0 10px;
+  min-height: 30px;
+  padding: 0 11px;
   border-radius: 999px;
-  color: #eaf4ff;
-  background: rgba(255, 255, 255, 0.16);
+  color: #eef6ff;
+  background: rgba(255, 255, 255, 0.18);
   font-size: 12px;
 }
 
@@ -161,15 +174,16 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 126px;
+  grid-template-columns: minmax(0, 1fr) 138px;
   align-items: center;
-  min-height: 134px;
-  padding: 10px 12px 0 22px;
+  min-height: 139px;
+  padding: 12px 13px 0 22px;
 }
 
 .pass-copy {
   position: relative;
   z-index: 4;
+  min-width: 0;
 }
 
 .pass-kicker {
@@ -181,54 +195,66 @@
 
 .pass-copy h2 {
   margin: 0;
-  font-size: 33px;
-  line-height: 1.05;
+  font-size: 34px;
+  line-height: 1.02;
   font-weight: 900;
   letter-spacing: -1px;
 }
 
 .pass-save {
-  margin: 12px 0 0;
+  margin: 11px 0 0;
+  color: rgba(255, 255, 255, 0.94);
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .pass-save strong {
   margin-left: 4px;
-  color: #ffe36b;
-  font-size: 38px;
+  color: #ffe46d;
+  font-size: 39px;
   line-height: 1;
   font-weight: 900;
+  letter-spacing: -1px;
 }
 
-.pass-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 14px;
-}
-
-.pass-tags span {
-  min-height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  line-height: 28px;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.17);
+.pass-desc {
+  margin: 5px 0 0;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .pass-mascot {
   position: relative;
   z-index: 2;
-  width: 136px;
-  height: 136px;
-  margin-left: -8px;
-  border-radius: 28px;
+  width: 146px;
+  height: 146px;
+  margin-left: -10px;
+  border-radius: 31px;
   object-fit: cover;
   object-position: top center;
-  filter: drop-shadow(0 18px 26px rgba(2, 30, 92, 0.2));
+  filter: drop-shadow(0 18px 26px rgba(2, 30, 92, 0.22));
+}
+
+.pass-tags {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0 18px;
+}
+
+.pass-tags span {
+  min-height: 30px;
+  padding: 0 11px;
+  border-radius: 999px;
+  line-height: 30px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.17);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  font-weight: 850;
 }
 
 .pass-buy-panel {
@@ -241,11 +267,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 64px;
-  padding: 10px 14px;
-  border-radius: 22px;
+  min-height: 62px;
+  padding: 8px 14px;
+  border-radius: 23px;
   color: var(--saving-ink);
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 18px 36px rgba(6, 42, 136, 0.16);
 }
 
@@ -259,7 +285,7 @@
 
 .pass-price strong {
   color: var(--saving-red);
-  font-size: 32px;
+  font-size: 30px;
   line-height: 1;
   font-weight: 900;
   letter-spacing: -0.8px;
@@ -272,8 +298,8 @@
 }
 
 .pass-price em {
-  padding: 3px 7px;
-  border-radius: 8px;
+  padding: 3px 8px;
+  border-radius: 9px;
   color: var(--saving-red);
   background: #fff2ea;
   font-size: 11px;
@@ -290,25 +316,25 @@
 .pass-open-btn {
   flex: 0 0 auto;
   min-height: 44px;
-  padding: 0 22px;
+  padding: 0 24px;
   border-radius: 999px;
   color: #fff;
   background: linear-gradient(135deg, #126dff 0%, #0060ff 100%);
   box-shadow: 0 12px 24px rgba(18, 109, 255, 0.28);
   font-size: 15px;
   font-weight: 900;
+  touch-action: manipulation;
 }
 
-.pass-open-btn:disabled,
-.floating-open-btn:disabled,
-.ticket-btn:disabled {
-  opacity: 0.72;
+.saving-shell.is-opened .pass-open-btn {
+  color: var(--saving-blue);
+  background: #eaf3ff;
+  box-shadow: none;
 }
 
-.pass-open-btn:active,
-.floating-open-btn:active,
-.ticket-btn:active {
-  transform: scale(0.97);
+.saving-shell.is-opened .pass-price em {
+  color: #0e9f6e;
+  background: #e9fbf4;
 }
 
 .saving-stats {
@@ -319,12 +345,12 @@
 }
 
 .stat-card {
-  min-height: 70px;
+  min-height: 72px;
   padding: 12px 8px;
-  border: 1px solid rgba(220, 232, 247, 0.9);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 12px 28px rgba(31, 111, 255, 0.08);
+  border: 1px solid rgba(220, 232, 247, 0.92);
+  border-radius: 21px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 26px rgba(31, 111, 255, 0.08);
   text-align: center;
 }
 
@@ -340,7 +366,7 @@
 }
 
 .stat-card span {
-  margin-top: 4px;
+  margin-top: 5px;
   color: var(--saving-muted);
   font-size: 12px;
   font-weight: 800;
@@ -351,7 +377,7 @@
   padding: 16px;
   border: 1px solid rgba(220, 232, 247, 0.92);
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.97);
   box-shadow: var(--saving-shadow);
 }
 
@@ -363,83 +389,92 @@
   margin-bottom: 14px;
 }
 
-.saving-section-head p {
-  margin: 0 0 3px;
-  color: #88a8d8;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-}
-
 .saving-section-head h3 {
   margin: 0;
-  color: var(--saving-ink);
+  color: #071a44;
   font-size: 21px;
   line-height: 1.15;
   font-weight: 900;
+  letter-spacing: -0.2px;
+}
+
+.saving-section-head p {
+  margin: 5px 0 0;
+  color: #7a8aa0;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 700;
 }
 
 .saving-section-head span,
-.saving-section-head a {
-  color: #6f7f99;
+.section-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  flex: 0 0 auto;
+  color: #60718d;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 850;
   text-decoration: none;
+  touch-action: manipulation;
+}
+
+.section-more::after {
+  content: "›";
+  margin-left: 4px;
+  font-size: 19px;
+  line-height: 1;
 }
 
 .ticket-list {
   display: grid;
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
 }
 
 .saving-ticket {
   position: relative;
-  display: grid;
-  grid-template-columns: 74px 1fr 72px;
-  align-items: center;
-  gap: 12px;
-  min-height: 92px;
+  min-height: 154px;
   overflow: hidden;
-  padding: 14px 14px 14px 16px;
-  border: 1px solid #bfd7ff;
+  padding: 14px 12px 12px;
+  border: 1px solid #bfdaff;
   border-radius: 20px;
   background:
-    radial-gradient(circle at 100% 0%, rgba(18, 109, 255, 0.1), transparent 36%),
-    linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    radial-gradient(circle at 100% 0%, rgba(18, 109, 255, 0.1), transparent 38%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 }
 
 .saving-ticket.is-warm {
-  border-color: #ffd4b8;
+  border-color: #ffd3b4;
   background:
-    radial-gradient(circle at 100% 0%, rgba(255, 107, 44, 0.12), transparent 36%),
-    linear-gradient(180deg, #fffdfb 0%, #fff8f2 100%);
+    radial-gradient(circle at 100% 0%, rgba(255, 107, 44, 0.12), transparent 38%),
+    linear-gradient(180deg, #fffefd 0%, #fff8f2 100%);
 }
 
 .saving-ticket::before,
 .saving-ticket::after {
   content: "";
   position: absolute;
-  left: 78px;
+  top: 74px;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: #f8fbff;
-  border: 1px solid currentColor;
-  color: inherit;
+  border: 1px solid #d8e8fb;
 }
 
 .saving-ticket::before {
-  top: -9px;
+  left: -9px;
 }
 
 .saving-ticket::after {
-  bottom: -9px;
+  right: -9px;
 }
 
 .ticket-value {
   color: var(--saving-red);
-  font-size: 34px;
+  font-size: 38px;
   line-height: 1;
   font-weight: 900;
   letter-spacing: -0.8px;
@@ -447,20 +482,21 @@
 
 .ticket-value small {
   margin-right: 1px;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 900;
 }
 
 .ticket-main {
   min-width: 0;
-  padding-left: 12px;
-  border-left: 1px dashed #d4e2f3;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px dashed #d5e4f4;
 }
 
 .ticket-title {
   display: block;
-  color: var(--saving-ink);
-  font-size: 16px;
+  color: #102033;
+  font-size: 14px;
   font-weight: 900;
   white-space: nowrap;
   overflow: hidden;
@@ -469,36 +505,59 @@
 
 .ticket-cond {
   display: block;
-  margin-top: 7px;
+  margin-top: 5px;
   color: var(--saving-muted);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 750;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .ticket-btn {
-  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
   border-radius: 999px;
   color: #fff;
   background: linear-gradient(135deg, #126dff 0%, #0060ff 100%);
+  box-shadow: 0 10px 20px rgba(18, 109, 255, 0.2);
   font-size: 13px;
   font-weight: 900;
+  touch-action: manipulation;
+}
+
+.ticket-btn.is-locked,
+.ticket-btn.is-claimed,
+.ticket-btn.is-used {
+  box-shadow: none;
 }
 
 .ticket-btn.is-locked {
-  color: #557098;
-  background: #eaf2ff;
+  color: #64748b;
+  background: #edf4ff;
 }
 
 .ticket-btn.is-claimed {
-  color: #7b8798;
-  background: #edf2f8;
+  color: #0e9f6e;
+  background: #e9fbf4;
+}
+
+.ticket-btn.is-used {
+  color: #8896aa;
+  background: #eef2f7;
+}
+
+.ticket-btn:disabled {
+  cursor: default;
+  opacity: 1;
 }
 
 .ticket-skeleton {
-  min-height: 92px;
+  min-height: 154px;
   border-radius: 20px;
   background: linear-gradient(90deg, #eef5ff, #ffffff, #eef5ff);
   background-size: 220% 100%;
@@ -512,40 +571,40 @@
 
 .saving-product-list {
   display: grid;
-  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .saving-product {
   position: relative;
-  display: grid;
-  grid-template-columns: 72px 1fr 38px;
-  align-items: center;
-  gap: 13px;
-  min-height: 96px;
-  padding: 10px;
-  border: 1px solid #e2ebf8;
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e1ebf8;
   border-radius: 20px;
   background: #f9fcff;
   color: inherit;
   text-decoration: none;
+  box-shadow: 0 8px 18px rgba(31, 111, 255, 0.06);
+  touch-action: manipulation;
 }
 
 .saving-product img {
-  width: 72px;
-  height: 72px;
-  border-radius: 16px;
+  width: 100%;
+  aspect-ratio: 1 / 0.78;
   object-fit: cover;
   background: #fff;
 }
 
 .product-copy {
   min-width: 0;
+  padding: 9px 9px 10px;
 }
 
 .product-copy strong {
   display: block;
-  color: var(--saving-ink);
-  font-size: 16px;
+  color: #102033;
+  font-size: 13px;
   font-weight: 900;
   white-space: nowrap;
   overflow: hidden;
@@ -554,37 +613,40 @@
 
 .product-copy em {
   display: inline-flex;
-  min-height: 20px;
+  min-height: 21px;
   margin-top: 6px;
   padding: 0 7px;
   border-radius: 999px;
-  line-height: 20px;
+  line-height: 21px;
   color: var(--saving-blue);
   background: #eaf3ff;
   font-size: 11px;
   font-style: normal;
-  font-weight: 800;
+  font-weight: 850;
 }
 
 .product-price-line {
   display: flex;
   align-items: baseline;
-  gap: 7px;
-  margin-top: 8px;
+  gap: 5px;
+  margin-top: 7px;
 }
 
 .product-price-line span {
   color: var(--saving-red);
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 900;
 }
 
 .product-price-line del {
   color: #9faabc;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .product-add {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
   display: grid;
   place-items: center;
   width: 34px;
@@ -592,8 +654,8 @@
   border-radius: 999px;
   color: #fff;
   background: var(--saving-blue);
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 22px;
+  font-weight: 850;
   box-shadow: 0 10px 20px rgba(18, 109, 255, 0.24);
 }
 
@@ -606,16 +668,19 @@
 .benefit-card {
   min-height: 112px;
   padding: 12px;
+  border: 1px solid #e4eefb;
   border-radius: 18px;
-  background: #f5f9ff;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(31, 111, 255, 0.07), transparent 42%),
+    #f7fbff;
 }
 
 .benefit-icon {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
   color: var(--saving-blue);
   background: #e7f1ff;
 }
@@ -623,7 +688,7 @@
 .benefit-card strong {
   display: block;
   margin-top: 10px;
-  color: var(--saving-ink);
+  color: #102033;
   font-size: 14px;
   font-weight: 900;
 }
@@ -635,7 +700,7 @@
   font-size: 12px;
   line-height: 1.45;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 720;
 }
 
 .saving-rules {
@@ -643,7 +708,7 @@
   padding-left: 18px;
   color: #64748b;
   font-size: 13px;
-  line-height: 1.8;
+  line-height: 1.85;
 }
 
 .saving-rules li + li {
@@ -651,7 +716,8 @@
 }
 
 .saving-empty {
-  padding: 28px 0;
+  grid-column: 1 / -1;
+  padding: 26px 0;
   color: var(--saving-muted);
   font-size: 13px;
   font-weight: 800;
@@ -661,27 +727,28 @@
 .saving-floating-bar {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--nav-height) + 8px);
+  bottom: calc(var(--nav-height) + 18px);
   z-index: 9;
   display: flex;
   align-items: center;
   gap: 10px;
-  width: calc(100% - 24px);
-  max-width: 406px;
+  width: calc(100% - 32px);
+  max-width: 398px;
+  min-height: 66px;
   padding: 9px 10px 9px 12px;
-  border: 1px solid rgba(31, 111, 255, 0.12);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 18px 40px rgba(31, 111, 255, 0.18);
+  border: 1px solid rgba(31, 111, 255, 0.14);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 18px 38px rgba(31, 111, 255, 0.18);
   transform: translateX(-50%);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
 }
 
 .floating-mascot {
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   flex: 0 0 auto;
-  border-radius: 999px;
+  border-radius: 17px;
   object-fit: cover;
   object-position: top center;
   background: #eaf4ff;
@@ -692,32 +759,37 @@
   flex: 1 1 auto;
   min-width: 0;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .floating-copy strong {
   color: var(--saving-ink);
   font-size: 14px;
   font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .floating-copy span {
   color: var(--saving-muted);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 750;
 }
 
 .floating-open-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  min-height: 40px;
-  padding: 0 15px;
+  min-height: 46px;
+  padding: 0 16px;
   border-radius: 999px;
   color: #fff;
   background: linear-gradient(135deg, var(--saving-orange), var(--saving-red));
   box-shadow: 0 10px 22px rgba(240, 75, 31, 0.26);
   flex: 0 0 auto;
+  touch-action: manipulation;
 }
 
 .floating-open-btn span {
@@ -730,6 +802,11 @@
   font-weight: 900;
 }
 
+.saving-shell.is-opened .floating-open-btn {
+  background: linear-gradient(135deg, #126dff 0%, #0060ff 100%);
+  box-shadow: 0 10px 22px rgba(18, 109, 255, 0.22);
+}
+
 @media (max-width: 380px) {
   .saving-main {
     padding-left: 14px;
@@ -737,8 +814,8 @@
   }
 
   .pass-content {
-    grid-template-columns: minmax(0, 1fr) 112px;
-    padding-left: 20px;
+    grid-template-columns: minmax(0, 1fr) 118px;
+    padding-left: 19px;
   }
 
   .pass-copy h2 {
@@ -746,16 +823,28 @@
   }
 
   .pass-mascot {
-    width: 122px;
-    height: 122px;
+    width: 126px;
+    height: 126px;
   }
 
-  .saving-ticket {
-    grid-template-columns: 66px 1fr 66px;
+  .ticket-list {
     gap: 9px;
   }
 
-  .ticket-value {
-    font-size: 30px;
+  .saving-ticket {
+    padding-left: 11px;
+    padding-right: 11px;
+  }
+
+  .saving-product-list {
+    gap: 8px;
+  }
+
+  .floating-copy {
+    display: none;
+  }
+
+  .floating-open-btn {
+    flex: 1 1 auto;
   }
 }

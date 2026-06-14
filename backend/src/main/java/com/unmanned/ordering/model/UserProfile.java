@@ -7,7 +7,6 @@ import java.math.BigDecimal;
  *
  * 一对一关联 users(user_id 主键)。展示用字段:
  *   memberLevel    会员等级("普通会员" / "省钱卡会员")
- *   points         积分(下单 +,取消订单 -)
  *   balance        余额(预留,当前未启用支付)
  *   couponCount    可用券数量(领/用券后自动刷新)
  *   savingAmount   累计已节省金额
@@ -16,7 +15,6 @@ public class UserProfile {
     private String userId;
     private String nickname;
     private String memberLevel;
-    private int points;
     private BigDecimal balance;
     private int couponCount;
     private BigDecimal savingAmount;
@@ -24,12 +22,11 @@ public class UserProfile {
     public UserProfile() {
     }
 
-    public UserProfile(String userId, String nickname, String memberLevel, int points,
+    public UserProfile(String userId, String nickname, String memberLevel,
                        BigDecimal balance, int couponCount, BigDecimal savingAmount) {
         this.userId = userId;
         this.nickname = nickname;
         this.memberLevel = memberLevel;
-        this.points = points;
         this.balance = balance;
         this.couponCount = couponCount;
         this.savingAmount = savingAmount;
@@ -57,14 +54,6 @@ public class UserProfile {
 
     public void setMemberLevel(String memberLevel) {
         this.memberLevel = memberLevel;
-    }
-
-    public int getPoints() {
-        return points;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
     }
 
     public BigDecimal getBalance() {

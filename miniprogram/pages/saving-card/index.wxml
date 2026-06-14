@@ -1,8 +1,7 @@
 <view class="saving-shell">
   <view class="saving-topbar">
-    <navigator class="saving-back" url="/pages/home/index" open-type="redirect">‹</navigator>
     <view class="saving-page-title">省钱卡</view>
-    <view class="saving-rule">
+    <view class="saving-rule" bindtap="scrollRules">
       <text>规则</text>
     </view>
   </view>
@@ -27,9 +26,10 @@
           <view class="pass-kicker">{{heroPlanName}}</view>
           <view class="pass-title">云豹省钱卡</view>
           <view class="pass-save">预计本月可省 <text>¥48</text></view>
+          <view class="pass-desc">饮品券、轻食券、会员价一次解锁</view>
           <view class="pass-tags">
             <text>每月券包</text>
-            <text>专属价格</text>
+            <text>专属省钱价</text>
             <text>集杯加速</text>
           </view>
         </view>
@@ -52,11 +52,11 @@
     <view class="saving-stats">
       <view class="stat-card">
         <text>4 张</text>
-        <view>每月券包</view>
+        <view>每月可领券</view>
       </view>
       <view class="stat-card">
         <text>85 折</text>
-        <view>省钱价</view>
+        <view>指定商品价</view>
       </view>
       <view class="stat-card">
         <text>2 倍</text>
@@ -67,8 +67,8 @@
     <view class="saving-block ticket-block">
       <view class="saving-section-head">
         <view>
-          <view class="section-eyebrow">Coupons</view>
-          <view class="section-title">本月券包</view>
+          <view class="section-title">专属优惠券</view>
+          <view class="section-subtitle">开通后按月领取，结算时自动匹配</view>
         </view>
         <view class="section-link">{{couponCountText}}</view>
       </view>
@@ -91,8 +91,8 @@
     <view class="saving-block">
       <view class="saving-section-head">
         <view>
-          <view class="section-eyebrow">Member Price</view>
           <view class="section-title">省钱价商品</view>
+          <view class="section-subtitle">常买饮品和轻食，开卡后更划算</view>
         </view>
         <navigator class="section-link" url="/pages/menu/index" open-type="redirect">查看更多</navigator>
       </view>
@@ -117,45 +117,45 @@
     <view class="saving-block benefit-block">
       <view class="saving-section-head">
         <view>
-          <view class="section-eyebrow">Benefits</view>
           <view class="section-title">会员权益</view>
+          <view class="section-subtitle">围绕日常点餐的真实优惠</view>
         </view>
       </view>
       <view class="benefit-grid">
         <view class="benefit-card">
-          <view class="benefit-icon">券</view>
+          <view class="benefit-icon"><image src="/images/icons/coupon-blue.svg" mode="aspectFit"/></view>
           <view class="benefit-title">每月券包</view>
-          <view class="benefit-desc">饮品、轻食满减券免费领</view>
+          <view class="benefit-desc">饮品、咖啡、轻食券按月领取</view>
         </view>
         <view class="benefit-card">
-          <view class="benefit-icon">价</view>
+          <view class="benefit-icon"><image src="/images/icons/sb-star.svg" mode="aspectFit"/></view>
           <view class="benefit-title">专属价格</view>
-          <view class="benefit-desc">热门商品开卡后更划算</view>
+          <view class="benefit-desc">常买商品直接展示会员价</view>
         </view>
         <view class="benefit-card">
-          <view class="benefit-icon">杯</view>
+          <view class="benefit-icon"><image src="/images/icons/sb-tea.svg" mode="aspectFit"/></view>
           <view class="benefit-title">集杯加速</view>
-          <view class="benefit-desc">集杯任务进度更快完成</view>
+          <view class="benefit-desc">购买会员商品集杯进度更快</view>
         </view>
         <view class="benefit-card">
-          <view class="benefit-icon">礼</view>
+          <view class="benefit-icon"><image src="/images/icons/sb-gift.svg" mode="aspectFit"/></view>
           <view class="benefit-title">生日福利</view>
-          <view class="benefit-desc">生日当月享专属好礼</view>
+          <view class="benefit-desc">生日当月可领取专属好礼</view>
         </view>
       </view>
     </view>
 
-    <view class="saving-block rule-block">
+    <view class="saving-block rule-block" id="saving-rules">
       <view class="saving-section-head">
         <view>
-          <view class="section-eyebrow">Rules</view>
-          <view class="section-title">开通须知</view>
+          <view class="section-title">使用规则</view>
+          <view class="section-subtitle">下单前请确认券门槛和适用范围</view>
         </view>
       </view>
       <view class="saving-rules">
         <view>1. 开通后可领取省钱卡专属优惠券，优惠券有效期以页面展示为准。</view>
-        <view>2. 省钱价商品仅在会员有效期内享受，实际价格以下单页为准。</view>
-        <view>3. 当前项目未接入真实支付，开通按钮用于模拟会员状态。</view>
+        <view>2. 省钱价商品仅在会员有效期内享受，实际优惠以下单页展示为准。</view>
+        <view>3. 优惠券不可叠加使用，订单取消后按系统规则恢复可用状态。</view>
       </view>
     </view>
   </view>
@@ -163,7 +163,7 @@
   <view class="saving-floating-bar">
     <image class="floating-mascot" src="/images/saving/saving-mascot-card.png" mode="aspectFill"/>
     <view class="floating-copy">
-      <view>云豹省钱卡</view>
+      <view>开通立享超值权益</view>
       <text>预计本月可省 ¥48</text>
     </view>
     <view class="floating-open-btn {{opened || opening ? 'is-disabled' : ''}}" bindtap="openCard">

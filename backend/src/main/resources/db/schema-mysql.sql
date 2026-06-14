@@ -72,10 +72,31 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   user_id VARCHAR(32) PRIMARY KEY,
   nickname VARCHAR(80) NOT NULL,
   member_level VARCHAR(50) NOT NULL,
-  points INT NOT NULL DEFAULT 0,
   balance DECIMAL(10, 2) NOT NULL DEFAULT 0,
   coupon_count INT NOT NULL DEFAULT 0,
   saving_amount DECIMAL(10, 2) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_addresses (
+  id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
+  receiver_name VARCHAR(80) NOT NULL,
+  phone VARCHAR(40) NOT NULL,
+  address_detail VARCHAR(240) NOT NULL,
+  default_address TINYINT(1) NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME NOT NULL,
+  INDEX idx_user_addresses_user (user_id),
+  INDEX idx_user_addresses_default (user_id, default_address)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_favorites (
+  user_id VARCHAR(40) NOT NULL,
+  product_id VARCHAR(32) NOT NULL,
+  created_at DATETIME NOT NULL,
+  PRIMARY KEY (user_id, product_id),
+  INDEX idx_user_favorites_user (user_id),
+  INDEX idx_user_favorites_product (product_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -108,6 +129,9 @@ CREATE TABLE IF NOT EXISTS orders (
   pickup_type VARCHAR(40) NOT NULL,
   store_name VARCHAR(100) NOT NULL,
   table_no VARCHAR(40),
+  delivery_address VARCHAR(200),
+  delivery_contact VARCHAR(80),
+  delivery_fee DECIMAL(10, 2) NOT NULL DEFAULT 0,
   remark VARCHAR(300),
   status VARCHAR(40) NOT NULL,
   total_amount DECIMAL(10, 2) NOT NULL,
@@ -115,6 +139,23 @@ CREATE TABLE IF NOT EXISTS orders (
   payable_amount DECIMAL(10, 2) NOT NULL,
   created_at DATETIME NOT NULL,
   INDEX idx_orders_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS support_tickets (
+  id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
+  order_id VARCHAR(40),
+  type VARCHAR(40) NOT NULL,
+  content VARCHAR(1000) NOT NULL,
+  contact VARCHAR(100) NOT NULL DEFAULT '',
+  reply_content VARCHAR(1000),
+  status VARCHAR(20) NOT NULL,
+  created_at DATETIME NOT NULL,
+  replied_at DATETIME,
+  closed_at DATETIME,
+  INDEX idx_support_tickets_user (user_id),
+  INDEX idx_support_tickets_status (status),
+  INDEX idx_support_tickets_order (order_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS order_items (
@@ -190,6 +231,39 @@ SET @sql = (
     'SELECT 1')
   FROM information_schema.STATISTICS
   WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND INDEX_NAME = 'idx_orders_user_id'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(COUNT(*) = 0,
+    'ALTER TABLE orders ADD COLUMN delivery_address VARCHAR(200) AFTER table_no',
+    'SELECT 1')
+  FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND COLUMN_NAME = 'delivery_address'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(COUNT(*) = 0,
+    'ALTER TABLE orders ADD COLUMN delivery_contact VARCHAR(80) AFTER delivery_address',
+    'SELECT 1')
+  FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND COLUMN_NAME = 'delivery_contact'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(COUNT(*) = 0,
+    'ALTER TABLE orders ADD COLUMN delivery_fee DECIMAL(10, 2) NOT NULL DEFAULT 0 AFTER delivery_contact',
+    'SELECT 1')
+  FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND COLUMN_NAME = 'delivery_fee'
 );
 PREPARE stmt FROM @sql;
 EXECUTE stmt;

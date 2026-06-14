@@ -40,8 +40,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   background: transparent;
 }
 
@@ -60,7 +60,9 @@
   color: var(--c-primary-container);
   font-size: 14px;
   font-weight: 500;
-  padding: 4px 8px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
 }
 
 /* main */
@@ -157,6 +159,164 @@
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.fulfill-card {
+  padding: 12px;
+  border-radius: 20px;
+  box-shadow: 0 12px 26px rgba(31, 111, 255, 0.08);
+}
+
+.fulfill-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.fulfill-tab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 72px;
+  padding: 12px;
+  border: 1px solid #e3edff;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff 0%, #f7faff 100%);
+  color: #102033;
+  text-align: left;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.fulfill-tab.is-active {
+  border-color: #1f6fff;
+  box-shadow: 0 10px 20px rgba(31, 111, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+.fulfill-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: #ffffff;
+  flex: 0 0 auto;
+}
+
+.fulfill-icon-pickup {
+  background: linear-gradient(135deg, #1f6fff 0%, #4a98ff 100%);
+}
+
+.fulfill-icon-delivery {
+  background: linear-gradient(135deg, #ff6b2c 0%, #ff9b43 100%);
+}
+
+.fulfill-tab strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.fulfill-tab em {
+  display: block;
+  margin-top: 4px;
+  color: #6f7d95;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.delivery-panel {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #f4f8ff;
+  border: 1px solid #e4edfb;
+}
+
+.delivery-panel[hidden] {
+  display: none;
+}
+
+.delivery-address-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #dfeaff;
+}
+
+.delivery-address-card strong {
+  display: block;
+  color: #102033;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.delivery-address-card p {
+  margin: 5px 0 0;
+  color: #6f7d95;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.delivery-address-card a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  height: 34px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #1f6fff;
+  font-size: 12px;
+  font-weight: 900;
+  flex: 0 0 auto;
+}
+
+.delivery-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.delivery-field span {
+  flex: 0 0 70px;
+  color: #102033;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.delivery-field input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #102033;
+  font-size: 13px;
+}
+
+.delivery-field input::placeholder {
+  color: #9aa8bd;
+}
+
+.delivery-fee-tip {
+  margin: 0;
+  color: #6f7d95;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .cc-head {
@@ -390,8 +550,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: #191c23;
   flex: 0 0 auto;
@@ -467,7 +627,12 @@
   font-size: 12px;
 }
 
-.pb-bonus-icon { font-size: 14px; }
+.pb-bonus-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a73e8;
+}
 
 .pb-bonus-num {
   color: var(--c-primary-container);
@@ -557,6 +722,9 @@
 }
 .cart-empty-btn {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
   padding: 10px 28px;
   border-radius: 999px;
   background: #005bbf;
@@ -609,6 +777,9 @@
   color: #1a73e8;
   font-size: 14px;
   font-weight: 500;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
 }
 .coupon-drawer .cd-list {
   flex: 1 1 auto;
@@ -646,6 +817,12 @@
   color: #FF4D4F;
   font-size: 11px;
   font-weight: 600;
+}
+.cdc-reason {
+  margin-top: 5px;
+  color: #1f6fff;
+  font-size: 11px;
+  font-weight: 700;
 }
 .cdc-amount {
   display: inline-flex;

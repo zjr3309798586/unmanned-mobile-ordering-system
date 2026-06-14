@@ -2,7 +2,7 @@
 
   <view class="cart-topbar">
     <view class="ct-back" bindtap="goBack">
-      <text class="ct-back-arrow">‹</text>
+      <image class="ct-back-icon" src="/images/icons/d-back.svg" mode="aspectFit"/>
     </view>
     <text class="ct-title">购物车</text>
     <view class="ct-edit" bindtap="onEdit">编辑</view>
@@ -14,15 +14,54 @@
     <view class="store-card">
       <view class="sc-main">
         <view class="sc-head">
-          <text class="sc-pickup">自取</text>
-          <text class="sc-store-name">双流北京华联店</text>
-          <text class="sc-arrow">›</text>
+          <text class="sc-pickup">{{pickupTypeText}}</text>
+          <text class="sc-store-name">{{storeName}}</text>
+          <image class="sc-arrow-icon" src="/images/icons/chev-right.svg" mode="aspectFit"/>
         </view>
-        <text class="sc-addr">四川省成都市双流区西航港街道锦华路172号北京华联外广场亭子(华为斜对面)</text>
+        <text class="sc-addr">{{storeAddress}}</text>
         <view class="sc-divider"></view>
-        <text class="sc-queue">前方<text class="sc-queue-num">11杯</text>/<text class="sc-queue-num">6单</text>制作中</text>
+        <text class="sc-queue">前方<text class="sc-queue-num">{{queueCupCount}}杯</text>/<text class="sc-queue-num">{{queueOrderCount}}单</text>制作中</text>
       </view>
-      <view class="sc-locate"><text class="sc-locate-icon">📍</text></view>
+      <view class="sc-locate"><image class="sc-locate-icon" src="/images/icons/fn-pin.svg" mode="aspectFit"/></view>
+    </view>
+
+    <view class="cart-card fulfill-card">
+      <view class="fulfill-tabs">
+        <view class="fulfill-tab {{pickupType === 'SELF_PICKUP' ? 'is-active' : ''}}" data-type="SELF_PICKUP" bindtap="switchPickupType">
+          <view class="fulfill-icon fulfill-icon-pickup"><image src="/images/icons/fulfill-pickup.svg" mode="aspectFit"/></view>
+          <view>
+            <text class="fulfill-title">到店自取</text>
+            <text class="fulfill-sub">约 8 分钟可取</text>
+          </view>
+        </view>
+        <view class="fulfill-tab {{pickupType === 'DELIVERY' ? 'is-active' : ''}}" data-type="DELIVERY" bindtap="switchPickupType">
+          <view class="fulfill-icon fulfill-icon-delivery"><image src="/images/icons/fulfill-delivery.svg" mode="aspectFit"/></view>
+          <view>
+            <text class="fulfill-title">平台外送</text>
+            <text class="fulfill-sub">满 35 元免配送费</text>
+          </view>
+        </view>
+      </view>
+      <view class="fulfill-fee-tip">{{deliveryFeeText}}</view>
+    </view>
+
+    <view class="cart-card delivery-panel" wx:if="{{pickupType === 'DELIVERY'}}">
+      <view class="delivery-address-card" bindtap="chooseAddress">
+        <view class="delivery-card-main">
+          <text class="delivery-card-title">{{addressTitle}}</text>
+          <text class="delivery-card-desc">{{addressDesc}}</text>
+        </view>
+        <text class="delivery-card-action">选择地址</text>
+      </view>
+      <view class="delivery-field">
+        <text>配送地址</text>
+        <input type="text" value="{{deliveryAddress}}" placeholder="例如：3 号宿舍楼 502" bindinput="inputDeliveryAddress"/>
+      </view>
+      <view class="delivery-field">
+        <text>联系电话</text>
+        <input type="number" value="{{deliveryContact}}" placeholder="例如：13800000000" bindinput="inputDeliveryContact"/>
+      </view>
+      <text class="delivery-fee-tip">{{deliveryFeeText}}</text>
     </view>
 
     <!-- 商品明细 -->
@@ -72,13 +111,13 @@
           <text class="cc-title">超值加购 </text>
           <text class="cc-help">?</text>
         </view>
-        <text class="cc-meta">237008人加购</text>
+        <text class="cc-meta">一起搭配更划算</text>
       </view>
       <view class="addon-row">
         <view class="addon-item" wx:for="{{addons}}" wx:key="id" data-id="{{item.id}}" bindtap="addAddon">
           <view class="ao-cover">
             <image src="{{item.imageUrl}}" mode="aspectFill"/>
-            <text class="ao-save">省¥{{item.save}}</text>
+            <text class="ao-save">{{item.save}}</text>
           </view>
           <view class="ao-info">
             <text class="ao-name">{{item.name}}</text>
@@ -87,7 +126,7 @@
                 <text class="ao-yuan">¥</text>
                 <text class="ao-int">{{item.priceInt}}</text>
                 <text class="ao-dec">.{{item.priceDec}}</text>
-                <text class="ao-origin">¥{{item.origin}}</text>
+                <text class="ao-origin" wx:if="{{item.origin}}">¥{{item.origin}}</text>
               </view>
               <view class="ao-add"><text>+</text></view>
             </view>
@@ -130,7 +169,7 @@
           wx:for="{{couponDisplay}}"
           wx:key="id"
           data-id="{{item.id}}"
-          data-usable="{{item.usable}}"
+          data-usable="{{item.usable ? 1 : 0}}"
           data-gap="{{item.gap}}"
           bindtap="pickCoupon"
         >
@@ -154,8 +193,8 @@
   <!-- 底部支付条 -->
   <view class="pay-bar">
     <view class="pb-bonus">
-      <text class="pb-bonus-icon">☕</text>
-      <text>本单预计得葫芦 <text class="pb-bonus-num">+0.6</text></text>
+      <image class="pb-bonus-icon" src="/images/icons/coupon-blue.svg" mode="aspectFit"/>
+      <text>优惠券按使用门槛自动校验</text>
       <text class="pb-bonus-help">?</text>
     </view>
     <view class="pb-main">
@@ -165,7 +204,7 @@
           <text class="pb-yuan">¥</text>
           <text class="pb-pay-int">{{payInt}}</text>
           <text class="pb-pay-dec">.{{payDec}}</text>
-          <text class="pb-pay-origin">¥{{totalAmount}}</text>
+          <text class="pb-pay-origin">¥{{payOrigin}}</text>
         </view>
         <text class="pb-saved">总计优惠 <text class="pb-saved-num">¥{{saved}}</text></text>
       </view>
@@ -175,7 +214,7 @@
 
   <view class="bottom-nav cart-bottom-nav">
     <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
     <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
     <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
     <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>

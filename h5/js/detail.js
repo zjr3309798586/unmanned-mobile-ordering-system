@@ -6,7 +6,7 @@
  *   2. 规格选项切换(规格/温度/糖度/甜度,单选高亮)
  *   3. 数量加减(底部 - / + 按钮)
  *   4. 加入购物车(未登录自动走 devLogin 兜底,加完返回点餐页)
- *   5. 口味收藏(★ / ☆,纯前端 localStorage,不调后端)
+ *   5. 口味收藏(优先写后端,网络异常时保留 localStorage 兜底)
  */
 document.addEventListener("DOMContentLoaded", function () {
   var app = window.OrderingApp;
@@ -134,8 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ===== 口味收藏 =====
-  // 纯前端实现:收藏的商品 id 存 localStorage["orderingFavorites"],不调后端
-  // ★ 表示已收藏,☆ 表示未收藏
+  // 正常情况走 /api/favorites,让 H5 和小程序看到同一份收藏数据。
+  // 本地 localStorage 只做离线兜底,避免后端没开时按钮完全不可用。
   var favBtn = document.querySelector("[data-fav-btn]");
   var favIcon = document.querySelector("[data-fav-icon]");
   var FAV_KEY = "orderingFavorites";
@@ -146,27 +146,94 @@ document.addEventListener("DOMContentLoaded", function () {
   function saveFavs(list) {
     try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch (e) {}
   }
-  /** 根据本地收藏列表刷新按钮的高亮状态和图标。 */
-  function syncFavUI() {
-    if (!favBtn || !productId) return;
-    var favs = getFavs();
-    var on = favs.indexOf(productId) >= 0;
+  function currentProductId() {
+    return productId || "P-1001";
+  }
+
+  function setFavUI(on) {
+    if (!favBtn) return;
     favBtn.classList.toggle("is-active", on);
     if (favIcon) favIcon.textContent = on ? "★" : "☆";
   }
+
+  /** 根据本地收藏列表刷新按钮的高亮状态和图标。 */
+  function syncLocalFavUI() {
+    var pid = currentProductId();
+    var favs = getFavs();
+    setFavUI(favs.indexOf(pid) >= 0);
+  }
+
+  function localToggleFavorite(pid) {
+    var favs = getFavs();
+    var i = favs.indexOf(pid);
+    if (i >= 0) {
+      favs.splice(i, 1);
+      if (app.showMessage) app.showMessage("已取消收藏");
+      setFavUI(false);
+    } else {
+      favs.push(pid);
+      if (app.showMessage) app.showMessage("已加入口味收藏");
+      setFavUI(true);
+    }
+    saveFavs(favs);
+  }
+
+  function ensureLoggedIn() {
+    if (app && app.isLoggedIn && app.isLoggedIn()) {
+      return Promise.resolve();
+    }
+    if (app && app.devLogin) {
+      return app.devLogin("游客用户");
+    }
+    return Promise.reject(new Error("请先登录"));
+  }
+
+  function loadFavoriteStatus() {
+    if (!favBtn) return;
+    if (!app || !app.get || !app.isLoggedIn || !app.isLoggedIn()) {
+      syncLocalFavUI();
+      return;
+    }
+    app.get("/favorites/" + encodeURIComponent(currentProductId()) + "/status")
+      .then(function (data) {
+        setFavUI(!!(data && data.favorite));
+      })
+      .catch(syncLocalFavUI);
+  }
+
   if (favBtn) {
     favBtn.addEventListener("click", function () {
-      if (!productId) return;   // 没 productId 没办法收藏
-      var favs = getFavs();
-      var i = favs.indexOf(productId);
-      // toggle:已在列表里就移除,不在就加入
-      if (i >= 0) { favs.splice(i, 1); if (app.showMessage) app.showMessage("已取消收藏"); }
-      else { favs.push(productId); if (app.showMessage) app.showMessage("已加入口味收藏"); }
-      saveFavs(favs);
-      syncFavUI();
+      var pid = currentProductId();
+      if (!app || !app.post || !app.del) {
+        localToggleFavorite(pid);
+        return;
+      }
+      favBtn.disabled = true;
+      ensureLoggedIn()
+        .then(function () {
+          var isOn = favBtn.classList.contains("is-active");
+          if (isOn) {
+            return app.del("/favorites/" + encodeURIComponent(pid))
+              .then(function () {
+                setFavUI(false);
+                if (app.showMessage) app.showMessage("已取消收藏");
+              });
+          }
+          return app.post("/favorites/" + encodeURIComponent(pid), {})
+            .then(function () {
+              setFavUI(true);
+              if (app.showMessage) app.showMessage("已加入口味收藏");
+            });
+        })
+        .catch(function () {
+          localToggleFavorite(pid);
+        })
+        .finally(function () {
+          favBtn.disabled = false;
+        });
     });
   }
-  syncFavUI();
+  loadFavoriteStatus();
 
   updateUI();   // 初始化时跑一次,把默认状态写到页面
 });

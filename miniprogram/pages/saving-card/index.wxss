@@ -18,29 +18,15 @@ page {
   top: 0;
   z-index: 30;
   display: grid;
-  grid-template-columns: 88rpx 1fr 152rpx;
+  grid-template-columns: 1fr auto;
   align-items: center;
   min-height: 112rpx;
   padding: 16rpx 32rpx 8rpx;
   background: linear-gradient(180deg, rgba(234,244,255,0.96), rgba(234,244,255,0.7));
 }
 
-.saving-back {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 999rpx;
-  color: #102033;
-  background: rgba(255,255,255,0.78);
-  box-shadow: 0 20rpx 48rpx rgba(31,111,255,0.1);
-  font-size: 54rpx;
-  font-weight: 500;
-}
-
 .saving-page-title {
-  text-align: center;
+  text-align: left;
   color: #102033;
   font-size: 44rpx;
   font-weight: 900;
@@ -52,7 +38,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 68rpx;
+  min-height: 88rpx;
   padding: 0 22rpx;
   border: 2rpx solid #d7e6f8;
   border-radius: 999rpx;
@@ -193,6 +179,13 @@ page {
   font-size: 76rpx;
   line-height: 1;
   font-weight: 900;
+}
+
+.pass-desc {
+  margin-top: 10rpx;
+  color: rgba(255,255,255,0.86);
+  font-size: 24rpx;
+  line-height: 1.45;
 }
 
 .pass-tags {
@@ -344,15 +337,6 @@ page {
   margin-bottom: 28rpx;
 }
 
-.section-eyebrow {
-  margin-bottom: 6rpx;
-  color: #88a8d8;
-  font-size: 22rpx;
-  font-weight: 900;
-  letter-spacing: 1.6rpx;
-  text-transform: uppercase;
-}
-
 .section-title {
   color: #102033;
   font-size: 42rpx;
@@ -360,7 +344,19 @@ page {
   font-weight: 900;
 }
 
+.section-subtitle {
+  margin-top: 10rpx;
+  color: #6f7f99;
+  font-size: 24rpx;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
 .section-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88rpx;
   color: #6f7f99;
   font-size: 26rpx;
   font-weight: 800;
@@ -454,9 +450,9 @@ page {
 }
 
 .ticket-btn {
-  min-height: 68rpx;
+  min-height: 88rpx;
   border-radius: 999rpx;
-  line-height: 68rpx;
+  line-height: 88rpx;
   text-align: center;
   color: #fff;
   background: linear-gradient(135deg, #126dff 0%, #0060ff 100%);
@@ -482,7 +478,7 @@ page {
 .saving-product {
   position: relative;
   display: grid;
-  grid-template-columns: 144rpx 1fr 76rpx;
+  grid-template-columns: 144rpx 1fr 88rpx;
   align-items: center;
   gap: 26rpx;
   min-height: 192rpx;
@@ -548,8 +544,8 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 68rpx;
-  height: 68rpx;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 999rpx;
   color: #fff;
   background: #126dff;
@@ -582,6 +578,11 @@ page {
   background: #e7f1ff;
   font-size: 30rpx;
   font-weight: 900;
+}
+
+.benefit-icon image {
+  width: 46rpx;
+  height: 46rpx;
 }
 
 .benefit-title {
@@ -665,7 +666,7 @@ page {
   display: flex;
   align-items: center;
   gap: 10rpx;
-  min-height: 80rpx;
+  min-height: 88rpx;
   padding: 0 30rpx;
   border-radius: 999rpx;
   color: #fff;
@@ -682,4 +683,122 @@ page {
 .floating-open-btn text:last-child {
   font-size: 24rpx;
   font-weight: 900;
+}
+
+/* UI polish: keep the card design, improve text fit and bottom spacing. */
+.saving-shell {
+  padding-bottom: 332rpx;
+}
+
+.saving-topbar {
+  min-height: 104rpx;
+  padding: 14rpx 28rpx 8rpx;
+}
+
+.saving-page-title {
+  line-height: 1.18;
+}
+
+.saving-main {
+  padding: 20rpx 28rpx 0;
+}
+
+.saving-pass-card {
+  min-height: 500rpx;
+  border-radius: 52rpx;
+}
+
+.pass-head {
+  padding: 32rpx 32rpx 0;
+}
+
+.pass-content {
+  grid-template-columns: minmax(0, 1fr) 236rpx;
+  min-height: 252rpx;
+  padding: 18rpx 22rpx 0 40rpx;
+}
+
+.pass-title {
+  font-size: 60rpx;
+  line-height: 1.08;
+}
+
+.pass-save {
+  margin-top: 20rpx;
+}
+
+.pass-save text {
+  font-size: 68rpx;
+}
+
+.pass-tags {
+  gap: 12rpx;
+  margin-top: 22rpx;
+}
+
+.pass-mascot {
+  width: 244rpx;
+  height: 244rpx;
+}
+
+.pass-buy-panel {
+  left: 24rpx;
+  right: 24rpx;
+  min-height: 120rpx;
+  padding: 18rpx 24rpx;
+}
+
+.pass-open-btn {
+  padding: 0 36rpx;
+}
+
+.saving-stats,
+.saving-block {
+  margin-top: 24rpx;
+}
+
+.saving-block {
+  padding: 28rpx;
+}
+
+.saving-section-head {
+  margin-bottom: 24rpx;
+}
+
+.section-title,
+.ticket-title,
+.product-name {
+  line-height: 1.24;
+}
+
+.saving-ticket {
+  grid-template-columns: 132rpx 1fr 132rpx;
+  gap: 20rpx;
+  min-height: 172rpx;
+  padding: 24rpx;
+}
+
+.ticket-main {
+  padding-left: 20rpx;
+}
+
+.ticket-value {
+  font-size: 62rpx;
+}
+
+.saving-product {
+  grid-template-columns: 132rpx 1fr 84rpx;
+  gap: 20rpx;
+  min-height: 176rpx;
+}
+
+.saving-product image {
+  width: 132rpx;
+  height: 132rpx;
+}
+
+.saving-floating-bar {
+  left: 20rpx;
+  right: 20rpx;
+  bottom: calc(158rpx + env(safe-area-inset-bottom));
 }

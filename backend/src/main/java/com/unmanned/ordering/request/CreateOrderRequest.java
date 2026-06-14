@@ -26,6 +26,12 @@ public class CreateOrderRequest {
     // 可选：堂食桌号或取餐号。
     private String tableNo;
 
+    // 可选：外送地址。pickupType=DELIVERY 时必填。
+    private String deliveryAddress;
+
+    // 可选：外送联系电话。pickupType=DELIVERY 时必填。
+    private String deliveryContact;
+
     // 可选：订单备注，例如“少冰”“不要吸管”。
     private String remark;
 
@@ -51,6 +57,22 @@ public class CreateOrderRequest {
 
     public void setTableNo(String tableNo) {
         this.tableNo = tableNo;
+    }
+
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public String getDeliveryContact() {
+        return deliveryContact;
+    }
+
+    public void setDeliveryContact(String deliveryContact) {
+        this.deliveryContact = deliveryContact;
     }
 
     public String getRemark() {

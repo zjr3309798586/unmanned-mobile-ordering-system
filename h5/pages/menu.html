@@ -6,7 +6,7 @@
   <meta name="format-detection" content="telephone=no">
   <title>云豹小点 - 点餐</title>
   <link rel="stylesheet" href="/css/common.css?v=2">
-  <link rel="stylesheet" href="/css/menu.css?v=7">
+  <link rel="stylesheet" href="/css/menu.css?v=10">
 </head>
 <body data-page="menu">
   <div class="app-shell menu-shell">
@@ -15,10 +15,10 @@
     <header class="menu-header">
 
       <div class="mh-top-row">
-        <div class="mh-tabs">
-          <span class="mh-tab is-active">自取<i class="mh-tab-bar"></i></span>
+        <div class="mh-tabs" data-order-mode-tabs>
+          <button class="mh-tab is-active" type="button" data-order-mode="pickup">自取<i class="mh-tab-bar"></i></button>
           <span class="mh-tab-sep">|</span>
-          <span class="mh-tab">外卖</span>
+          <button class="mh-tab" type="button" data-order-mode="delivery">外卖<i class="mh-tab-bar"></i></button>
         </div>
         <div class="mh-actions">
           <button class="mh-icon-btn" type="button" aria-label="搜索">
@@ -177,6 +177,6 @@
   </div>
 
   <script src="/js/common.js?v=2"></script>
-  <script src="/js/menu.js?v=8"></script>
+  <script src="/js/menu.js?v=9"></script>
 </body>
 </html>

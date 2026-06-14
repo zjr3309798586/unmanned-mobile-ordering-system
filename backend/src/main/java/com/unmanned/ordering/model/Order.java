@@ -14,7 +14,9 @@ import java.util.List;
  *   payableAmount    实付金额 = total - discount,最低为 0
  *
  * status 取值:
- *   WAITING_PICKUP   待取餐(初始状态)
+ *   MAKING           制作中(提交订单后的初始状态)
+ *   WAITING_PICKUP   待取餐(店员标记出餐后)
+ *   DELIVERING       配送中(外送订单出餐后)
  *   COMPLETED        已完成(店员标记)
  *   CANCELED         已取消(用户或店员)
  *
@@ -27,6 +29,9 @@ public class Order {
     private String pickupType;
     private String storeName;
     private String tableNo;
+    private String deliveryAddress;
+    private String deliveryContact;
+    private BigDecimal deliveryFee = BigDecimal.ZERO;
     private String remark;
     private String status;
     private BigDecimal totalAmount;
@@ -109,6 +114,30 @@ public class Order {
 
     public void setTableNo(String tableNo) {
         this.tableNo = tableNo;
+    }
+
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public String getDeliveryContact() {
+        return deliveryContact;
+    }
+
+    public void setDeliveryContact(String deliveryContact) {
+        this.deliveryContact = deliveryContact;
+    }
+
+    public BigDecimal getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public void setDeliveryFee(BigDecimal deliveryFee) {
+        this.deliveryFee = deliveryFee == null ? BigDecimal.ZERO : deliveryFee;
     }
 
     public String getRemark() {

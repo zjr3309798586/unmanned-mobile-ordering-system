@@ -6,7 +6,6 @@ function emptyProfile() {
   return {
     nickname: "未登录",
     memberLevel: "游客",
-    points: 0,
     balanceText: "¥ 0.00",
     couponCount: 0,
     savingAmountText: "0.00"
@@ -48,6 +47,14 @@ Page({
     });
   },
 
+  handleProfileTap() {
+    if (auth.isLoggedIn && auth.isLoggedIn()) {
+      this.logout();
+      return;
+    }
+    this.login();
+  },
+
   logout() {
     wx.showModal({
       title: "退出登录",
@@ -71,7 +78,7 @@ Page({
     ]).then(function (res) {
       var profile = res[0];
       var orders = res[1] || [];
-      var waiting = orders.filter(function (o) { return o.status === "WAITING_PICKUP"; }).length;
+      var waiting = orders.filter(function (o) { return o.status === "WAITING_PICKUP" || o.status === "DELIVERING"; }).length;
       self.setData({
         waitingCount: waiting,
         profile: {
@@ -98,6 +105,10 @@ Page({
     }
     if (target === "saving") {
       wx.redirectTo({ url: "/pages/saving-card/index" });
+      return;
+    }
+    if (target === "service") {
+      wx.navigateTo({ url: "/pages/support/index" });
       return;
     }
     wx.showToast({ title: "门店电话：400-100-2026", icon: "none" });

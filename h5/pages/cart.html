@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/common.css?v=2">
-  <link rel="stylesheet" href="/css/cart.css?v=9">
+  <link rel="stylesheet" href="/css/cart.css?v=11">
 </head>
 <body data-page="cart">
   <div class="app-shell cart-shell">
@@ -31,18 +31,68 @@
         <div class="sc-main">
           <div class="sc-head">
             <span class="sc-pickup">自取</span>
-            <h2 class="sc-store-name">双流北京华联店</h2>
+            <h2 class="sc-store-name" data-store-name>云豹小点·校园店</h2>
             <svg class="sc-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
           </div>
-          <p class="sc-addr">四川省成都市双流区西航港街道锦华路172号北京华联外广场亭子(华为斜对面)</p>
+          <p class="sc-addr" data-store-address>海光路 100 号校园生活中心 1 楼</p>
           <hr class="sc-divider">
-          <p class="sc-queue">前方<strong>11杯</strong>/<strong>6单</strong>制作中</p>
+          <p class="sc-queue">前方<strong data-queue-cups>0杯</strong>/<strong data-queue-orders>0单</strong>制作中</p>
         </div>
         <button class="sc-locate" type="button" aria-label="定位">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="#1a73e8">
             <path d="M12 2C7.6 2 4 5.6 4 10c0 5.5 7.3 11.7 7.6 11.9.2.2.6.2.8 0 .3-.2 7.6-6.4 7.6-11.9 0-4.4-3.6-8-8-8zm0 11.2c-1.7 0-3.2-1.4-3.2-3.2S10.3 6.8 12 6.8s3.2 1.4 3.2 3.2-1.5 3.2-3.2 3.2z"/>
           </svg>
         </button>
+      </section>
+
+      <section class="cart-card fulfill-card">
+        <div class="fulfill-tabs" data-fulfill-tabs>
+          <button class="fulfill-tab is-active" type="button" data-fulfill-mode="SELF_PICKUP">
+            <span class="fulfill-icon fulfill-icon-pickup">
+              <svg viewBox="0 0 32 32" width="20" height="20" fill="none" aria-hidden="true">
+                <path d="M9 13h14l-1.2 12H10.2L9 13Z" fill="currentColor"/>
+                <path d="M12 13V9a4 4 0 0 1 8 0v4" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/>
+                <path d="M13 18h6" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span>
+              <strong>到店自取</strong>
+              <em>约 8 分钟可取</em>
+            </span>
+          </button>
+          <button class="fulfill-tab" type="button" data-fulfill-mode="DELIVERY">
+            <span class="fulfill-icon fulfill-icon-delivery">
+              <svg viewBox="0 0 32 32" width="21" height="21" fill="none" aria-hidden="true">
+                <path d="M7 12h10v9H7v-9Z" fill="currentColor"/>
+                <path d="M17 15h5.2l3.1 4v2H17v-6Z" fill="currentColor"/>
+                <path d="M10 25a2.4 2.4 0 1 0 0-4.8 2.4 2.4 0 0 0 0 4.8ZM22.5 25a2.4 2.4 0 1 0 0-4.8 2.4 2.4 0 0 0 0 4.8Z" fill="#fff"/>
+                <path d="M8 9h6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span>
+              <strong>平台外送</strong>
+              <em>满 35 元免配送费</em>
+            </span>
+          </button>
+        </div>
+        <div class="delivery-panel" data-delivery-panel hidden>
+          <div class="delivery-address-card" data-delivery-address-card>
+            <div>
+              <strong data-delivery-address-title>未选择配送地址</strong>
+              <p data-delivery-address-desc>可从地址簿选择，也可以在下方临时填写。</p>
+            </div>
+            <a href="/address.html?select=1">选择地址</a>
+          </div>
+          <label class="delivery-field">
+            <span>配送地址</span>
+            <input type="text" data-delivery-address placeholder="例如：3 号宿舍楼 502">
+          </label>
+          <label class="delivery-field">
+            <span>联系电话</span>
+            <input type="tel" data-delivery-contact placeholder="例如：13800000000">
+          </label>
+          <p class="delivery-fee-tip" data-delivery-fee-text>外送费 ¥3，商品满 ¥35 免配送费</p>
+        </div>
       </section>
 
       <!-- 商品明细 -->
@@ -66,32 +116,32 @@
       <section class="cart-card">
         <div class="cc-head">
           <h3 class="cc-title">超值加购 <span class="cc-help">?</span></h3>
-          <span class="cc-meta">237008人加购</span>
+          <span class="cc-meta">一起搭配更划算</span>
         </div>
-        <div class="addon-row">
+        <div class="addon-row" data-addon-row>
           <article class="addon-item">
             <div class="ao-cover">
-              <img src="/images/menu/menu-product-grape.png" alt="葡萄大福">
-              <em class="ao-save">省¥1</em>
+              <img src="/images/menu/product-grapefruit-tea.svg" alt="满杯西柚绿茶">
+              <em class="ao-save">搭配推荐</em>
             </div>
             <div class="ao-info">
-              <h5 class="ao-name">葡萄大福</h5>
+              <h5 class="ao-name">满杯西柚绿茶</h5>
               <div class="ao-row">
-                <div class="ao-price"><span class="ao-yuan">¥</span><span class="ao-int">3</span><span class="ao-dec">.9</span><span class="ao-origin">¥4.9</span></div>
-                <button class="ao-add" type="button" aria-label="加购"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+                <div class="ao-price"><span class="ao-yuan">¥</span><span class="ao-int">13</span><span class="ao-dec">.9</span></div>
+                <button class="ao-add" type="button" data-addon-product="P-1003" aria-label="选择满杯西柚绿茶"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
               </div>
             </div>
           </article>
           <article class="addon-item">
             <div class="ao-cover">
-              <img src="/images/menu/menu-product-wrap.png" alt="龙井马蹄绿豆糕">
-              <em class="ao-save">省¥1</em>
+              <img src="/images/menu/product-toast.svg" alt="芝士烤吐司">
+              <em class="ao-save">搭配推荐</em>
             </div>
             <div class="ao-info">
-              <h5 class="ao-name">龙井马蹄绿豆糕</h5>
+              <h5 class="ao-name">芝士烤吐司</h5>
               <div class="ao-row">
-                <div class="ao-price"><span class="ao-yuan">¥</span><span class="ao-int">3</span><span class="ao-dec">.9</span><span class="ao-origin">¥4.9</span></div>
-                <button class="ao-add" type="button" aria-label="加购"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+                <div class="ao-price"><span class="ao-yuan">¥</span><span class="ao-int">9</span><span class="ao-dec">.9</span></div>
+                <button class="ao-add" type="button" data-addon-product="P-1006" aria-label="选择芝士烤吐司"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
               </div>
             </div>
           </article>
@@ -128,8 +178,13 @@
     <!-- 底部支付条 -->
     <footer class="pay-bar">
       <div class="pb-bonus">
-        <span class="pb-bonus-icon">☕</span>
-        <span class="pb-bonus-text">本单预计得葫芦 <span class="pb-bonus-num">+0.6</span></span>
+        <span class="pb-bonus-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7Z"/>
+            <path d="M9 8h6M9 12h6M9 16h4"/>
+          </svg>
+        </span>
+        <span class="pb-bonus-text">优惠券按使用门槛自动校验</span>
         <span class="pb-bonus-help">?</span>
       </div>
       <div class="pb-main">
@@ -152,7 +207,7 @@
         <span class="nav-icon"><img class="nav-logo-icon" src="/images/nav/nav-home.svg" alt=""></span>
         <span>首页</span>
       </a>
-      <a class="nav-item" data-nav-key="menu" href="/menu.html">
+      <a class="nav-item is-active" data-nav-key="menu" href="/menu.html">
         <span class="nav-icon"><img class="nav-logo-icon" src="/images/nav/nav-menu.svg" alt=""></span>
         <span>点餐</span>
       </a>
@@ -172,6 +227,6 @@
   </div>
 
   <script src="/js/common.js?v=2"></script>
-  <script src="/js/cart.js?v=9"></script>
+  <script src="/js/cart.js?v=11"></script>
 </body>
 </html>

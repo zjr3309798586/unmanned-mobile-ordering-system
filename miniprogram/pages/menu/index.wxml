@@ -4,9 +4,9 @@
 
     <view class="mh-top-row">
       <view class="mh-tabs">
-        <view class="mh-tab is-active"><text>自取</text><view class="mh-tab-bar"></view></view>
+        <view class="mh-tab {{orderMode === 'pickup' ? 'is-active' : ''}}" data-mode="pickup" bindtap="switchOrderMode"><text>自取</text><view class="mh-tab-bar"></view></view>
         <text class="mh-tab-sep">|</text>
-        <view class="mh-tab"><text>外卖</text></view>
+        <view class="mh-tab {{orderMode === 'delivery' ? 'is-active' : ''}}" data-mode="delivery" bindtap="switchOrderMode"><text>外卖</text><view class="mh-tab-bar"></view></view>
       </view>
       <view class="mh-actions">
         <view class="mh-icon-btn" bindtap="openSearch"><image src="/images/icons/mh-search.svg" mode="aspectFit"/></view>
@@ -27,7 +27,7 @@
     <view class="mh-meta">
       <text>距离您1.10km</text>
       <text class="mh-meta-sep">|</text>
-      <view class="mh-meta-tag">下单立即制作</view>
+      <view class="mh-meta-tag">{{orderModeText}}</view>
     </view>
 
     <view class="mh-promo-row">
@@ -68,7 +68,7 @@
               <view class="m-price">
                 <text class="m-yuan">¥</text><text class="m-int">{{item.priceInt}}</text><text class="m-dec">{{item.priceDec}}</text>
               </view>
-              <view class="m-stepper" catchtap="">
+              <view class="m-stepper" catchtap="noop">
                 <view class="m-minus {{item.qty > 0 ? 'is-show' : ''}}" catchtap="minusCart" data-id="{{item.id}}"><text>−</text></view>
                 <text class="m-qty" wx:if="{{item.qty > 0}}">{{item.qty}}</text>
                 <view class="m-add" catchtap="addCart" data-id="{{item.id}}"><text class="m-add-icon">+</text></view>
@@ -85,16 +85,42 @@
     </view>
   </view>
 
-  <view class="coupon-float">
+  <view class="coupon-float" bindtap="openCouponDrawer">
     <text class="cf-num">{{couponCount || 0}}</text>
     <text class="cf-label">优惠券</text>
+  </view>
+
+  <view class="coupon-mask {{couponDrawerOpen ? 'is-open' : ''}}" bindtap="closeCouponDrawer"></view>
+  <view class="coupon-drawer {{couponDrawerOpen ? 'is-open' : ''}}">
+    <view class="coupon-drawer-head">
+      <view>
+        <text class="coupon-title">我的优惠券</text>
+      </view>
+      <text class="coupon-close" bindtap="closeCouponDrawer">关闭</text>
+    </view>
+    <view class="coupon-list">
+      <block wx:if="{{couponItems.length}}">
+        <view class="coupon-item" wx:for="{{couponItems}}" wx:key="id">
+          <view class="coupon-money">¥{{item.discountAmount}}</view>
+          <view class="coupon-copy">
+            <text>{{item.title}}</text>
+            <text>{{item.conditionText}}</text>
+          </view>
+        </view>
+      </block>
+      <view class="coupon-empty" wx:else>
+        <text>还没领过优惠券</text>
+        <view bindtap="goSavingCard">去省钱卡领券</view>
+      </view>
+    </view>
+    <navigator class="cd-go-cart" url="/pages/cart/index" open-type="navigate">去购物车使用 ›</navigator>
   </view>
 
   <!-- 搜索 overlay -->
   <view class="search-overlay {{searchOpen ? 'is-open' : ''}}">
     <view class="so-bar">
       <view class="so-input-wrap">
-        <text class="so-input-icon">🔍</text>
+        <image class="so-input-icon" src="/images/icons/mh-search.svg" mode="aspectFit"/>
         <input class="so-input" placeholder="搜索商品名称" value="{{searchKw}}" bindinput="onSearchInput" focus="{{searchOpen}}"/>
       </view>
       <view class="so-cancel" bindtap="closeSearch">取消</view>
@@ -121,7 +147,7 @@
     <view class="cd-head">
       <text class="cd-title">已选商品</text>
       <view class="cd-clear" bindtap="clearCart">
-        <text class="cd-clear-icon">🗑</text>
+        <image class="cd-clear-icon" src="/images/icons/trash.svg" mode="aspectFit"/>
         <text>清空</text>
       </view>
     </view>

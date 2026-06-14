@@ -13,6 +13,8 @@ public class Store {
     private String distance;
     private String businessHours;
     private String notice;
+    private int queueCupCount;
+    private int queueOrderCount;
 
     public Store() {
     }
@@ -72,5 +74,21 @@ public class Store {
 
     public void setNotice(String notice) {
         this.notice = notice;
+    }
+
+    public int getQueueCupCount() {
+        return queueCupCount;
+    }
+
+    public void setQueueCupCount(int queueCupCount) {
+        this.queueCupCount = queueCupCount;
+    }
+
+    public int getQueueOrderCount() {
+        return queueOrderCount;
+    }
+
+    public void setQueueOrderCount(int queueOrderCount) {
+        this.queueOrderCount = queueOrderCount;
     }
 }

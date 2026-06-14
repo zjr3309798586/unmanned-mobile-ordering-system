@@ -156,7 +156,7 @@ public class UserAuthService {
         return user;
     }
 
-    /** "我的"页使用:按 token 查询当前用户资料(含积分、节省金额、会员等级)。 */
+    /** "我的"页使用:按 token 查询当前用户资料(含节省金额、会员等级)。 */
     public UserProfile getProfile(String token) {
         User user = requireUser(token);
         UserProfile profile = userMapper.findProfileByUserId(user.getId());

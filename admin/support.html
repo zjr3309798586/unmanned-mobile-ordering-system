@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>客服管理 - 云豹小点后台管理</title>
+  <link rel="stylesheet" href="css/admin.css?v=19">
+</head>
+<body data-page="support">
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo"><img src="../images/mascot/mascot-yunbao-144.png" alt="云豹小点"></div>
+        <div>
+          <div class="sidebar-title">云豹小点后台</div>
+          <div class="sidebar-subtitle">后台管理</div>
+        </div>
+      </div>
+      <nav class="nav-list">
+        <a class="nav-item" data-page="dashboard" href="dashboard.html">数据看板</a>
+        <a class="nav-item" data-page="products" href="products.html">商品管理</a>
+        <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
+        <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
+        <a class="nav-item" data-page="support" href="support.html">客服管理</a>
+        <a class="nav-item" data-page="users" href="users.html">用户管理</a>
+        <a class="nav-item" data-page="coupons" href="coupons.html">优惠券管理</a>
+        <a class="nav-item" data-page="activities" href="activities.html">活动管理</a>
+        <a class="nav-item" data-page="analytics" href="analytics.html">统计分析</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <button class="btn ghost menu-toggle" id="menuToggle">菜单</button>
+          <h1>客服管理</h1>
+          <p>处理用户留言、订单问题和售后反馈，回复后前台可直接查看。</p>
+        </div>
+        <div class="top-actions">
+          <div class="admin-user"><span class="avatar">J</span><span>管理员</span></div>
+          <button class="btn ghost" id="logoutBtn">退出</button>
+        </div>
+      </header>
+
+      <section class="admin-kpi-grid support-kpis" aria-label="客服概览">
+        <div class="admin-kpi-card" data-support-kpi="pending"><span>待处理</span><strong class="support-kpi-value">0</strong><em>需要尽快回复</em></div>
+        <div class="admin-kpi-card" data-support-kpi="replied"><span>已回复</span><strong class="support-kpi-value">0</strong><em>用户可在前台查看</em></div>
+        <div class="admin-kpi-card" data-support-kpi="closed"><span>已关闭</span><strong class="support-kpi-value">0</strong><em>已处理完成</em></div>
+        <div class="admin-kpi-card is-strong" data-support-kpi="total"><span>全部反馈</span><strong class="support-kpi-value">0</strong><em>用户留言总数</em></div>
+      </section>
+
+      <section class="card">
+        <div class="toolbar">
+          <div class="tabs">
+            <button class="tab active" data-status-filter="all" data-target="#supportTable">全部</button>
+            <button class="tab" data-status-filter="pending" data-target="#supportTable">待处理</button>
+            <button class="tab" data-status-filter="replied" data-target="#supportTable">已回复</button>
+            <button class="tab" data-status-filter="closed" data-target="#supportTable">已关闭</button>
+          </div>
+          <button class="btn ghost" type="button" data-clean-test-support>清理测试工单</button>
+          <input class="search" data-table-search="#supportTable" placeholder="搜索用户、订单号、问题内容">
+        </div>
+        <div class="table-wrap">
+          <table id="supportTable">
+            <thead><tr><th>用户</th><th>类型</th><th>关联订单</th><th>问题内容</th><th>状态</th><th>提交时间</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td colspan="7" class="table-empty">正在加载客服工单...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="js/admin.js?v=19"></script>
+</body>
+</html>

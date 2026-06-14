@@ -104,18 +104,35 @@ document.addEventListener("DOMContentLoaded", function () {
     if (notice) notice.textContent = store.notice || ("营业时间 " + (store.businessHours || "08:00 - 22:30"));
   }
 
+  function normalizeRecommendation(item) {
+    if (item && item.product) {
+      return {
+        product: item.product,
+        reason: item.reason || "适合搭配当前点单",
+        tag: item.tag || "推荐"
+      };
+    }
+    return {
+      product: item,
+      reason: "门店热卖，适合快速加购",
+      tag: "推荐"
+    };
+  }
+
   function renderProducts(products) {
     var box = document.querySelector("[data-home-products]");
     if (!box) return;
-    var list = (products || []).slice(0, 6);
+    var list = (products || []).map(normalizeRecommendation).slice(0, 6);
     if (!list.length) return;
-    box.innerHTML = list.map(function (p) {
+    box.innerHTML = list.map(function (item) {
+      var p = item.product || {};
       var image = localImage(p.image || "/images/common/food-placeholder.svg");
       var price = Number(p.price || 0).toFixed(1);
       return '<a class="home-product-card" href="/detail.html?id=' + encodeURIComponent(p.id) + '">'
         + '<img src="' + image + '" alt="' + escapeHtml(p.name) + '" onerror="this.src=\'/images/common/food-placeholder.svg\'">'
+        + '<i class="home-product-tag">' + escapeHtml(item.tag) + '</i>'
         + '<strong>' + escapeHtml(p.name) + '</strong>'
-        + '<span>' + escapeHtml(p.description || "清爽好喝,轻松点单") + '</span>'
+        + '<span>' + escapeHtml(item.reason || p.description || "清爽好喝,轻松点单") + '</span>'
         + '<em>¥' + price + '</em>'
         + '</a>';
     }).join("");
@@ -124,7 +141,11 @@ document.addEventListener("DOMContentLoaded", function () {
   if (app.get) {
     app.get("/store").then(renderStore).catch(function () {});
     app.get("/banners").then(renderSlides).catch(function () {});
-    app.get("/products").then(renderProducts).catch(function () {});
+    app.get("/smart/recommendations?limit=6")
+      .then(renderProducts)
+      .catch(function () {
+        app.get("/products").then(renderProducts).catch(function () {});
+      });
   }
 
   // ===== 触摸滑动 =====

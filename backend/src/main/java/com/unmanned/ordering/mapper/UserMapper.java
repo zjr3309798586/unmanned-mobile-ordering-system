@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 用户相关三张表的数据访问层:
  *   users          登录会话(openid / token / 昵称 / 头像)
- *   user_profiles  用户资料(会员等级 / 积分 / 余额 / 节省金额 / 券数量)
+ *   user_profiles  用户资料(会员等级 / 余额 / 节省金额 / 券数量)
  *   user_coupons   用户优惠券(领取 → 使用 → 取消恢复 的状态机)
  *
  * user_coupons.status 取值:
@@ -61,7 +61,7 @@ public interface UserMapper {
 
     // ===== user_profiles 用户资料 =====
 
-    /** "我的"页查询用户资料(等级 / 积分 / 节省金额 / 券数量)。 */
+    /** "我的"页查询用户资料(等级 / 节省金额 / 券数量)。 */
     @Select("SELECT * FROM user_profiles WHERE user_id = #{userId}")
     UserProfile findProfileByUserId(String userId);
 
@@ -69,10 +69,10 @@ public interface UserMapper {
     @Select("SELECT * FROM user_profiles ORDER BY user_id")
     List<UserProfile> listProfiles();
 
-    /** 首次登录时给用户建一份默认资料(普通会员 / 积分 0 / 节省 0)。 */
+    /** 首次登录时给用户建一份默认资料(普通会员 / 节省 0)。 */
     @Insert({
-            "INSERT INTO user_profiles (user_id, nickname, member_level, points, balance, coupon_count, saving_amount)",
-            "VALUES (#{userId}, #{nickname}, '普通会员', 0, 0.00, 0, 0.00)"
+            "INSERT INTO user_profiles (user_id, nickname, member_level, balance, coupon_count, saving_amount)",
+            "VALUES (#{userId}, #{nickname}, '普通会员', 0.00, 0, 0.00)"
     })
     int insertDefaultProfile(@Param("userId") String userId, @Param("nickname") String nickname);
 
@@ -178,11 +178,10 @@ public interface UserMapper {
     })
     int refreshCouponCount(String userId);
 
-    /** 下单成功:加积分 + 累计节省金额,并刷新可用券数量。 */
+    /** 下单成功:累计节省金额,并刷新可用券数量。 */
     @Update({
             "UPDATE user_profiles",
-            "SET points = points + #{points},",
-            "    saving_amount = saving_amount + #{savingAmount},",
+            "SET saving_amount = saving_amount + #{savingAmount},",
             "    coupon_count = (",
             "      SELECT COUNT(*) FROM user_coupons",
             "      WHERE user_id = #{userId} AND status = 'AVAILABLE'",
@@ -190,17 +189,15 @@ public interface UserMapper {
             "WHERE user_id = #{userId}"
     })
     int addOrderStats(@Param("userId") String userId,
-                      @Param("points") int points,
                       @Param("savingAmount") BigDecimal savingAmount);
 
     /**
-     * 取消订单:扣回积分 + 节省金额。
+     * 取消订单:扣回节省金额。
      * CASE WHEN 防御性写法,防止数字被扣到负数。
      */
     @Update({
             "UPDATE user_profiles",
-            "SET points = CASE WHEN points > #{points} THEN points - #{points} ELSE 0 END,",
-            "    saving_amount = CASE WHEN saving_amount > #{savingAmount} THEN saving_amount - #{savingAmount} ELSE 0 END,",
+            "SET saving_amount = CASE WHEN saving_amount > #{savingAmount} THEN saving_amount - #{savingAmount} ELSE 0 END,",
             "    coupon_count = (",
             "      SELECT COUNT(*) FROM user_coupons",
             "      WHERE user_id = #{userId} AND status = 'AVAILABLE'",
@@ -208,6 +205,5 @@ public interface UserMapper {
             "WHERE user_id = #{userId}"
     })
     int subtractOrderStats(@Param("userId") String userId,
-                           @Param("points") int points,
                            @Param("savingAmount") BigDecimal savingAmount);
 }

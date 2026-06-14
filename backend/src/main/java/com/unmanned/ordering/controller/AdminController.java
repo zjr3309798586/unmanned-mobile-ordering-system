@@ -2,18 +2,21 @@ package com.unmanned.ordering.controller;
 
 import com.unmanned.ordering.common.ApiResponse;
 import com.unmanned.ordering.model.AdminDashboard;
+import com.unmanned.ordering.model.AdminInsight;
 import com.unmanned.ordering.model.AdminSession;
 import com.unmanned.ordering.model.Banner;
 import com.unmanned.ordering.model.Category;
 import com.unmanned.ordering.model.Coupon;
 import com.unmanned.ordering.model.Order;
 import com.unmanned.ordering.model.Product;
+import com.unmanned.ordering.model.SupportTicket;
 import com.unmanned.ordering.model.UserProfile;
 import com.unmanned.ordering.request.AdminLoginRequest;
 import com.unmanned.ordering.request.BannerRequest;
 import com.unmanned.ordering.request.CategoryRequest;
 import com.unmanned.ordering.request.CouponRequest;
 import com.unmanned.ordering.request.ProductRequest;
+import com.unmanned.ordering.request.ReplySupportTicketRequest;
 import com.unmanned.ordering.service.AdminAuthService;
 import com.unmanned.ordering.service.OrderingService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -78,6 +81,11 @@ public class AdminController {
     @GetMapping("/dashboard")
     public ApiResponse<AdminDashboard> getDashboard() {
         return ApiResponse.ok(orderingService.getDashboard());
+    }
+
+    @GetMapping("/smart/insights")
+    public ApiResponse<List<AdminInsight>> listSmartInsights() {
+        return ApiResponse.ok(orderingService.listAdminInsights());
     }
 
     // ===== Banner 管理 =====
@@ -239,19 +247,55 @@ public class AdminController {
         return ApiResponse.ok(orderingService.listOrdersForAdmin(null));
     }
 
+    /** 店员手动把订单从"制作中"改为"待取餐"。 */
+    @PatchMapping("/orders/{orderId}/ready")
+    public ApiResponse<Order> markOrderReady(@PathVariable String orderId) {
+        return ApiResponse.ok(orderingService.markOrderReady(orderId));
+    }
+
     /** 店员手动把订单改为"已完成"。 */
     @PatchMapping("/orders/{orderId}/complete")
     public ApiResponse<Order> completeOrder(@PathVariable String orderId) {
         return ApiResponse.ok(orderingService.completeOrder(orderId));
     }
 
-    /** 店员代客取消订单。Service 层会回滚销量、优惠券、用户积分统计。 */
+    /** 店员代客取消订单。Service 层会回滚销量、优惠券、用户节省统计。 */
     @PatchMapping("/orders/{orderId}/cancel")
     public ApiResponse<Order> cancelOrder(@PathVariable String orderId) {
         return ApiResponse.ok(orderingService.cancelOrderForAdmin(orderId));
     }
 
-    /** 后台用户管理:查看所有用户资料(昵称 / 会员等级 / 积分 / 券数)。 */
+    // ===== 客服管理 =====
+
+    /** 后台查看客服工单,可按 status=PENDING/REPLIED/CLOSED 筛选。 */
+    @GetMapping("/support-tickets")
+    public ApiResponse<List<SupportTicket>> listSupportTickets(
+            @RequestParam(value = "status", required = false) String status) {
+        return ApiResponse.ok(orderingService.listSupportTicketsForAdmin(status));
+    }
+
+    /** 后台回复客服工单。 */
+    @PatchMapping("/support-tickets/{ticketId}/reply")
+    public ApiResponse<SupportTicket> replySupportTicket(
+            @PathVariable String ticketId,
+            @Valid @RequestBody ReplySupportTicketRequest request) {
+        return ApiResponse.ok(orderingService.replySupportTicket(ticketId, request));
+    }
+
+    /** 后台关闭客服工单。 */
+    @PatchMapping("/support-tickets/{ticketId}/close")
+    public ApiResponse<SupportTicket> closeSupportTicket(@PathVariable String ticketId) {
+        return ApiResponse.ok(orderingService.closeSupportTicket(ticketId));
+    }
+
+    /** 清理历史调试工单,只删除未回复的明显测试记录。 */
+    @DeleteMapping("/support-tickets/test-records")
+    public ApiResponse<Map<String, Integer>> deleteTestSupportTickets() {
+        int deleted = orderingService.deleteTestSupportTickets();
+        return ApiResponse.ok(Map.of("deleted", deleted));
+    }
+
+    /** 后台用户管理:查看所有用户资料(昵称 / 会员等级 / 券数)。 */
     @GetMapping("/users")
    public ApiResponse<List<UserProfile>> listUsers() {
         return ApiResponse.ok(orderingService.listUsersForAdmin());

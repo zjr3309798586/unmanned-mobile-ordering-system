@@ -12,16 +12,21 @@ Page({
     cartTotal: "0.0",
     couponCount: 0,
     drawerOpen: false,
+    couponDrawerOpen: false,
+    couponItems: [],
     cartItems: [],
     searchOpen: false,
     searchKw: "",
-    searchHits: []
+    searchHits: [],
+    orderMode: "pickup",
+    orderModeText: "下单立即制作"
   },
 
   _allProducts: [],
   _cartItems: [],
 
   onShow() {
+    this.syncOrderMode(wx.getStorageSync("orderMode") === "delivery" ? "delivery" : "pickup", false);
     this.loadData();
   },
 
@@ -31,12 +36,12 @@ Page({
       api.get("/categories"),
       api.get("/products"),
       auth.isLoggedIn() ? api.get("/cart") : Promise.resolve(null),
-      api.get("/coupons")
+      auth.isLoggedIn() ? api.get("/user/coupons") : Promise.resolve([])
     ]).then(function (res) {
       var cats = res[0] || [];
       var products = res[1] || [];
       var cart = res[2];
-      var coupons = (res[3] || []).filter(function (c) { return c.available; });
+      var coupons = (res[3] || []).filter(function (c) { return c.status === "AVAILABLE" || !c.status; });
       var activeCat = cats.length > 0 ? cats[0].id : "";
       self._allProducts = products;
       self._cartItems = cart ? (cart.items || []) : [];
@@ -48,6 +53,7 @@ Page({
         cartQty: cart ? (cart.totalQuantity || 0) : 0,
         cartTotal: cart ? Number(cart.totalAmount || 0).toFixed(1) : "0.0",
         couponCount: coupons.length,
+        couponItems: self.buildCouponItems(coupons),
         cartItems: self.buildCartItems()
       });
     }).catch(function () {});
@@ -95,6 +101,79 @@ Page({
         price: it.price
       };
     });
+  },
+
+  buildCouponItems(coupons) {
+    return (coupons || []).map(function (c) {
+      var min = Number(c.minAmount != null ? c.minAmount : (c.conditionAmount || 0));
+      return {
+        id: c.couponId || c.id,
+        title: c.title || "优惠券",
+        minAmount: min,
+        discountAmount: Number(c.discountAmount || 0).toFixed(0),
+        conditionText: c.conditionText || ("满 ¥" + min + " 可用")
+      };
+    });
+  },
+
+  openCouponDrawer() {
+    var self = this;
+    this.setData({ couponDrawerOpen: true });
+
+    var show = function () {
+      api.get("/user/coupons").then(function (list) {
+        var coupons = (list || []).filter(function (c) { return c.status === "AVAILABLE" || !c.status; });
+        self.setData({
+          couponCount: coupons.length,
+          couponItems: self.buildCouponItems(coupons),
+          couponDrawerOpen: true
+        });
+      }).catch(function (e) {
+        self.setData({ couponDrawerOpen: true, couponItems: [] });
+        wx.showToast({ title: e.message || "优惠券加载失败", icon: "none" });
+      });
+    };
+    if (auth.isLoggedIn && auth.isLoggedIn()) {
+      show();
+      return;
+    }
+    if (auth.devLogin) {
+      auth.devLogin().then(show).catch(function () {
+        self.setData({ couponDrawerOpen: true, couponItems: [] });
+        wx.showToast({ title: "登录失败", icon: "none" });
+      });
+    }
+  },
+
+  closeCouponDrawer() {
+    this.setData({ couponDrawerOpen: false });
+  },
+
+  syncOrderMode(mode, showToast) {
+    var nextMode = mode === "delivery" ? "delivery" : "pickup";
+    wx.setStorageSync("orderMode", nextMode);
+    this.setData({
+      orderMode: nextMode,
+      orderModeText: nextMode === "delivery" ? "预计 20-30 分钟送达" : "下单立即制作"
+    });
+    if (showToast) {
+      wx.showToast({
+        title: nextMode === "delivery" ? "已切换为平台外送" : "已切换为到店自取",
+        icon: "none"
+      });
+    }
+  },
+
+  switchOrderMode(event) {
+    this.syncOrderMode(event.currentTarget.dataset.mode, true);
+  },
+
+  goSavingCard() {
+    wx.redirectTo({ url: "/pages/saving-card/index" });
+  },
+
+  noop() {
+    // 阻止商品卡片点击穿透到详情页。
   },
 
   openDrawer() {
@@ -154,30 +233,8 @@ Page({
   },
 
   addCart(event) {
-    // 点 + 直接加入购物车并停留在点餐页;点商品卡片才进详情选择规格。
-    var self = this;
     var id = event.currentTarget.dataset.id;
-    var doAdd = function () {
-      api.post("/cart/items", {
-        productId: id,
-        spec: "标准杯 / 常温 / 正常糖",
-        quantity: 1
-      }).then(function (cart) {
-        self.syncCart(cart);
-        wx.showToast({ title: "已加入购物车", icon: "success" });
-      }).catch(function (error) {
-        wx.showToast({ title: error.message || "加购失败", icon: "none" });
-      });
-    };
-    if (auth.isLoggedIn && auth.isLoggedIn()) {
-      doAdd();
-    } else if (auth.devLogin) {
-      auth.devLogin().then(doAdd).catch(function () {
-        wx.showToast({ title: "登录失败", icon: "none" });
-      });
-    } else {
-      wx.showToast({ title: "请先登录", icon: "none" });
-    }
+    wx.navigateTo({ url: "/pages/detail/index?id=" + id });
   },
 
   openSearch() {

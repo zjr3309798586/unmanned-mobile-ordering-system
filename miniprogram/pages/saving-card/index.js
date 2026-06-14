@@ -16,12 +16,10 @@ Page({
   },
 
   onShow() {
-    const cachedOpened = !!wx.getStorageSync("savingCardOpened");
     this.setData({
       loggedIn: auth.isLoggedIn(),
-      opened: cachedOpened,
       opening: false,
-      openButtonText: cachedOpened ? "已开通" : "立即开通"
+      openButtonText: this.data.opened ? "去点餐" : "立即开通"
     });
     this.loadData();
   },
@@ -40,7 +38,7 @@ Page({
       });
 
       const backendOpened = !!(profile && /省钱卡/.test(profile.memberLevel || ""));
-      const opened = this.data.opened || backendOpened;
+      const opened = profile ? backendOpened : this.data.opened;
       const decoratedPlans = (plans || []).map((plan) => ({
         ...plan,
         priceText: this.compactMoney(plan.price, "¥18")
@@ -50,7 +48,7 @@ Page({
       this.setData({
         opened,
         opening: false,
-        openButtonText: opened ? "已开通" : "立即开通",
+        openButtonText: opened ? "去点餐" : "立即开通",
         plans: decoratedPlans,
         heroPlanName: decoratedPlans.length ? decoratedPlans[0].name : "月卡权益 · 校园专享",
         heroPriceText: decoratedPlans.length ? decoratedPlans[0].priceText : "¥18",
@@ -88,7 +86,11 @@ Page({
   },
 
   openCard() {
-    if (this.data.opening || this.data.opened) return;
+    if (this.data.opening) return;
+    if (this.data.opened) {
+      wx.redirectTo({ url: "/pages/menu/index" });
+      return;
+    }
     if (!auth.isLoggedIn()) {
       wx.showToast({ title: "请先登录", icon: "none" });
       wx.redirectTo({ url: "/pages/mine/index" });
@@ -97,8 +99,7 @@ Page({
 
     this.setData({ opening: true, openButtonText: "开通中..." });
     api.post("/saving-card/open", {}).then(() => {
-      wx.setStorageSync("savingCardOpened", true);
-      this.setData({ opened: true, opening: false, openButtonText: "已开通" });
+      this.setData({ opened: true, opening: false, openButtonText: "去点餐" });
       wx.showToast({ title: "省钱卡已开通", icon: "success" });
       this.loadData();
     }).catch((error) => {
@@ -130,6 +131,16 @@ Page({
       this.loadData();
     }).catch((error) => {
       wx.showToast({ title: error.message, icon: "none" });
+    });
+  },
+
+  scrollRules() {
+    wx.pageScrollTo({
+      selector: "#saving-rules",
+      duration: 220,
+      fail() {
+        wx.pageScrollTo({ scrollTop: 9999, duration: 220 });
+      }
     });
   },
 

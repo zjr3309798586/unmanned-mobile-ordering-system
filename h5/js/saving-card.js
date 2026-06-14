@@ -11,6 +11,7 @@
  */
 document.addEventListener("DOMContentLoaded", function () {
   var app = window.OrderingApp;
+  var shell = document.querySelector(".saving-shell");
   var openButtons = Array.prototype.slice.call(document.querySelectorAll("[data-open-saving-card]"));
   var savingCardOpened = false;
   var couponsCache = [];
@@ -49,6 +50,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function setOpenedVisualState() {
+    if (shell) shell.classList.add("is-opened");
+    setOpenButtonsDisabled(false);
+    setOpenButtonText("去点餐");
+    setText("[data-member-status]", "已开通");
+    setText("[data-action-caption]", "权益生效中");
+    setText("[data-floating-saving]", "券包已解锁，结算更优惠");
+    var floatingCopy = document.querySelector(".floating-copy strong");
+    if (floatingCopy) floatingCopy.textContent = "省钱卡权益已生效";
+  }
+
   function couponCondition(coupon) {
     if (coupon.conditionText) return coupon.conditionText;
     var minAmount = Number(coupon.minAmount || 0).toFixed(0);
@@ -72,9 +84,9 @@ document.addEventListener("DOMContentLoaded", function () {
       var status = userCouponStatus[coupon.id];
       var used = status === "USED";
       var claimed = status === "AVAILABLE" || used;
-      var buttonText = used ? "已使用" : (claimed ? "已领取" : (savingCardOpened ? "领取" : "待开通"));
-      var buttonClass = claimed ? " is-claimed" : (savingCardOpened ? "" : " is-locked");
-      var disabled = claimed ? " disabled" : "";
+      var buttonText = used ? "已使用" : (claimed ? "已领取" : (savingCardOpened ? "立即领取" : "开通后可领"));
+      var buttonClass = used ? " is-used" : (claimed ? " is-claimed" : (savingCardOpened ? "" : " is-locked"));
+      var disabled = (claimed || !savingCardOpened) ? " disabled" : "";
       var warmClass = index % 2 === 1 ? " is-warm" : "";
       var discount = Number(coupon.discountAmount || 0).toFixed(0);
 
@@ -91,9 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function markSavingCardOpened() {
     savingCardOpened = true;
-    setOpenButtonsDisabled(true);
-    setOpenButtonText("已开通");
-    setText("[data-member-status]", "已开通");
+    setOpenedVisualState();
     renderCoupons();
   }
 
@@ -195,7 +205,10 @@ document.addEventListener("DOMContentLoaded", function () {
         redirectToLogin();
         return;
       }
-      if (savingCardOpened) return;
+      if (savingCardOpened) {
+        window.location.href = "/menu.html";
+        return;
+      }
 
       setOpenButtonsDisabled(true);
       setOpenButtonText("开通中...");
@@ -210,6 +223,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (app.showMessage) app.showMessage(error.message || "开通失败");
           setOpenButtonsDisabled(false);
           setOpenButtonText("立即开通");
+          setText("[data-action-caption]", "首月特惠");
         });
     });
   });
@@ -223,10 +237,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (!app || !app.isLoggedIn || !app.isLoggedIn()) {
         redirectToLogin();
-        return;
-      }
-      if (!savingCardOpened) {
-        if (app.showMessage) app.showMessage("请先开通省钱卡后领取优惠券");
         return;
       }
       if (btn.disabled) return;

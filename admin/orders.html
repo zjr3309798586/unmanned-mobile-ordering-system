@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>订单管理 - 云豹小点后台管理</title>
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin.css?v=19">
 </head>
 <body data-page="orders">
   <div class="admin-shell">
@@ -15,6 +15,7 @@
         <a class="nav-item" data-page="products" href="products.html">商品管理</a>
         <a class="nav-item" data-page="categories" href="categories.html">分类管理</a>
         <a class="nav-item" data-page="orders" href="orders.html">订单管理</a>
+        <a class="nav-item" data-page="support" href="support.html">客服管理</a>
         <a class="nav-item" data-page="users" href="users.html">用户管理</a>
         <a class="nav-item" data-page="coupons" href="coupons.html">优惠券管理</a>
         <a class="nav-item" data-page="activities" href="activities.html">活动管理</a>
@@ -28,7 +29,7 @@
       </header>
 
       <section class="admin-kpi-grid order-kpis" aria-label="订单运营概览">
-        <div class="admin-kpi-card" data-order-kpi="waiting"><span>待取餐</span><strong class="order-kpi-value">0</strong><em>需要店员处理</em></div>
+        <div class="admin-kpi-card" data-order-kpi="waiting"><span>待处理</span><strong class="order-kpi-value">0</strong><em>制作中和待取餐</em></div>
         <div class="admin-kpi-card" data-order-kpi="completed"><span>已完成</span><strong class="order-kpi-value">0</strong><em>今日经营沉淀</em></div>
         <div class="admin-kpi-card" data-order-kpi="canceled"><span>已取消</span><strong class="order-kpi-value">0</strong><em>异常订单跟进</em></div>
         <div class="admin-kpi-card is-strong" data-order-kpi="amount"><span>有效实付</span><strong class="order-kpi-value">¥ 0.00</strong><em>不含已取消订单</em></div>
@@ -38,7 +39,8 @@
         <div class="toolbar">
           <div class="tabs">
             <button class="tab active" data-status-filter="all" data-target="#ordersTable">全部</button>
-            <button class="tab" data-status-filter="waiting" data-target="#ordersTable">待取餐</button>
+            <button class="tab" data-status-filter="making" data-target="#ordersTable">制作中</button>
+            <button class="tab" data-status-filter="waiting" data-target="#ordersTable">待取餐/配送</button>
             <button class="tab" data-status-filter="done" data-target="#ordersTable">已完成</button>
             <button class="tab" data-status-filter="cancel" data-target="#ordersTable">已取消</button>
           </div>
@@ -55,6 +57,6 @@
       </section>
     </main>
   </div>
-  <script src="js/admin.js"></script>
+  <script src="js/admin.js?v=19"></script>
 </body>
 </html>

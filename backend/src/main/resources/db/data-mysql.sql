@@ -47,7 +47,7 @@ ON DUPLICATE KEY UPDATE
   available = VALUES(available);
 
 INSERT INTO saving_card_plans (id, name, price, description, benefits) VALUES
-('S-001', '月度省钱卡', 9.90, '开通 30 天内可领取会员专属券，并享受指定商品省钱价。',
+('S-001', '月卡权益 · 校园专享', 18.00, '开通 30 天内可领取会员专属券，并享受指定商品省钱价。',
  '4 张专属优惠券,指定商品省钱价,会员生日权益')
 ON DUPLICATE KEY UPDATE
   name = VALUES(name),
@@ -75,15 +75,23 @@ ON DUPLICATE KEY UPDATE
   avatar_url = VALUES(avatar_url),
   updated_at = VALUES(updated_at);
 
-INSERT INTO user_profiles (user_id, nickname, member_level, points, balance, coupon_count, saving_amount) VALUES
-('USER-SEED-001', '历史用户', '银卡会员', 1280, 36.80, 3, 18.50)
+INSERT INTO user_profiles (user_id, nickname, member_level, balance, coupon_count, saving_amount) VALUES
+('USER-SEED-001', '历史用户', '银卡会员', 36.80, 3, 18.50)
 ON DUPLICATE KEY UPDATE
   nickname = VALUES(nickname),
   member_level = VALUES(member_level),
-  points = VALUES(points),
   balance = VALUES(balance),
   coupon_count = VALUES(coupon_count),
   saving_amount = VALUES(saving_amount);
+
+INSERT INTO user_addresses (id, user_id, receiver_name, phone, address_detail, default_address, created_at, updated_at) VALUES
+('ADDR-SEED-001', 'USER-SEED-001', '校园用户', '13800000000', '3号宿舍楼 502', 1, '2026-05-04 10:00:00', '2026-05-04 10:00:00')
+ON DUPLICATE KEY UPDATE
+  receiver_name = VALUES(receiver_name),
+  phone = VALUES(phone),
+  address_detail = VALUES(address_detail),
+  default_address = VALUES(default_address),
+  updated_at = VALUES(updated_at);
 
 DELETE FROM user_profiles
 WHERE user_id = 'USER-001';

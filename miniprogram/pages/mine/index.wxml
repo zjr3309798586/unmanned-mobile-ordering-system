@@ -8,7 +8,7 @@
 
     <image class="hero-mascot-cup" src="/images/home/home-mascot-cup.png" mode="widthFix"/>
 
-    <view class="hero-profile">
+    <view class="hero-profile" bindtap="handleProfileTap">
       <image class="hero-avatar" src="/images/mascot/mascot-yunbao-144.png" mode="aspectFill"/>
       <view class="hero-text">
         <view class="hero-title">{{loggedIn ? profile.nickname : '登录 / 注册'}}</view>
@@ -23,7 +23,7 @@
       <view class="member-icon"><image src="/images/icons/diamond.svg" mode="aspectFit"/></view>
       <view class="member-text">
         <view class="member-title-line">云豹会员 <text class="member-arrow">›</text></view>
-        <view class="member-sub">享专属优惠 · 积分加倍 · 生日礼遇</view>
+        <view class="member-sub">享专属优惠 · 生日礼遇 · 下单更省</view>
       </view>
       <navigator class="member-btn" url="/pages/saving-card/index" open-type="redirect">查看会员权益</navigator>
     </view>
@@ -40,11 +40,11 @@
           <view class="asset-label">优惠券 ›</view>
         </view>
         <view class="asset-item">
-          <view class="asset-icon"><image src="/images/icons/points.svg" mode="aspectFit"/></view>
+          <view class="asset-icon"><image src="/images/icons/wallet.svg" mode="aspectFit"/></view>
           <view class="asset-num-row">
-            <text class="asset-num">{{profile.points}}</text>
+            <text class="asset-num balance">{{profile.savingAmountText}}</text>
           </view>
-          <view class="asset-label">积分 ›</view>
+          <view class="asset-label">已省 ›</view>
         </view>
         <view class="asset-item">
           <view class="asset-icon"><image src="/images/icons/wallet.svg" mode="aspectFit"/></view>
@@ -84,14 +84,14 @@
     <view class="features-card">
       <view class="block-title">我的功能</view>
       <view class="features-grid">
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-pin.svg" mode="aspectFit"/></view><view class="feature-label">收货地址</view></view>
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-headset.svg" mode="aspectFit"/></view><view class="feature-label">联系客服</view></view>
+        <navigator class="feature-item" url="/pages/address/index"><view class="feature-icon-svg"><image src="/images/icons/fn-pin.svg" mode="aspectFit"/></view><view class="feature-label">收货地址</view></navigator>
+        <navigator class="feature-item" url="/pages/support/index"><view class="feature-icon-svg"><image src="/images/icons/fn-headset.svg" mode="aspectFit"/></view><view class="feature-label">联系客服</view></navigator>
         <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-receipt.svg" mode="aspectFit"/></view><view class="feature-label">发票助手</view></view>
         <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-hex.svg" mode="aspectFit"/></view><view class="feature-label">设置</view></view>
         <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-help.svg" mode="aspectFit"/></view><view class="feature-label">帮助中心</view></view>
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-star.svg" mode="aspectFit"/></view><view class="feature-label">口味收藏</view></view>
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-coin.svg" mode="aspectFit"/></view><view class="feature-label">积分记录</view></view>
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-gift.svg" mode="aspectFit"/></view><view class="feature-label">兑换记录</view></view>
+        <navigator class="feature-item" url="/pages/favorites/index"><view class="feature-icon-svg"><image src="/images/icons/fn-star.svg" mode="aspectFit"/></view><view class="feature-label">口味收藏</view></navigator>
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-coin.svg" mode="aspectFit"/></view><view class="feature-label">省钱明细</view></view>
+        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-gift.svg" mode="aspectFit"/></view><view class="feature-label">券包记录</view></view>
       </view>
     </view>
 

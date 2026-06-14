@@ -2,15 +2,19 @@
 
   <view class="home-topbar">
     <view class="ht-capsule">
-      <view class="ht-cap-btn"><text class="ht-icon-dots">···</text></view>
+      <view class="ht-cap-btn" aria-label="更多">
+        <view class="ht-dots"><view></view><view></view><view></view></view>
+      </view>
       <view class="ht-cap-sep"></view>
-      <view class="ht-cap-btn"><text class="ht-icon-loc">⊙</text></view>
+      <view class="ht-cap-btn" aria-label="位置">
+        <view class="ht-loc"><view class="ht-loc-core"></view></view>
+      </view>
     </view>
   </view>
 
   <swiper class="carousel" autoplay="true" interval="5000" duration="500" circular="true" current="{{slideIdx}}" bindchange="onSlide" indicator-dots="false">
 
-    <swiper-item class="c-slide" wx:for="{{slides}}" wx:key="id">
+    <swiper-item class="c-slide" wx:for="{{slides}}" wx:key="id" data-url="{{item.linkUrl}}" bindtap="openSlide">
       <image class="c-banner-img" src="{{item.image}}" mode="aspectFill"/>
       <view class="c-banner-caption" wx:if="{{item.title || item.subtitle}}">
         <text class="c-banner-title">{{item.title}}</text>
@@ -30,7 +34,10 @@
 
     <view class="member-progress-card">
       <view class="mpc-avatar">
-        <text class="mpc-avatar-icon">👤</text>
+        <view class="mpc-avatar-icon">
+          <view class="mpc-avatar-head"></view>
+          <view class="mpc-avatar-body"></view>
+        </view>
       </view>
       <view class="mpc-body">
         <text class="mpc-name">爱嫩仙草满福的...</text>
@@ -80,16 +87,21 @@
         <text class="qg-h">领30元券包</text>
         <text class="qg-sub">加入社群</text>
       </navigator>
-      <navigator class="qg-item" url="/pages/mine/index" open-type="redirect">
-        <view class="qg-icon qg-icon-points">
-          <text class="qg-points-icon">🎁</text>
+      <navigator class="qg-item" url="/pages/saving-card/index" open-type="redirect">
+        <view class="qg-icon qg-icon-coupon">
+          <view class="qg-coupon-shape">
+            <view class="qg-coupon-box"></view>
+            <view class="qg-coupon-dot"></view>
+          </view>
         </view>
-        <text class="qg-h">积分兑换</text>
+        <text class="qg-h">领券中心</text>
         <text class="qg-sub">专享福利</text>
       </navigator>
       <navigator class="qg-item" url="/pages/saving-card/index" open-type="redirect">
         <view class="qg-icon qg-icon-code">
-          <text class="qg-code-icon">🎟</text>
+          <view class="qg-code-shape">
+            <view class="qg-code-line"></view>
+          </view>
         </view>
         <text class="qg-h">券码兑换</text>
         <text class="qg-sub">立享优惠</text>
@@ -107,6 +119,7 @@
       <scroll-view class="home-product-row" scroll-x="true" show-scrollbar="false">
         <navigator class="home-product-card" wx:for="{{recommendProducts}}" wx:key="id" url="/pages/detail/index?id={{item.id}}" open-type="navigate">
           <image src="{{item.imageUrl}}" mode="aspectFill"/>
+          <text class="home-product-tag">{{item.tag}}</text>
           <text class="home-product-name">{{item.name}}</text>
           <text class="home-product-desc">{{item.description}}</text>
           <text class="home-product-price">¥{{item.priceText}}</text>
@@ -115,7 +128,9 @@
     </view>
 
     <view class="home-notice-card">
-      <view class="home-notice-icon">!</view>
+      <view class="home-notice-icon">
+        <image src="/images/icons/notice-speaker.svg" mode="aspectFit"></image>
+      </view>
       <view class="home-notice-main">
         <text class="home-notice-title">门店公告</text>
         <text class="home-notice-text">{{store.notice}}</text>

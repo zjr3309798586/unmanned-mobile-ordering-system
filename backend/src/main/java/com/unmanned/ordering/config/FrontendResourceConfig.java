@@ -41,6 +41,9 @@ public class FrontendResourceConfig implements WebMvcConfigurer {
                         "/cart.html",
                         "/order.html",
                         "/mine.html",
+                        "/address.html",
+                        "/favorites.html",
+                        "/support.html",
                         "/saving-card.html")
                 .addResourceLocations(h5Dir.resolve("pages").toUri().toString());
 

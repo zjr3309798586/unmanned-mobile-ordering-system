@@ -70,10 +70,27 @@ CREATE TABLE user_profiles (
   user_id VARCHAR(32) PRIMARY KEY,
   nickname VARCHAR(80) NOT NULL,
   member_level VARCHAR(50) NOT NULL,
-  points INT NOT NULL DEFAULT 0,
   balance DECIMAL(10, 2) NOT NULL DEFAULT 0,
   coupon_count INT NOT NULL DEFAULT 0,
   saving_amount DECIMAL(10, 2) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE user_addresses (
+  id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
+  receiver_name VARCHAR(80) NOT NULL,
+  phone VARCHAR(40) NOT NULL,
+  address_detail VARCHAR(240) NOT NULL,
+  default_address BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE user_favorites (
+  user_id VARCHAR(40) NOT NULL,
+  product_id VARCHAR(32) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  PRIMARY KEY (user_id, product_id)
 );
 
 CREATE TABLE users (
@@ -105,12 +122,29 @@ CREATE TABLE orders (
   pickup_type VARCHAR(40) NOT NULL,
   store_name VARCHAR(100) NOT NULL,
   table_no VARCHAR(40),
+  delivery_address VARCHAR(200),
+  delivery_contact VARCHAR(80),
+  delivery_fee DECIMAL(10, 2) NOT NULL DEFAULT 0,
   remark VARCHAR(300),
   status VARCHAR(40) NOT NULL,
   total_amount DECIMAL(10, 2) NOT NULL,
   discount_amount DECIMAL(10, 2) NOT NULL,
   payable_amount DECIMAL(10, 2) NOT NULL,
   created_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE support_tickets (
+  id VARCHAR(40) PRIMARY KEY,
+  user_id VARCHAR(40) NOT NULL,
+  order_id VARCHAR(40),
+  type VARCHAR(40) NOT NULL,
+  content VARCHAR(1000) NOT NULL,
+  contact VARCHAR(100) NOT NULL DEFAULT '',
+  reply_content VARCHAR(1000),
+  status VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  replied_at TIMESTAMP,
+  closed_at TIMESTAMP
 );
 
 CREATE TABLE order_items (

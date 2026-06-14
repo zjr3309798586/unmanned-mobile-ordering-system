@@ -26,8 +26,8 @@ Page({
   onLoad(query) {
     var pid = (query && query.id) || "P-1001";
     var self = this;
-    var favs = wx.getStorageSync("favoriteIds") || [];
-    this.setData({ isFav: favs.indexOf(pid) >= 0 });
+    this.setData({ isFav: false });
+    this.loadFavoriteStatus(pid);
     if (api && api.get) {
       api.get("/products/" + pid).then(function (p) {
         if (!p) return;
@@ -79,19 +79,71 @@ Page({
     wx.navigateBack({ delta: 1, fail: function () { wx.redirectTo({ url: "/pages/menu/index" }); } });
   },
 
-  toggleFav() {
-    var pid = this.data.product.id;
+  syncLocalFavStatus(pid) {
+    var favs = wx.getStorageSync("favoriteIds") || [];
+    this.setData({ isFav: favs.indexOf(pid) >= 0 });
+  },
+
+  loadFavoriteStatus(pid) {
+    if (!auth || !auth.isLoggedIn || !auth.isLoggedIn()) {
+      this.syncLocalFavStatus(pid);
+      return;
+    }
+    api.get("/favorites/" + encodeURIComponent(pid) + "/status")
+      .then((data) => {
+        this.setData({ isFav: !!(data && data.favorite) });
+      })
+      .catch(() => {
+        this.syncLocalFavStatus(pid);
+      });
+  },
+
+  ensureFavoriteLogin() {
+    if (auth && auth.isLoggedIn && auth.isLoggedIn()) {
+      return Promise.resolve();
+    }
+    if (auth && auth.devLogin) {
+      return auth.devLogin();
+    }
+    return Promise.reject(new Error("请先登录"));
+  },
+
+  toggleLocalFav(pid) {
     var favs = wx.getStorageSync("favoriteIds") || [];
     var i = favs.indexOf(pid);
     if (i >= 0) {
       favs.splice(i, 1);
       wx.showToast({ title: "已取消收藏", icon: "none" });
+      this.setData({ isFav: false });
     } else {
       favs.push(pid);
       wx.showToast({ title: "已加入口味收藏", icon: "success" });
+      this.setData({ isFav: true });
     }
     wx.setStorageSync("favoriteIds", favs);
-    this.setData({ isFav: i < 0 });
+  },
+
+  toggleFav() {
+    var pid = this.data.product.id;
+    var self = this;
+    this.ensureFavoriteLogin()
+      .then(function () {
+        if (self.data.isFav) {
+          return api.del("/favorites/" + encodeURIComponent(pid))
+            .then(function () {
+              self.setData({ isFav: false });
+              wx.showToast({ title: "已取消收藏", icon: "none" });
+            });
+        }
+        return api.post("/favorites/" + encodeURIComponent(pid), {})
+          .then(function () {
+            self.setData({ isFav: true });
+            wx.showToast({ title: "已加入口味收藏", icon: "success" });
+          });
+      })
+      .catch(function () {
+        self.toggleLocalFav(pid);
+      });
   },
 
   addToCart() {

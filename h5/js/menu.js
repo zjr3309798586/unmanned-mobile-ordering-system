@@ -7,7 +7,7 @@
  *   3. 底部购物车 bar(数量/总价/去结算按钮)
  *   4. 购物车抽屉(点底部购物袋图标弹出,可加减/清空)
  *   5. 商品卡上的 "+/−" 按钮:
- *       + → 使用默认规格直接加入购物车,停留在点餐页
+ *       + → 进入商品详情选择规格后再加入购物车
  *       − → 减少数量或删除
  *   6. 左下角悬浮优惠券球 + 优惠券抽屉
  *   7. 顶部搜索 overlay(按商品名/描述模糊匹配)
@@ -22,12 +22,41 @@ document.addEventListener("DOMContentLoaded", function () {
   var cartEmptyText = document.querySelector("[data-cart-empty-text]");
   var cartTotal = document.querySelector("[data-cart-total]");
   var cartGo = document.querySelector("[data-cart-go]");
+  var orderModeTabs = document.querySelectorAll("[data-order-mode]");
+  var orderModeMeta = document.querySelector(".mh-meta-tag");
+  var orderMode = sessionStorage.getItem("orderMode") === "delivery" ? "delivery" : "pickup";
 
   // ===== 全局状态 =====
   // cartSummary:后端返回的购物车汇总,所有 + / − 后都会刷新这个对象
   var cartSummary = { items: [], totalQuantity: 0, totalAmount: 0 };
   var allProducts = [];      // 后端拉回的全部商品
   var allCategories = [];    // 后端拉回的全部分类
+
+  function syncOrderMode() {
+    if (orderModeTabs && orderModeTabs.length) {
+      Array.prototype.forEach.call(orderModeTabs, function (tab) {
+        tab.classList.toggle("is-active", tab.dataset.orderMode === orderMode);
+      });
+    }
+    if (orderModeMeta) {
+      orderModeMeta.textContent = orderMode === "delivery" ? "预计 20-30 分钟送达" : "下单立即制作";
+    }
+    sessionStorage.setItem("orderMode", orderMode);
+  }
+
+  if (orderModeTabs && orderModeTabs.length) {
+    Array.prototype.forEach.call(orderModeTabs, function (tab) {
+      tab.addEventListener("click", function () {
+        orderMode = tab.dataset.orderMode === "delivery" ? "delivery" : "pickup";
+        syncOrderMode();
+        if (app && app.showMessage) {
+          app.showMessage(orderMode === "delivery" ? "已切换为平台外送" : "已切换为到店自取");
+        }
+      });
+    });
+  }
+
+  syncOrderMode();
 
   // ===== 购物车抽屉 =====
   var cartBag = document.querySelector(".cart-bag-circle");
@@ -152,30 +181,10 @@ document.addEventListener("DOMContentLoaded", function () {
     return Promise.reject(new Error("请先登录"));
   }
 
-  /** 点餐页快捷加购:不跳结算,只刷新购物车数量和底部金额。 */
-  function addProductToCart(productId, button) {
-    if (!productId || !app || !app.post) return;
-    if (button) button.disabled = true;
-    ensureLogin()
-      .then(function () {
-        return app.post("/cart/items", {
-          productId: productId,
-          spec: app.defaultSpec || "标准杯 / 常温 / 正常糖",
-          quantity: 1
-        });
-      })
-      .then(function (data) {
-        cartSummary = data || cartSummary;
-        updateCartBar();
-        rerenderCurrentCat();
-        if (app.showMessage) app.showMessage("已加入购物车");
-      })
-      .catch(function (err) {
-        if (app && app.showMessage) app.showMessage(err.message || "加购失败");
-      })
-      .finally(function () {
-        if (button) button.disabled = false;
-      });
+  /** 点 "+" 先进入详情选择规格,避免默认规格绕过温度/甜度/加料选择。 */
+  function openProductSpec(productId) {
+    if (!productId) return;
+    window.location.href = "detail.html?id=" + encodeURIComponent(productId);
   }
 
   /** 算指定商品在购物车里的总数量(同一商品多规格合并)。 */
@@ -286,10 +295,10 @@ document.addEventListener("DOMContentLoaded", function () {
       var addBtn = e.target.closest("[data-add-product]");
       var minusBtn = e.target.closest("[data-minus-product]");
 
-      // 点 "+" 只加购并停留在点餐页;点商品图/名称才进入详情选择规格。
+      // 点 "+" 先进入详情页选规格;详情页再决定加入购物车或立即购买。
       if (addBtn) {
         e.preventDefault();
-        addProductToCart(addBtn.dataset.addProduct, addBtn);
+        openProductSpec(addBtn.dataset.addProduct);
         return;
       }
 
@@ -354,25 +363,40 @@ document.addEventListener("DOMContentLoaded", function () {
   var myCoupons = [];
 
   /** 拉当前用户已领取的优惠券,展示在悬浮球数量徽章上 + 抽屉里。 */
+  function normalizeCoupon(c) {
+    var min = Number(c.minAmount != null ? c.minAmount : (c.conditionAmount || 0));
+    return {
+      id: c.couponId || c.id,
+      title: c.title || "优惠券",
+      minAmount: min,
+      discountAmount: Number(c.discountAmount || 0),
+      conditionText: c.conditionText || ("满 ¥" + min + " 减 ¥" + (c.discountAmount || 0)),
+      status: c.status
+    };
+  }
+
   function loadMyCoupons() {
-    if (!app || !app.isLoggedIn || !app.isLoggedIn() || !app.get) return;
-    app.get("/user/coupons").then(function (list) {
+    if (!app || !app.isLoggedIn || !app.isLoggedIn() || !app.get) return Promise.resolve([]);
+    return app.get("/user/coupons").then(function (list) {
       // 只展示可用券(过滤掉已使用的)
-      myCoupons = (list || []).filter(function (c) { return c.status === "AVAILABLE" || !c.status; });
+      myCoupons = (list || [])
+        .filter(function (c) { return c.status === "AVAILABLE" || !c.status; })
+        .map(normalizeCoupon);
       if (couponCountNode) couponCountNode.textContent = String(myCoupons.length);
       renderMyCoupons();
-    }).catch(function () {});
+      return myCoupons;
+    }).catch(function () { return []; });
   }
 
   function renderMyCoupons() {
     if (!couponListNode) return;
     if (myCoupons.length === 0) {
-      couponListNode.innerHTML = '<p class="cd-empty">还没领过优惠券,去省钱卡领一张</p>';
+      couponListNode.innerHTML = '<div class="cd-empty"><span>还没领过优惠券</span><a href="/saving-card.html">去省钱卡领券</a></div>';
       return;
     }
     couponListNode.innerHTML = myCoupons.map(function (c) {
       var title = escape(c.title || "优惠券");
-      var cond = escape(c.conditionText || ("满 ¥" + (c.conditionAmount || 0) + " 减 ¥" + (c.discountAmount || 0)));
+      var cond = escape(c.conditionText || ("满 ¥" + (c.minAmount || 0) + " 减 ¥" + (c.discountAmount || 0)));
       return '<div class="my-coupon">'
         + '<div class="mc-amount"><span class="mc-yuan">¥</span><span class="mc-int">' + (c.discountAmount || 0) + '</span></div>'
         + '<div class="mc-body"><div class="mc-title">' + title + '</div><div class="mc-cond">' + cond + '</div></div>'
@@ -381,13 +405,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function openCouponDrawer() {
-    // 未登录提示一下,不强制跳转
-    if (!app || !app.isLoggedIn || !app.isLoggedIn()) {
-      if (app && app.showMessage) app.showMessage("请先登录后查看优惠券");
-      return;
-    }
+    renderMyCoupons();
     if (couponDrawer) couponDrawer.classList.add("is-open");
     if (couponMask) couponMask.classList.add("is-open");
+
+    ensureLogin()
+      .then(loadMyCoupons)
+      .then(function () {
+        renderMyCoupons();
+      })
+      .catch(function (err) {
+        renderMyCoupons();
+        if (app && app.showMessage) app.showMessage(err.message || "请先登录后查看优惠券");
+      });
   }
   function closeCouponDrawer() {
     if (couponDrawer) couponDrawer.classList.remove("is-open");

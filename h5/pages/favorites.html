@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>口味收藏 - 云豹小点</title>
+  <link rel="stylesheet" href="../css/common.css?v=2">
+  <link rel="stylesheet" href="../css/favorites.css?v=2">
+</head>
+<body data-page="favorites">
+  <div class="app-shell favorites-shell">
+    <header class="fav-top">
+      <button class="fav-back" type="button" aria-label="返回" onclick="history.back()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <h1>口味收藏</h1>
+      <a class="fav-top-link" href="menu.html">去点餐</a>
+    </header>
+
+    <main class="fav-main">
+      <section class="fav-hero">
+        <div class="fav-hero-text">
+          <span class="fav-kicker">常点口味</span>
+          <strong>喜欢的饮品和轻食，都放在这里</strong>
+          <p>收藏后可快速复购，也方便后续做个性化推荐。</p>
+        </div>
+        <img class="fav-mascot" src="../images/mascot/mascot-yunbao-144.png" alt="云豹小点">
+      </section>
+
+      <section class="fav-section">
+        <div class="fav-section-head">
+          <div>
+            <h2>我的收藏</h2>
+            <p data-favorites-count>加载中...</p>
+          </div>
+          <a href="menu.html">继续看看</a>
+        </div>
+
+        <div class="fav-loading" data-favorites-loading>正在加载收藏...</div>
+        <div class="fav-list" data-favorites-list></div>
+        <div class="fav-empty" data-favorites-empty hidden>
+          <div class="empty-icon">★</div>
+          <strong>还没有收藏的口味</strong>
+          <p>进入商品详情页，点击“口味收藏”，这里就会出现你的常点商品。</p>
+          <a class="empty-btn" href="menu.html">去点餐页逛逛</a>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="底部导航">
+      <a class="nav-item" data-nav-key="home" href="index.html">
+        <span class="nav-icon"><img class="nav-logo-icon" src="../images/nav/nav-home.svg" alt=""></span>
+        <span>首页</span>
+      </a>
+      <a class="nav-item" data-nav-key="menu" href="menu.html">
+        <span class="nav-icon"><img class="nav-logo-icon" src="../images/nav/nav-menu.svg" alt=""></span>
+        <span>点餐</span>
+      </a>
+      <a class="nav-item" data-nav-key="saving-card" href="saving-card.html">
+        <span class="nav-icon"><img class="nav-logo-icon" src="../images/nav/nav-saving.svg" alt=""></span>
+        <span>省钱卡</span>
+      </a>
+      <a class="nav-item" data-nav-key="order" href="order.html">
+        <span class="nav-icon"><img class="nav-logo-icon" src="../images/nav/nav-order.svg" alt=""></span>
+        <span>订单</span>
+      </a>
+      <a class="nav-item" data-nav-key="mine" href="mine.html">
+        <span class="nav-icon"><img class="nav-logo-icon" src="../images/nav/nav-mine-active.svg" alt=""></span>
+        <span>我的</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="../js/common.js?v=2"></script>
+  <script src="../js/favorites.js?v=1"></script>
+</body>
+</html>

@@ -5,18 +5,25 @@ import com.unmanned.ordering.mapper.CartMapper;
 import com.unmanned.ordering.mapper.OrderMapper;
 import com.unmanned.ordering.mapper.ProductMapper;
 import com.unmanned.ordering.mapper.StoreMapper;
+import com.unmanned.ordering.mapper.SupportTicketMapper;
+import com.unmanned.ordering.mapper.UserFavoriteMapper;
 import com.unmanned.ordering.mapper.UserMapper;
 import com.unmanned.ordering.model.AdminDashboard;
+import com.unmanned.ordering.model.AdminInsight;
 import com.unmanned.ordering.model.Banner;
 import com.unmanned.ordering.model.CartItem;
 import com.unmanned.ordering.model.CartSummary;
 import com.unmanned.ordering.model.Category;
+import com.unmanned.ordering.model.CouponSuggestion;
 import com.unmanned.ordering.model.Coupon;
 import com.unmanned.ordering.model.Order;
 import com.unmanned.ordering.model.OrderItem;
 import com.unmanned.ordering.model.Product;
+import com.unmanned.ordering.model.ProductRecommendation;
 import com.unmanned.ordering.model.SavingCardPlan;
 import com.unmanned.ordering.model.Store;
+import com.unmanned.ordering.model.SupportAutoReply;
+import com.unmanned.ordering.model.SupportTicket;
 import com.unmanned.ordering.model.UserCoupon;
 import com.unmanned.ordering.model.UserProfile;
 import com.unmanned.ordering.request.AddCartItemRequest;
@@ -24,7 +31,9 @@ import com.unmanned.ordering.request.BannerRequest;
 import com.unmanned.ordering.request.CategoryRequest;
 import com.unmanned.ordering.request.CouponRequest;
 import com.unmanned.ordering.request.CreateOrderRequest;
+import com.unmanned.ordering.request.CreateSupportTicketRequest;
 import com.unmanned.ordering.request.ProductRequest;
+import com.unmanned.ordering.request.ReplySupportTicketRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -32,8 +41,14 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,8 +56,8 @@ import java.util.stream.Collectors;
  * 核心业务服务类。
  *
  * 负责把"前端发过来的请求"转换为"对数据库的若干次读写",
- * 涵盖:门店信息 / Banner / 商品分类 / 商品 / 优惠券 / 省钱卡 /
- *      购物车 / 订单 / 用户资料 / 后台管理 共 10 类业务。
+ * 涵盖:门店信息 / Banner / 商品分类 / 商品 / 口味收藏 / 优惠券 / 省钱卡 /
+ *      购物车 / 订单 / 用户资料 / 后台管理 共 11 类业务。
  *
  * 设计原则:
  *   1. Controller 只接收请求并返回响应,业务规则全部下沉到这里。
@@ -53,25 +68,34 @@ import java.util.stream.Collectors;
  * 一笔下单的完整业务流程:
  *   listProducts → addCartItem → 用户在购物车页选择优惠券 →
  *   createOrder(后端从购物车读商品,计算优惠并写入订单表) →
- *   店员在后台 completeOrder;若用户中途反悔 → cancelOrder(回滚销量、优惠券、积分)。
+ *   店员在后台 markOrderReady 标记出餐 → completeOrder 完成取餐;
+ *   若用户中途反悔 → cancelOrder(回滚销量、优惠券和节省统计)。
  */
 @Service
 public class OrderingService {
-    // 五个 Mapper:分别访问门店、商品、购物车、订单、用户 5 张相关表
+    private static final BigDecimal DELIVERY_FEE = new BigDecimal("3.00");
+    private static final BigDecimal DELIVERY_FREE_THRESHOLD = new BigDecimal("35.00");
+
+    // Mapper:分别访问门店、商品、购物车、订单、用户、收藏相关表
     private final StoreMapper storeMapper;      // 门店 / Banner / 分类 / 优惠券 / 省钱卡
     private final ProductMapper productMapper;  // 商品
     private final CartMapper cartMapper;        // 购物车
     private final OrderMapper orderMapper;      // 订单 + 订单明细
     private final UserMapper userMapper;        // 用户资料 + 用户优惠券
+    private final UserFavoriteMapper favoriteMapper; // 用户口味收藏
+    private final SupportTicketMapper supportTicketMapper; // 客服工单
 
-    /** 构造函数注入:Spring 启动时自动把 5 个 Mapper 实例传进来。 */
+    /** 构造函数注入:Spring 启动时自动把 Mapper 实例传进来。 */
     public OrderingService(StoreMapper storeMapper, ProductMapper productMapper,
-                           CartMapper cartMapper, OrderMapper orderMapper, UserMapper userMapper) {
+                           CartMapper cartMapper, OrderMapper orderMapper, UserMapper userMapper,
+                           UserFavoriteMapper favoriteMapper, SupportTicketMapper supportTicketMapper) {
         this.storeMapper = storeMapper;
         this.productMapper = productMapper;
         this.cartMapper = cartMapper;
         this.orderMapper = orderMapper;
         this.userMapper = userMapper;
+        this.favoriteMapper = favoriteMapper;
+        this.supportTicketMapper = supportTicketMapper;
     }
 
     // ============================================================
@@ -89,6 +113,8 @@ public class OrderingService {
         if (store == null) {
             throw new BusinessException(404, "门店不存在");
         }
+        store.setQueueOrderCount(orderMapper.countMakingOrders());
+        store.setQueueCupCount(orderMapper.sumMakingCups());
         return store;
     }
 
@@ -173,7 +199,41 @@ public class OrderingService {
     }
 
     // ============================================================
-    // 三、优惠券与省钱卡
+    // 三、口味收藏
+    // ============================================================
+
+    /** 返回当前用户收藏的商品,按收藏时间倒序。 */
+    public List<Product> listFavorites(String userId) {
+        return favoriteMapper.listProducts(userId);
+    }
+
+    /** 商品详情页加载时,用于判断收藏按钮的高亮状态。 */
+    public boolean isFavorite(String userId, String productId) {
+        return favoriteMapper.countFavorite(userId, productId) > 0;
+    }
+
+    /**
+     * 加入口味收藏。
+     * 先校验商品仍然上架,再写 user_favorites;重复收藏直接返回最新列表。
+     */
+    @Transactional
+    public List<Product> addFavorite(String userId, String productId) {
+        getProduct(productId);
+        if (favoriteMapper.countFavorite(userId, productId) == 0) {
+            favoriteMapper.insertFavorite(userId, productId, LocalDateTime.now());
+        }
+        return favoriteMapper.listProducts(userId);
+    }
+
+    /** 取消口味收藏,即使原本没有收藏也视为成功。 */
+    @Transactional
+    public List<Product> deleteFavorite(String userId, String productId) {
+        favoriteMapper.deleteFavorite(userId, productId);
+        return favoriteMapper.listProducts(userId);
+    }
+
+    // ============================================================
+    // 四、优惠券与省钱卡
     // ============================================================
 
     /** 前台:列出所有可领取的优惠券(用于"省钱卡"页和首页券中心)。 */
@@ -410,7 +470,7 @@ public class OrderingService {
 
     /**
      * 前台订单列表。
-     * status 可传 "WAITING_PICKUP" / "COMPLETED" / "CANCELED" 过滤;
+     * status 可传 "MAKING" / "WAITING_PICKUP" / "COMPLETED" / "CANCELED" 过滤;
      * 不传则返回全部。订单明细在 attachOrderItems 里单独查并附加上去。
      */
     public List<Order> listOrders(String userId, String status) {
@@ -449,12 +509,27 @@ public class OrderingService {
      *   4. 根据用户选的优惠券计算优惠金额(满门槛才有效)。
      *   5. 实付金额 = 总价 - 优惠,且不能小于 0。
      *   6. 写订单主表 + 订单明细表 + 增加商品销量 + 标记优惠券已用。
-     *   7. 更新用户统计(积分、累计节省)+ 清空购物车。
+     *   7. 更新用户统计(累计节省)+ 清空购物车。
      *
      * 整个方法在事务里,任一步失败全部回滚,不会出现"扣了券但订单没生成"。
      */
     @Transactional
     public Order createOrder(String userId, CreateOrderRequest request) {
+        String pickupType = normalizePickupType(request.getPickupType());
+        String deliveryAddress = cleanText(request.getDeliveryAddress());
+        String deliveryContact = cleanText(request.getDeliveryContact());
+        if ("DELIVERY".equals(pickupType)) {
+            if (!StringUtils.hasText(deliveryAddress)) {
+                throw new BusinessException(400, "外送订单请填写配送地址");
+            }
+            if (!StringUtils.hasText(deliveryContact)) {
+                throw new BusinessException(400, "外送订单请填写联系电话");
+            }
+        } else {
+            deliveryAddress = null;
+            deliveryContact = null;
+        }
+
         // 第 1 步:从购物车读商品。前端传过来的请求只包含 pickupType、couponId、tableNo、remark 等元数据,
         // 商品列表绝不接受前端传入 —— 防止前端篡改价格。
         List<CartItem> cartItems = cartMapper.listCartItems(userId);
@@ -476,25 +551,29 @@ public class OrderingService {
         // 第 4 步:优惠金额(如果选了券)。calculateDiscount 内部会校验"是否已领"和"是否满门槛"。
         BigDecimal discountAmount = calculateDiscount(userId, request.getCouponId(), totalAmount);
 
-        // 第 5 步:实付金额。max(0) 保证哪怕券面额比总价大,实付也不会变成负数。
-        BigDecimal payableAmount = totalAmount.subtract(discountAmount).max(BigDecimal.ZERO);
+        // 第 5 步:实付金额。外送单在商品优惠后再叠加配送费。
+        BigDecimal deliveryFee = calculateDeliveryFee(pickupType, totalAmount);
+        BigDecimal payableAmount = totalAmount.subtract(discountAmount).max(BigDecimal.ZERO).add(deliveryFee);
 
         // 组装订单对象。订单号格式: UMO + 年月日时分秒 + 4 位 UUID。
         Order order = new Order(
                 newId("ORDER"),
                 userId,
                 buildOrderNo(),
-                request.getPickupType(),
+                pickupType,
                 getStore().getName(),
                 request.getTableNo(),
                 request.getRemark(),
-                "WAITING_PICKUP",   // 初始状态:等待取餐
+                "MAKING",           // 初始状态:制作中,店员出餐后再进入待取餐
                 totalAmount,
                 discountAmount,
                 payableAmount,
                 LocalDateTime.now(),
                 orderItems
         );
+        order.setDeliveryAddress(deliveryAddress);
+        order.setDeliveryContact(deliveryContact);
+        order.setDeliveryFee(deliveryFee);
 
         // 第 6 步:落库 —— 订单主表 + 订单明细 + 商品销量 + 优惠券标记。
         orderMapper.insertOrder(order);
@@ -511,7 +590,7 @@ public class OrderingService {
         }
 
         // 第 7 步:用户统计 + 清空购物车。
-        userMapper.addOrderStats(userId, payableAmount.intValue(), discountAmount);
+        userMapper.addOrderStats(userId, discountAmount);
         cartMapper.clear(userId);
         return order;
     }
@@ -519,7 +598,7 @@ public class OrderingService {
     /**
      * 取消订单(前台,用户自己取消)。
      * 已完成的订单不能取消(必须找店员退款);已取消的订单调用幂等(直接返回)。
-     * 取消时必须回滚所有"提交时的副作用":销量、优惠券、用户积分。
+     * 取消时必须回滚所有"提交时的副作用":销量、优惠券、用户节省统计。
      */
     @Transactional
     public Order cancelOrder(String userId, String orderId) {
@@ -536,14 +615,38 @@ public class OrderingService {
     }
 
     /**
+     * 店员标记出餐。
+     * 状态流转:MAKING(制作中) → WAITING_PICKUP(待取餐) → COMPLETED(已完成)。
+     */
+    @Transactional
+    public Order markOrderReady(String orderId) {
+        Order order = getOrderForAdmin(orderId);
+        if ("CANCELED".equals(order.getStatus())) {
+            throw new BusinessException(400, "已取消订单不能出餐");
+        }
+        if ("COMPLETED".equals(order.getStatus())) {
+            throw new BusinessException(400, "已完成订单不能出餐");
+        }
+        if ("WAITING_PICKUP".equals(order.getStatus()) || "DELIVERING".equals(order.getStatus())) {
+            return order;
+        }
+        String nextStatus = "DELIVERY".equals(order.getPickupType()) ? "DELIVERING" : "WAITING_PICKUP";
+        orderMapper.updateStatus(orderId, nextStatus);
+        return getOrderForAdmin(orderId);
+    }
+
+    /**
      * 完成订单(后台,店员手动点击"完成取餐")。
-     * 已取消的订单不能再被标记完成(状态机限制)。
+     * 已取消的订单不能再被标记完成,制作中的订单需要先标记出餐。
      */
     @Transactional
     public Order completeOrder(String orderId) {
         Order order = getOrderForAdmin(orderId);
         if ("CANCELED".equals(order.getStatus())) {
             throw new BusinessException(400, "已取消订单不能完成");
+        }
+        if ("MAKING".equals(order.getStatus())) {
+            throw new BusinessException(400, "订单还在制作中,请先标记出餐");
         }
         orderMapper.updateStatus(orderId, "COMPLETED");
         return getOrderForAdmin(orderId);
@@ -583,6 +686,75 @@ public class OrderingService {
     }
 
     // ============================================================
+    // 九、客服工单
+    // ============================================================
+
+    /** 前台用户查看自己的客服留言与后台回复。 */
+    public List<SupportTicket> listSupportTickets(String userId) {
+        return supportTicketMapper.listByUser(userId);
+    }
+
+    /**
+     * 用户提交客服留言。
+     * 如果关联订单,必须先确认该订单属于当前用户,避免越权绑定别人的订单。
+     */
+    @Transactional
+    public SupportTicket createSupportTicket(String userId, CreateSupportTicketRequest request) {
+        String orderId = StringUtils.hasText(request.getOrderId()) ? request.getOrderId().trim() : null;
+        if (orderId != null) {
+            getOrder(userId, orderId);
+        }
+        SupportTicket ticket = new SupportTicket(
+                newId("TICKET"),
+                userId,
+                orderId,
+                defaultText(request.getType()),
+                defaultText(request.getContent()),
+                defaultText(request.getContact()),
+                "",
+                "PENDING",
+                LocalDateTime.now(),
+                null,
+                null
+        );
+        supportTicketMapper.insert(ticket);
+        return supportTicketMapper.findById(ticket.getId());
+    }
+
+    /** 后台查看全部客服工单,可按 PENDING / REPLIED / CLOSED 筛选。 */
+    public List<SupportTicket> listSupportTicketsForAdmin(String status) {
+        return supportTicketMapper.listForAdmin(normalizeSupportStatus(status));
+    }
+
+    /** 后台回复客服工单。 */
+    @Transactional
+    public SupportTicket replySupportTicket(String ticketId, ReplySupportTicketRequest request) {
+        SupportTicket existing = getSupportTicketForAdmin(ticketId);
+        if ("CLOSED".equals(existing.getStatus())) {
+            throw new BusinessException(400, "已关闭的客服工单不能继续回复");
+        }
+        supportTicketMapper.reply(ticketId, defaultText(request.getReplyContent()), LocalDateTime.now());
+        return getSupportTicketForAdmin(ticketId);
+    }
+
+    /** 后台关闭客服工单。 */
+    @Transactional
+    public SupportTicket closeSupportTicket(String ticketId) {
+        SupportTicket existing = getSupportTicketForAdmin(ticketId);
+        if ("CLOSED".equals(existing.getStatus())) {
+            return existing;
+        }
+        supportTicketMapper.close(ticketId, LocalDateTime.now());
+        return getSupportTicketForAdmin(ticketId);
+    }
+
+    /** 清理历史调试产生的未回复客服工单,不删除正常已回复/已关闭记录。 */
+    @Transactional
+    public int deleteTestSupportTickets() {
+        return supportTicketMapper.deleteTestTickets();
+    }
+
+    // ============================================================
     // 九、后台管理(用户 / 仪表盘 / 商品)
     // ============================================================
 
@@ -603,6 +775,107 @@ public class OrderingService {
                 cartMapper.countItems(),
                 orderAmount
         );
+    }
+
+    public List<ProductRecommendation> listSmartRecommendations(String userId, int limit) {
+        List<Product> products = productMapper.listEnabled(null, null);
+        if (products.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Set<String> favoriteProductIds = new HashSet<>();
+        Set<String> favoriteCategoryIds = new HashSet<>();
+        if (StringUtils.hasText(userId)) {
+            for (Product favorite : favoriteMapper.listProducts(userId)) {
+                favoriteProductIds.add(favorite.getId());
+                favoriteCategoryIds.add(favorite.getCategoryId());
+            }
+        }
+        int maxSales = products.stream().mapToInt(Product::getSales).max().orElse(0);
+        int safeLimit = Math.max(1, Math.min(limit <= 0 ? 6 : limit, 10));
+        return products.stream()
+                .map(product -> buildProductRecommendation(product, favoriteProductIds, favoriteCategoryIds, maxSales))
+                .sorted(Comparator.comparingInt(ProductRecommendation::getScore).reversed())
+                .limit(safeLimit)
+                .collect(Collectors.toList());
+    }
+
+    public List<CouponSuggestion> suggestCoupons(String userId, BigDecimal amount) {
+        BigDecimal total = amount == null ? BigDecimal.ZERO : amount.max(BigDecimal.ZERO);
+        return listUserCoupons(userId).stream()
+                .filter(coupon -> "AVAILABLE".equals(coupon.getStatus()) || !StringUtils.hasText(coupon.getStatus()))
+                .map(coupon -> buildCouponSuggestion(coupon, total))
+                .sorted(Comparator.comparing(CouponSuggestion::isUsable).reversed()
+                        .thenComparing(CouponSuggestion::getGapAmount)
+                        .thenComparing(CouponSuggestion::getDiscountAmount, Comparator.reverseOrder()))
+                .collect(Collectors.toList());
+    }
+
+    public SupportAutoReply autoReplySupport(String content, String requestType) {
+        String text = defaultText(content);
+        String type = resolveSupportType(text, requestType);
+        boolean needHuman = containsAny(text, "人工", "员工", "投诉", "退款", "赔偿", "没解决", "没有解决", "态度", "异常扣款");
+        String reply;
+        if ("UNKNOWN".equals(type)) {
+            reply = "我还没理解你的问题。你可以直接描述：取餐进度、优惠券使用、取消订单、商品口味或支付异常。";
+        } else if ("PICKUP_ISSUE".equals(type)) {
+            reply = "取餐进度可以在订单页查看。若状态是制作中，请等待门店出餐；若已经超过预计时间，建议转人工让员工按订单号核实。";
+        } else if ("ORDER_ISSUE".equals(type)) {
+            reply = "订单未开始制作时通常可以取消；已制作或已出餐需要员工确认。你可以先说明订单号和处理诉求，我会帮你转给门店员工。";
+        } else if ("PRODUCT_ISSUE".equals(type)) {
+            reply = "口味、规格、加料或包装问题请保留订单信息。若需要补做、重做或退款，请转人工，由员工根据订单记录处理。";
+        } else if ("SUGGESTION".equals(type)) {
+            reply = "你的建议会记录给门店。涉及商品、活动、服务体验的问题，可以继续补充具体场景，员工会在后台查看。";
+        } else {
+            reply = "优惠券需要满足满减门槛、有效期和可用状态；省钱卡券需要先开通省钱卡并领取后使用。系统会在购物车自动推荐当前最合适的券。";
+        }
+        List<String> actions = needHuman
+                ? Arrays.asList("转人工", "关联订单", "刷新回复")
+                : Arrays.asList("继续提问", "查看订单", "转人工");
+        return new SupportAutoReply(type, reply, needHuman, actions);
+    }
+
+    public List<AdminInsight> listAdminInsights() {
+        List<AdminInsight> insights = new ArrayList<>();
+        List<Order> orders = orderMapper.listOrdersForAdmin(null);
+        List<Product> products = productMapper.listAll();
+        int waitingCount = (int) orders.stream()
+                .filter(order -> "MAKING".equals(order.getStatus())
+                        || "WAITING_PICKUP".equals(order.getStatus())
+                        || "DELIVERING".equals(order.getStatus()))
+                .count();
+        int pendingSupportCount = supportTicketMapper.listForAdmin("PENDING").size();
+        Product hotProduct = products.stream()
+                .filter(Product::isEnabled)
+                .max(Comparator.comparingInt(Product::getSales))
+                .orElse(null);
+        AdminDashboard dashboard = getDashboard();
+
+        if (waitingCount > 0) {
+            insights.add(new AdminInsight("warning", "待处理订单提醒",
+                    "当前还有 " + waitingCount + " 笔订单处于制作或待取餐状态，建议优先处理订单队列。",
+                    "查看订单", "orders.html"));
+        }
+        if (pendingSupportCount > 0) {
+            insights.add(new AdminInsight("danger", "客服未回复提醒",
+                    "当前有 " + pendingSupportCount + " 条用户留言未回复，长时间未处理会影响用户体验。",
+                    "处理客服", "support.html"));
+        }
+        if (hotProduct != null && hotProduct.getSales() > 0) {
+            insights.add(new AdminInsight("success", "热卖商品建议",
+                    hotProduct.getName() + " 当前销量最高，适合放在首页推荐或省钱卡专区提升转化。",
+                    "管理商品", "products.html"));
+        }
+        if (dashboard.getCartItemCount() > 0) {
+            insights.add(new AdminInsight("info", "购物车转化提醒",
+                    "当前购物车中仍有 " + dashboard.getCartItemCount() + " 件未结算商品，可通过优惠券活动刺激下单。",
+                    "配置优惠", "coupons.html"));
+        }
+        if (insights.isEmpty()) {
+            insights.add(new AdminInsight("info", "经营状态正常",
+                    "当前没有明显待处理风险。可以继续维护商品图、Banner 和优惠券，让前台页面更完整。",
+                    "管理活动", "activities.html"));
+        }
+        return insights.stream().limit(4).collect(Collectors.toList());
     }
 
     /** 后台商品列表(含已下架的)。 */
@@ -671,6 +944,148 @@ public class OrderingService {
      * 给一个 Order 对象补上明细列表。
      * 数据库里订单主表和订单明细是两张表,查列表时需要再查一次明细并塞回去。
      */
+    private ProductRecommendation buildProductRecommendation(Product product, Set<String> favoriteProductIds,
+                                                             Set<String> favoriteCategoryIds, int maxSales) {
+        int score = Math.max(product.getSales(), 0) * 2;
+        boolean favoriteHit = favoriteProductIds.contains(product.getId())
+                || favoriteCategoryIds.contains(product.getCategoryId());
+        if (favoriteHit) {
+            score += 120;
+        }
+        if (hasTag(product, "新品", "热卖", "推荐")) {
+            score += 45;
+        }
+        if (product.getSales() == maxSales && maxSales > 0) {
+            score += 35;
+        }
+        if (product.getPrice() != null && product.getPrice().compareTo(new BigDecimal("15")) <= 0) {
+            score += 18;
+        }
+
+        String tag;
+        String reason;
+        if (favoriteHit) {
+            tag = "猜你喜欢";
+            reason = "按你的收藏口味推荐";
+        } else if (hasTag(product, "新品")) {
+            tag = "新品";
+            reason = "近期上新，适合尝鲜";
+        } else if (product.getSales() == maxSales && maxSales > 0) {
+            tag = "热卖";
+            reason = "门店销量最高";
+        } else if (product.getPrice() != null && product.getPrice().compareTo(new BigDecimal("15")) <= 0) {
+            tag = "凑单";
+            reason = "轻量搭配，适合凑单";
+        } else {
+            tag = "推荐";
+            reason = "适合搭配当前点单";
+        }
+        return new ProductRecommendation(product, reason, tag, score);
+    }
+
+    private CouponSuggestion buildCouponSuggestion(UserCoupon coupon, BigDecimal total) {
+        BigDecimal minAmount = coupon.getMinAmount() == null ? BigDecimal.ZERO : coupon.getMinAmount();
+        BigDecimal discount = coupon.getDiscountAmount() == null ? BigDecimal.ZERO : coupon.getDiscountAmount();
+        boolean active = coupon.isCouponAvailable()
+                && ("AVAILABLE".equals(coupon.getStatus()) || !StringUtils.hasText(coupon.getStatus()));
+        BigDecimal gap = total.compareTo(minAmount) >= 0 ? BigDecimal.ZERO : minAmount.subtract(total);
+        boolean usable = active && gap.compareTo(BigDecimal.ZERO) == 0;
+        String reason;
+        if (!active) {
+            reason = "优惠券已使用或已下架";
+        } else if (usable) {
+            reason = "当前订单可用，已为你优先推荐";
+        } else {
+            reason = "再买 ¥" + gap.stripTrailingZeros().toPlainString() + " 可用";
+        }
+        return new CouponSuggestion(coupon, usable, gap, discount, reason);
+    }
+
+    private String resolveSupportType(String text, String requestType) {
+        if (isKnownSupportType(requestType)) {
+            return requestType;
+        }
+        if (!StringUtils.hasText(text) || text.replaceAll("\\s+", "").length() < 2) {
+            return "UNKNOWN";
+        }
+        if (containsAny(text, "取餐", "拿餐", "进度", "多久", "排队", "出餐", "时间")) {
+            return "PICKUP_ISSUE";
+        }
+        if (containsAny(text, "取消", "修改", "退款", "支付", "订单", "下单", "扣款")) {
+            return "ORDER_ISSUE";
+        }
+        if (containsAny(text, "口味", "规格", "加料", "少糖", "冰", "奶茶", "咖啡", "轻食", "包装")) {
+            return "PRODUCT_ISSUE";
+        }
+        if (containsAny(text, "建议", "意见", "反馈", "吐槽")) {
+            return "SUGGESTION";
+        }
+        if (containsAny(text, "优惠券", "券", "省钱卡", "满减", "会员")) {
+            return "OTHER";
+        }
+        return "OTHER";
+    }
+
+    private boolean isKnownSupportType(String type) {
+        return "ORDER_ISSUE".equals(type)
+                || "PICKUP_ISSUE".equals(type)
+                || "PRODUCT_ISSUE".equals(type)
+                || "SUGGESTION".equals(type)
+                || "OTHER".equals(type)
+                || "UNKNOWN".equals(type);
+    }
+
+    private boolean hasTag(Product product, String... words) {
+        if (product.getTags() == null) {
+            return false;
+        }
+        for (String tag : product.getTags()) {
+            if (containsAny(tag, words)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsAny(String text, String... words) {
+        if (!StringUtils.hasText(text)) {
+            return false;
+        }
+        String source = text.toLowerCase(Locale.ROOT);
+        for (String word : words) {
+            if (StringUtils.hasText(word) && source.contains(word.toLowerCase(Locale.ROOT))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String normalizePickupType(String pickupType) {
+        if (!StringUtils.hasText(pickupType)) {
+            return "SELF_PICKUP";
+        }
+        String type = pickupType.trim().toUpperCase(Locale.ROOT);
+        if ("PICKUP".equals(type) || "SELF".equals(type) || "SELF_PICKUP".equals(type)) {
+            return "SELF_PICKUP";
+        }
+        if ("DELIVERY".equals(type)) {
+            return "DELIVERY";
+        }
+        throw new BusinessException(400, "不支持的取餐方式");
+    }
+
+    private BigDecimal calculateDeliveryFee(String pickupType, BigDecimal totalAmount) {
+        if (!"DELIVERY".equals(pickupType)) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal total = totalAmount == null ? BigDecimal.ZERO : totalAmount;
+        return total.compareTo(DELIVERY_FREE_THRESHOLD) >= 0 ? BigDecimal.ZERO : DELIVERY_FEE;
+    }
+
+    private String cleanText(String text) {
+        return StringUtils.hasText(text) ? text.trim() : null;
+    }
+
     private Order attachOrderItems(Order order) {
         order.setItems(orderMapper.listOrderItems(order.getId()));
         return order;
@@ -681,14 +1096,14 @@ public class OrderingService {
      * 三件事:
      *   1. 减回商品销量(下单时 +1,取消就 -1)
      *   2. 把使用的优惠券恢复成可用(取消订单不应没收券)
-     *   3. 减去用户的累计积分和累计节省
+     *   3. 减去用户的累计节省
      */
     private void rollbackOrderEffects(Order order) {
         for (OrderItem item : order.getItems()) {
             productMapper.decreaseSales(item.getProductId(), item.getQuantity());
         }
         userMapper.restoreCouponByOrder(order.getUserId(), order.getId());
-        userMapper.subtractOrderStats(order.getUserId(), order.getPayableAmount().intValue(), order.getDiscountAmount());
+        userMapper.subtractOrderStats(order.getUserId(), order.getDiscountAmount());
     }
 
     /** 是否是省钱卡会员 —— 用 member_level 字段是否包含"省钱卡"来判定。 */
@@ -704,6 +1119,27 @@ public class OrderingService {
             throw new BusinessException(404, "订单不存在");
         }
         return attachOrderItems(order);
+    }
+
+    /** 后台获取客服工单。 */
+    private SupportTicket getSupportTicketForAdmin(String ticketId) {
+        SupportTicket ticket = supportTicketMapper.findById(ticketId);
+        if (ticket == null) {
+            throw new BusinessException(404, "客服工单不存在");
+        }
+        return ticket;
+    }
+
+    /** 客服工单状态只允许三种,避免后台筛选参数写错。 */
+    private String normalizeSupportStatus(String status) {
+        if (!StringUtils.hasText(status)) {
+            return null;
+        }
+        String normalized = status.trim().toUpperCase(Locale.ROOT);
+        if ("PENDING".equals(normalized) || "REPLIED".equals(normalized) || "CLOSED".equals(normalized)) {
+            return normalized;
+        }
+        throw new BusinessException(400, "客服工单状态不正确");
     }
 
     /** 确保 categoryId 在 categories 表里存在,否则抛 404。 */

@@ -4,7 +4,9 @@ function money(value) {
 
 function statusText(status) {
   const map = {
+    MAKING: "制作中",
     WAITING_PICKUP: "待取餐",
+    DELIVERING: "配送中",
     COMPLETED: "已完成",
     CANCELED: "已取消"
   };

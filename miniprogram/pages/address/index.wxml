@@ -1,0 +1,73 @@
+<view class="address-shell">
+  <view class="address-topbar">
+    <view class="address-back" bindtap="goBack">
+      <image class="address-back-icon" src="/images/icons/d-back.svg" mode="aspectFit"/>
+    </view>
+    <view class="address-top-title">收货地址</view>
+    <view class="address-add-link" bindtap="startAdd">新增</view>
+  </view>
+
+  <view class="address-hero">
+    <view>
+      <view class="address-title">管理你的配送地址</view>
+      <view class="address-sub">外送下单时会优先使用默认地址，也可以从这里选择本次地址。</view>
+    </view>
+    <view class="address-pin"><image src="/images/icons/address-pin-filled.svg" mode="aspectFit"/></view>
+  </view>
+
+  <view class="address-list">
+    <view wx:if="{{!loggedIn}}" class="address-empty">请先登录后管理收货地址</view>
+    <view wx:elif="{{addresses.length === 0}}" class="address-empty">还没有收货地址，新增后下单会自动带出</view>
+    <block wx:else>
+      <view class="address-card {{item.defaultAddress ? 'is-default' : ''}}" wx:for="{{addresses}}" wx:key="id">
+        <view class="address-head">
+          <text class="address-name">{{item.receiverName}}</text>
+          <text class="address-phone">{{item.phone}}</text>
+          <text class="address-tag" wx:if="{{item.defaultAddress}}">默认</text>
+        </view>
+        <view class="address-detail">{{item.addressDetail}}</view>
+        <view class="address-actions">
+          <button wx:if="{{selectMode}}" class="primary" data-id="{{item.id}}" bindtap="pickAddress">使用这个地址</button>
+          <button wx:if="{{!item.defaultAddress}}" data-id="{{item.id}}" bindtap="setDefault">设为默认</button>
+          <button data-id="{{item.id}}" bindtap="startEdit">编辑</button>
+          <button class="danger" data-id="{{item.id}}" bindtap="deleteAddress">删除</button>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <button class="add-button" bindtap="startAdd">新增收货地址</button>
+
+  <view class="drawer-mask" wx:if="{{drawerOpen}}" bindtap="closeDrawer"></view>
+  <view class="address-drawer" wx:if="{{drawerOpen}}" catchtap="noop">
+    <view class="drawer-head">
+      <text>{{editingId ? '编辑收货地址' : '新增收货地址'}}</text>
+      <text class="drawer-close" bindtap="closeDrawer">关闭</text>
+    </view>
+    <view class="form-field">
+      <text>收货人</text>
+      <input value="{{form.receiverName}}" data-field="receiverName" bindinput="onInput" placeholder="例如：张同学"/>
+    </view>
+    <view class="form-field">
+      <text>联系电话</text>
+      <input value="{{form.phone}}" data-field="phone" bindinput="onInput" placeholder="例如：13800000000"/>
+    </view>
+    <view class="form-field">
+      <text>详细地址</text>
+      <textarea value="{{form.addressDetail}}" data-field="addressDetail" bindinput="onInput" placeholder="例如：3号宿舍楼 502"/>
+    </view>
+    <label class="default-row">
+      <text>设为默认地址</text>
+      <switch checked="{{form.defaultAddress}}" bindchange="onDefaultChange" color="#1f6fff"/>
+    </label>
+    <button class="save-button" bindtap="saveAddress">保存地址</button>
+  </view>
+
+  <view class="bottom-nav">
+    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine-active.svg" mode="aspectFit"/></view><text>我的</text></navigator>
+  </view>
+</view>

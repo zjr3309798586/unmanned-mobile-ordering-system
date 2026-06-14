@@ -22,7 +22,7 @@ MERGE INTO coupons KEY(id) VALUES
 ('C-003', '会员专享券', '满 15 元可用', 15.00, 3.00, '2026-12-31', TRUE);
 
 MERGE INTO saving_card_plans KEY(id) VALUES
-('S-001', '月度省钱卡', 9.90, '开通 30 天内可领取会员专属券，并享受指定商品省钱价。',
+('S-001', '月卡权益 · 校园专享', 18.00, '开通 30 天内可领取会员专属券，并享受指定商品省钱价。',
  '4 张专属优惠券,指定商品省钱价,会员生日权益');
 
 MERGE INTO banners KEY(id) VALUES
@@ -30,12 +30,16 @@ MERGE INTO banners KEY(id) VALUES
  '/images/product-orange-coffee.svg', '去点餐', 'menu.html', 1, TRUE);
 
 MERGE INTO user_profiles KEY(user_id) VALUES
-('USER-SEED-001', '历史用户', '银卡会员', 1280, 36.80, 3, 18.50);
+('USER-SEED-001', '历史用户', '银卡会员', 36.80, 3, 18.50);
+
+MERGE INTO user_addresses KEY(id) VALUES
+('ADDR-SEED-001', 'USER-SEED-001', '校园用户', '13800000000', '3号宿舍楼 502', TRUE, '2026-05-04 10:00:00', '2026-05-04 10:00:00');
 
 MERGE INTO users KEY(id) VALUES
 ('USER-SEED-001', NULL, '历史用户', '', NULL, '2026-05-04 10:00:00', '2026-05-04 10:00:00');
 
-MERGE INTO orders KEY(id) VALUES
+MERGE INTO orders (id, user_id, order_no, pickup_type, store_name, table_no, remark, status,
+                   total_amount, discount_amount, payable_amount, created_at) KEY(id) VALUES
 ('ORDER-SEED-001', 'USER-SEED-001', 'UMO202605040001', 'SELF_PICKUP', '云豹小点校区店', 'A12',
  '历史订单', 'COMPLETED', 29.80, 5.00, 24.80, '2026-05-04 10:30:00');
 

@@ -79,6 +79,11 @@ window.OrderingApp = (function () {
   }
 
   var imageDirs = ["nav", "home", "menu", "mine", "saving", "mascot", "common", "icons", "uploads"];
+  var assetPrefix = window.location.protocol === "file:" ? "../" : "";
+
+  function assetPath(path) {
+    return assetPrefix + path;
+  }
 
   function guessImageSubdir(filename) {
     if (/^nav-/.test(filename)) return "nav";
@@ -98,7 +103,7 @@ window.OrderingApp = (function () {
    * 自动映射到当前整理后的图片目录(images/menu/product-x.svg)。
    */
   function imageUrl(value) {
-    var fallback = "images/common/food-placeholder.svg";
+    var fallback = assetPath("images/common/food-placeholder.svg");
     if (!value) {
       return fallback;
     }
@@ -106,11 +111,14 @@ window.OrderingApp = (function () {
       var rest = value.substring("/images/".length);
       var head = rest.split("/")[0];
       if (imageDirs.indexOf(head) !== -1) {
-        return "images/" + rest;
+        return assetPath("images/" + rest);
       }
       var filename = rest.split("/").pop();
       var subdir = guessImageSubdir(filename);
-      return subdir ? "images/" + subdir + "/" + filename : fallback;
+      return subdir ? assetPath("images/" + subdir + "/" + filename) : fallback;
+    }
+    if (window.location.protocol === "file:" && value.indexOf("images/") === 0) {
+      return assetPath(value);
     }
     return value;
   }
@@ -131,7 +139,9 @@ window.OrderingApp = (function () {
   /** 订单状态英文 → 中文。后端状态码到 UI 文案的映射。 */
   function statusText(status) {
     var map = {
+      MAKING: "制作中",
       WAITING_PICKUP: "待取餐",
+      DELIVERING: "配送中",
       COMPLETED: "已完成",
       CANCELED: "已取消"
     };
@@ -227,6 +237,9 @@ window.OrderingApp = (function () {
     post: function (path, body) {
       return request(path, { method: "POST", body: body });
     },
+    put: function (path, body) {
+      return request(path, { method: "PUT", body: body });
+    },
     patch: function (path, body) {
       return request(path, { method: "PATCH", body: body });
     },
@@ -264,7 +277,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var currentPage = document.body.dataset.page || "";
   var navPageMap = {
     detail: "menu",
-    cart: "menu"
+    cart: "menu",
+    address: "mine",
+    favorites: "mine",
+    support: "mine"
   };
   var activeKey = navPageMap[currentPage] || currentPage;
 

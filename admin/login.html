@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>管理员登录 - 云豹小点后台管理</title>
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin.css?v=19">
 </head>
 <body class="login-page" data-page="login">
   <section class="login-card">
@@ -13,13 +13,25 @@
         <span class="brand-dot"><img src="../images/mascot/mascot-yunbao-144.png" alt="云豹小点"></span>
         <span>云豹小点</span>
       </div>
-      <h1>后台管理端</h1>
-      <p>用于处理云豹小点订单、维护商品、管理优惠券和查看经营数据。</p>
+      <h1>云豹小点后台</h1>
+      <p>统一处理订单出餐、商品上下架、优惠券配置、客服回复和经营数据。</p>
+      <div class="login-hero-tags" aria-label="后台核心能力">
+        <span>商品维护</span>
+        <span>订单处理</span>
+        <span>客服管理</span>
+      </div>
     </div>
 
     <div class="login-form">
       <h2>管理员登录</h2>
-      <p>请输入后台管理员账号和密码。</p>
+      <p>登录后进入云豹小点后台工作台。</p>
+      <div class="login-status is-checking" data-api-status>
+        <span class="login-status-dot"></span>
+        <div>
+          <strong data-api-status-title>正在检查后端连接</strong>
+          <small data-api-status-desc>当前 API：<span data-api-url>--</span></small>
+        </div>
+      </div>
       <form id="loginForm">
         <div class="field">
           <label for="username">账号</label>
@@ -29,11 +41,14 @@
           <label for="password">密码</label>
           <input id="password" type="password" placeholder="请输入密码" autocomplete="current-password">
         </div>
-        <button class="btn full" type="submit">进入后台</button>
+        <button class="btn full" type="submit" data-login-submit>进入后台</button>
       </form>
-      <div class="login-tip">请使用管理员账号登录，登录后可维护商品、订单、优惠券和首页活动。</div>
+      <div class="login-tip">
+        推荐从 <a href="http://127.0.0.1:8080/admin/login.html">http://127.0.0.1:8080/admin/login.html</a> 打开后台。
+        如果显示未连接，请先启动 Spring Boot 后端。
+      </div>
     </div>
   </section>
-  <script src="js/admin.js"></script>
+  <script src="js/admin.js?v=19"></script>
 </body>
 </html>

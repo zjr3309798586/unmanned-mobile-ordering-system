@@ -3,16 +3,16 @@
   <view class="d-img-wrap">
     <view class="d-topbar">
       <view class="d-icon-btn" bindtap="goBack">
-        <text class="d-back-arr">‹</text>
+        <image class="d-icon-img" src="/images/icons/d-back.svg" mode="aspectFit"/>
       </view>
       <view class="d-top-right">
         <view class="d-icon-btn">
-          <text class="d-share-arr">↑</text>
+          <image class="d-icon-img is-share" src="/images/icons/detail-share.svg" mode="aspectFit"/>
         </view>
         <view class="d-top-pill">
           <view class="d-pill-dots"><view class="d-dot"></view><view class="d-dot"></view><view class="d-dot"></view></view>
           <view class="d-pill-sep"></view>
-          <text class="d-pill-loc">⊙</text>
+          <image class="d-pill-loc" src="/images/icons/detail-target.svg" mode="aspectFit"/>
         </view>
       </view>
     </view>

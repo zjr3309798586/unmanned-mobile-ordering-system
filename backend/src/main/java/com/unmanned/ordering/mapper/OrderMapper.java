@@ -82,9 +82,9 @@ public interface OrderMapper {
 
     /** 新建订单主表。订单号 / 状态 / 金额都已经在 Service 层算好。 */
     @Insert({
-            "INSERT INTO orders (id, order_no, pickup_type, store_name, table_no, remark, status,",
+            "INSERT INTO orders (id, order_no, pickup_type, store_name, table_no, delivery_address, delivery_contact, delivery_fee, remark, status,",
             "user_id, total_amount, discount_amount, payable_amount, created_at)",
-            "VALUES (#{id}, #{orderNo}, #{pickupType}, #{storeName}, #{tableNo}, #{remark}, #{status},",
+            "VALUES (#{id}, #{orderNo}, #{pickupType}, #{storeName}, #{tableNo}, #{deliveryAddress}, #{deliveryContact}, #{deliveryFee}, #{remark}, #{status},",
             "#{userId},",
             "#{totalAmount}, #{discountAmount}, #{payableAmount}, #{createdAt})"
     })
@@ -110,4 +110,17 @@ public interface OrderMapper {
     /** 已成交订单总金额(已取消订单不计入)。 */
     @Select("SELECT COALESCE(SUM(payable_amount), 0) FROM orders WHERE status <> 'CANCELED'")
     BigDecimal sumPayableAmount();
+
+    /** Current making order count for queue display. */
+    @Select("SELECT COUNT(*) FROM orders WHERE status = 'MAKING'")
+    int countMakingOrders();
+
+    /** Current making item quantity for queue display. */
+    @Select({
+            "SELECT COALESCE(SUM(item.quantity), 0)",
+            "FROM order_items item",
+            "JOIN orders o ON o.id = item.order_id",
+            "WHERE o.status = 'MAKING'"
+    })
+    int sumMakingCups();
 }

@@ -89,7 +89,7 @@ public class StoreController {
         return ApiResponse.ok(orderingService.openSavingCard(user.getId()));
     }
 
-    /** "我的"页读取当前用户资料(积分 / 节省金额 / 会员等级 / 券数量)。 */
+    /** "我的"页读取当前用户资料(节省金额 / 会员等级 / 券数量)。 */
     @GetMapping("/mine")
     public ApiResponse<UserProfile> getMine(@RequestHeader(value = "X-User-Token", required = false) String token) {
         return ApiResponse.ok(userAuthService.getProfile(token));

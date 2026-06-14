@@ -62,7 +62,7 @@ Page({
     });
     this.setData({
       orders: filtered,
-      emptyText: currentTab === "delivery" ? "暂无外卖订单" : "暂无自取订单",
+      emptyText: "暂无订单",
       emptyButtonText: "去点餐",
       emptyTarget: "menu"
     });
@@ -70,17 +70,24 @@ Page({
 
   decorateOrder(order) {
     const items = order.items || [];
+    const pickupType = order.pickupType || "SELF_PICKUP";
+    const isDelivery = pickupType === "DELIVERY";
+    const pickupNo = order.pickupNo || order.orderNo || "—";
     return {
       id: order.id,
-      pickupType: order.pickupType || "SELF_PICKUP",
+      pickupType: pickupType,
+      isDelivery: isDelivery,
       storeName: order.storeName || "云豹小点·校园店",
       statusText: format.statusText(order.status),
       timeText: (order.createdAt || "").replace("T", " ").slice(0, 19) || "—",
-      pickupNo: order.pickupNo || order.orderNo || "—",
+      pickupNo: pickupNo,
+      metaText: isDelivery ? ("配送至 " + (order.deliveryAddress || "校园地址待确认")) : ("取餐号 " + pickupNo),
+      deliveryContact: order.deliveryContact || "未填写",
+      deliveryFee: Number(order.deliveryFee || 0).toFixed(1),
       thumbs: items.length
         ? items.map((item) => api.imageUrl(item.image || "")).slice(0, 3)
         : ["/images/common/food-placeholder.svg"],
-      amount: Number(order.payableAmount || 0).toFixed(1),
+      amount: Number(order.payableAmount || 0).toFixed(0),
       qty: items.reduce((sum, item) => sum + Number(item.quantity || 1), 0)
     };
   },

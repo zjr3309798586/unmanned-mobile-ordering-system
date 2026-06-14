@@ -3,6 +3,8 @@
     categories: [],
     products: [],
     orders: [],
+    supportTickets: [],
+    activeSupportTicketId: "",
     users: [],
     coupons: [],
     banners: []
@@ -12,6 +14,7 @@
     ? "http://127.0.0.1:8080/api"
     : window.location.origin + "/api";
   var apiBaseUrl = localStorage.getItem("orderingApiBaseUrl") || defaultApiBaseUrl;
+  var localAdminUrl = "http://127.0.0.1:8080/admin/login.html";
 
   function adminToken() {
     return localStorage.getItem("umo-admin-token") || "";
@@ -36,6 +39,15 @@
     return Array.prototype.slice.call((root || document).querySelectorAll(selector));
   }
 
+  function friendlyErrorMessage(error) {
+    var message = error && error.message ? error.message : "";
+    if (error && (error.name === "TypeError" || error.name === "AbortError" ||
+      /failed to fetch|networkerror|load failed|无法连接/i.test(message))) {
+      return "无法连接后端服务，请先启动 Spring Boot，并优先使用 " + localAdminUrl + " 打开后台。";
+    }
+    return message || "接口请求失败";
+  }
+
   function request(path, options) {
     var config = options || {};
     config.headers = Object.assign({ "Content-Type": "application/json" }, config.headers || {});
@@ -52,13 +64,16 @@
             if (response.status === 401 || payload.code === 401) {
               clearAdminSession();
               if (document.body.dataset.page !== "login") {
-                window.location.href = "login.html";
+                window.location.href = "login.html?v=19";
               }
             }
             throw new Error(payload.message || "接口请求失败");
           }
           return payload.data;
         });
+      })
+      .catch(function (error) {
+        throw new Error(friendlyErrorMessage(error));
       });
   }
 
@@ -92,6 +107,8 @@
         }
         return payload.data;
       });
+    }).catch(function (error) {
+      throw new Error(friendlyErrorMessage(error));
     });
   }
 
@@ -157,7 +174,9 @@
 
   function statusText(status) {
     var map = {
+      MAKING: "制作中",
       WAITING_PICKUP: "待取餐",
+      DELIVERING: "配送中",
       COMPLETED: "已完成",
       CANCELED: "已取消"
     };
@@ -181,7 +200,68 @@
     if (status === "CANCELED") {
       return "cancel";
     }
+    if (status === "MAKING") {
+      return "making";
+    }
+    if (status === "WAITING_PICKUP" || status === "DELIVERING") {
+      return "waiting";
+    }
     return "waiting";
+  }
+
+  function supportTypeText(type) {
+    var map = {
+      ORDER_ISSUE: "订单问题",
+      PICKUP_ISSUE: "取餐问题",
+      PRODUCT_ISSUE: "商品问题",
+      SUGGESTION: "意见建议",
+      OTHER: "其他问题"
+    };
+    return map[type] || type || "其他问题";
+  }
+
+  function supportStatusText(status) {
+    var map = {
+      PENDING: "待处理",
+      REPLIED: "已回复",
+      CLOSED: "已关闭"
+    };
+    return map[status] || status || "未知";
+  }
+
+  function supportStatusClass(status) {
+    if (status === "CLOSED") {
+      return "green";
+    }
+    if (status === "REPLIED") {
+      return "blue";
+    }
+    return "orange";
+  }
+
+  function supportStatusFilter(status) {
+    if (status === "REPLIED") {
+      return "replied";
+    }
+    if (status === "CLOSED") {
+      return "closed";
+    }
+    return "pending";
+  }
+
+  function shortTime(value) {
+    if (!value) {
+      return "--";
+    }
+    return String(value).replace("T", " ").substring(0, 16);
+  }
+
+  function chatTime(value) {
+    if (!value) {
+      return "--";
+    }
+    var text = String(value).replace("T", " ");
+    return text.length >= 16 ? text.substring(0, 16) : text;
   }
 
   function pickupText(type) {
@@ -230,14 +310,53 @@
     }
   }
 
-  function withLoading(button, promise) {
+  function withLoading(button, promise, loadingText) {
     if (!button) return promise;
     var originalText = button.textContent;
     button.disabled = true;
-    button.textContent = "保存中...";
+    button.textContent = loadingText || "保存中...";
     return promise.finally(function () {
       button.disabled = false;
       button.textContent = originalText;
+    });
+  }
+
+  function setLoginConnectionStatus(type, title, desc) {
+    var status = $("[data-api-status]");
+    if (!status) {
+      return;
+    }
+    status.classList.remove("is-checking", "is-ok", "is-error");
+    status.classList.add(type);
+    var titleNode = $("[data-api-status-title]", status);
+    var descNode = $("[data-api-status-desc]", status);
+    var apiNode = $("[data-api-url]", status);
+    if (titleNode) titleNode.textContent = title;
+    if (descNode) descNode.textContent = desc;
+    if (apiNode) apiNode.textContent = apiBaseUrl;
+  }
+
+  function checkLoginConnection() {
+    if (document.body.dataset.page !== "login") {
+      return;
+    }
+    setLoginConnectionStatus("is-checking", "正在检查后端连接", "当前 API：" + apiBaseUrl);
+    var controller = window.AbortController ? new AbortController() : null;
+    var timer = controller ? window.setTimeout(function () {
+      controller.abort();
+    }, 3500) : null;
+    fetch(apiBaseUrl + "/products", {
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function (response) {
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+      }
+      setLoginConnectionStatus("is-ok", "后端已连接", "可以登录后台。推荐地址：" + localAdminUrl);
+    }).catch(function (error) {
+      setLoginConnectionStatus("is-error", "后端未连接", friendlyErrorMessage(error));
+    }).finally(function () {
+      if (timer) window.clearTimeout(timer);
     });
   }
 
@@ -257,13 +376,13 @@
     var page = document.body.dataset.page;
     if (page === "login") {
       if (adminToken()) {
-        window.location.href = "dashboard.html";
+        window.location.href = "dashboard.html?v=19";
         return false;
       }
       return true;
     }
     if (!adminToken()) {
-      window.location.href = "login.html";
+      window.location.href = "login.html?v=19";
       return false;
     }
     return true;
@@ -274,18 +393,25 @@
     if (!form) {
       return;
     }
+    checkLoginConnection();
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       var username = $("#username").value.trim();
       var password = $("#password").value;
-      post("/admin/login", { username: username, password: password })
+      var submit = $("[data-login-submit]", form);
+      if (!username || !password) {
+        showToast("请输入管理员账号和密码");
+        return;
+      }
+      withLoading(submit, post("/admin/login", { username: username, password: password })
         .then(function (session) {
           setAdminSession(session);
-          window.location.href = "dashboard.html";
+          window.location.href = "dashboard.html?v=19";
         })
         .catch(function (error) {
           showToast(error.message);
-        });
+          checkLoginConnection();
+        }), "登录中...");
     });
   }
 
@@ -335,7 +461,7 @@
     if (logout) {
       logout.addEventListener("click", function () {
         clearAdminSession();
-        window.location.href = "login.html";
+        window.location.href = "login.html?v=19";
       });
     }
 
@@ -387,11 +513,12 @@
     if (document.body.dataset.page !== "dashboard") {
       return;
     }
-    Promise.all([get("/admin/dashboard"), get("/admin/products"), get("/admin/orders")])
+    Promise.all([get("/admin/dashboard"), get("/admin/products"), get("/admin/orders"), get("/admin/smart/insights").catch(function () { return []; })])
       .then(function (result) {
         var dashboard = result[0];
         var products = result[1] || [];
         var orders = result[2] || [];
+        var insights = result[3] || [];
         var statCards = $all(".stat-card");
         setStatCard(statCards[0], "营业额", money(dashboard.orderAmount), "来自订单实付金额汇总");
         setStatCard(statCards[1], "订单总数", dashboard.orderCount, "购物车结算后这里会增加");
@@ -399,10 +526,34 @@
         setStatCard(statCards[3], "购物车商品", dashboard.cartItemCount, "前台加入购物车后会变化");
         renderHotProducts(products);
         renderTrend(orders);
+        renderSmartInsights(insights);
       })
       .catch(function (error) {
         showToast(error.message);
       });
+  }
+
+  function renderSmartInsights(insights) {
+    var box = $(".smart-insight-list");
+    if (!box) {
+      return;
+    }
+    var list = Array.isArray(insights) ? insights : [];
+    if (!list.length) {
+      box.innerHTML = '<div class="smart-insight-empty">暂无经营风险，建议继续维护商品图片和活动配置。</div>';
+      return;
+    }
+    box.innerHTML = list.map(function (item) {
+      var level = item.level || "info";
+      return '<article class="smart-insight-item level-' + escapeHtml(level) + '">'
+        + '<div class="smart-insight-dot"></div>'
+        + '<div class="smart-insight-body">'
+        +   '<strong>' + escapeHtml(item.title || "经营提醒") + '</strong>'
+        +   '<p>' + escapeHtml(item.content || "") + '</p>'
+        + '</div>'
+        + (item.actionUrl ? '<a class="link-btn" href="' + escapeHtml(item.actionUrl) + '">' + escapeHtml(item.actionText || "去处理") + '</a>' : '')
+      + '</article>';
+    }).join("");
   }
 
   function setStatCard(card, label, value, change) {
@@ -685,10 +836,17 @@
       var goods = (order.items || []).map(function (item) {
         return item.productName + " x" + item.quantity;
       }).join("，");
-      var action = order.status === "WAITING_PICKUP"
-        ? '<button class="link-btn" type="button" data-complete-order="' + escapeHtml(order.id) + '">完成</button> ' +
-          '<button class="link-btn" type="button" data-cancel-order="' + escapeHtml(order.id) + '">取消</button>'
-        : '<button class="link-btn" type="button" data-show-order="' + escapeHtml(order.id) + '">详情</button>';
+      var action = "";
+      if (order.status === "MAKING") {
+        var readyText = order.pickupType === "DELIVERY" ? "开始配送" : "出餐";
+        action = '<button class="link-btn" type="button" data-ready-order="' + escapeHtml(order.id) + '">' + readyText + '</button> ' +
+          '<button class="link-btn" type="button" data-cancel-order="' + escapeHtml(order.id) + '">取消</button>';
+      } else if (order.status === "WAITING_PICKUP" || order.status === "DELIVERING") {
+        action = '<button class="link-btn" type="button" data-complete-order="' + escapeHtml(order.id) + '">完成</button> ' +
+          '<button class="link-btn" type="button" data-cancel-order="' + escapeHtml(order.id) + '">取消</button>';
+      } else {
+        action = '<button class="link-btn" type="button" data-show-order="' + escapeHtml(order.id) + '">详情</button>';
+      }
       return '<tr data-status="' + statusFilter(order.status) + '">' +
         '<td>' + escapeHtml(order.orderNo) + '</td>' +
         '<td>' + escapeHtml(userName(order.userId)) + '</td>' +
@@ -708,17 +866,19 @@
       return;
     }
     var waiting = 0;
+    var making = 0;
     var completed = 0;
     var canceled = 0;
     var totalAmount = 0;
     (orders || []).forEach(function (order) {
-      if (order.status === "WAITING_PICKUP") waiting += 1;
+      if (order.status === "MAKING") making += 1;
+      if (order.status === "WAITING_PICKUP" || order.status === "DELIVERING") waiting += 1;
       if (order.status === "COMPLETED") completed += 1;
       if (order.status === "CANCELED") canceled += 1;
       if (order.status !== "CANCELED") totalAmount += Number(order.payableAmount || 0);
     });
     var values = {
-      waiting: waiting,
+      waiting: making + waiting,
       completed: completed,
       canceled: canceled,
       amount: money(totalAmount)
@@ -733,9 +893,22 @@
   }
 
   function handleOrderTableClick(event) {
+    var ready = event.target.closest("[data-ready-order]");
     var complete = event.target.closest("[data-complete-order]");
     var cancel = event.target.closest("[data-cancel-order]");
     var show = event.target.closest("[data-show-order]");
+    if (ready) {
+      if (!confirm("确定这笔订单已经制作完成，可以取餐了吗？")) {
+        return;
+      }
+      patch("/admin/orders/" + encodeURIComponent(ready.dataset.readyOrder) + "/ready", {})
+        .then(function () {
+          showToast("已标记出餐，前台显示待取餐");
+          return reloadOrders();
+        })
+        .catch(function (error) { showToast(error.message); });
+      return;
+    }
     if (complete) {
       if (!confirm("确定将该订单标记为已完成吗？")) {
         return;
@@ -772,10 +945,15 @@
     var goods = (order.items || []).map(function (item) {
       return item.productName + " x" + item.quantity + "  " + money(item.price);
     }).join("\n");
+    var deliveryInfo = order.pickupType === "DELIVERY"
+      ? "\n配送地址：" + (order.deliveryAddress || "--") +
+        "\n联系电话：" + (order.deliveryContact || "--") +
+        "\n配送费：" + money(order.deliveryFee || 0)
+      : "";
     var info = "订单号：" + order.orderNo +
       "\n用户：" + userName(order.userId) +
       "\n状态：" + statusText(order.status) +
-      "\n取餐方式：" + pickupText(order.pickupType) +
+      "\n取餐方式：" + pickupText(order.pickupType) + deliveryInfo +
       "\n商品明细：\n" + (goods || "无") +
       "\n\n原价：" + money(order.totalAmount) +
       "\n优惠：-" + money(order.discountAmount) +
@@ -1204,8 +1382,8 @@
           }, 0);
           return '<tr><td>' + escapeHtml(user.nickname) + '</td>' +
             '<td>' + escapeHtml(user.memberLevel) + '</td>' +
-            '<td>' + Number(user.points || 0) + '</td>' +
             '<td>' + Number(user.couponCount || 0) + ' 张</td>' +
+            '<td>' + money(user.savingAmount || 0) + '</td>' +
             '<td>' + money(paid) + '</td>' +
             '<td><span class="status green">正常</span></td></tr>';
         }).join("") || '<tr><td colspan="6" class="muted-cell">暂无用户数据</td></tr>';
@@ -1217,6 +1395,298 @@
           showLoading(tableBody, "加载失败，请刷新重试");
         }
       });
+  }
+
+  function initSupportPage() {
+    if (document.body.dataset.page !== "support") {
+      return;
+    }
+    var tableBody = $("#supportTable tbody");
+    showLoading(tableBody, "正在加载客服工单...");
+    reloadSupportTickets().catch(function (error) {
+      showToast(error.message);
+      showLoading(tableBody, "加载失败，请刷新重试");
+    });
+    var cleanButton = $("[data-clean-test-support]");
+    if (cleanButton) {
+      cleanButton.addEventListener("click", function () {
+        if (!confirm("确定清理历史调试产生的未回复客服工单吗？已回复和已关闭记录不会删除。")) {
+          return;
+        }
+        cleanButton.disabled = true;
+        del("/admin/support-tickets/test-records")
+          .then(function (result) {
+            showToast("已清理 " + Number(result.deleted || 0) + " 条测试工单");
+            return reloadSupportTickets();
+          })
+          .catch(function (error) {
+            showToast(error.message);
+          })
+          .finally(function () {
+            cleanButton.disabled = false;
+          });
+      });
+    }
+  }
+
+  function reloadSupportTickets() {
+    return get("/admin/support-tickets").then(function (tickets) {
+      state.supportTickets = tickets || [];
+      renderSupportKpis();
+      renderSupportTable();
+    });
+  }
+
+  function renderSupportKpis() {
+    var pending = 0;
+    var replied = 0;
+    var closed = 0;
+    state.supportTickets.forEach(function (ticket) {
+      if (ticket.status === "PENDING") pending += 1;
+      if (ticket.status === "REPLIED") replied += 1;
+      if (ticket.status === "CLOSED") closed += 1;
+    });
+    setSupportKpi("pending", pending);
+    setSupportKpi("replied", replied);
+    setSupportKpi("closed", closed);
+    setSupportKpi("total", state.supportTickets.length);
+  }
+
+  function setSupportKpi(key, value) {
+    var card = $('[data-support-kpi="' + key + '"]');
+    if (!card) {
+      return;
+    }
+    var valueNode = $(".support-kpi-value", card);
+    if (valueNode) {
+      valueNode.textContent = value;
+    }
+  }
+
+  function renderSupportTable() {
+    var tableBody = $("#supportTable tbody");
+    if (!tableBody) {
+      return;
+    }
+    if (!state.supportTickets.length) {
+      showLoading(tableBody, "暂无客服工单");
+      return;
+    }
+    tableBody.innerHTML = state.supportTickets.map(function (ticket) {
+      var user = ticket.userNickname || (ticket.userId ? "用户 " + ticket.userId.slice(-6) : "游客用户");
+      var orderText = ticket.orderNo || ticket.orderId || "未关联";
+      var reply = ticket.replyContent
+        ? '<span class="support-reply-cell">已回复：' + escapeHtml(ticket.replyContent) + '</span>'
+        : '<span class="support-reply-cell is-muted">未回复，打开会话处理</span>';
+      var actions = '<button class="link-btn" type="button" data-show-support="' + escapeHtml(ticket.id) + '">查看会话</button>';
+      if (ticket.status !== "CLOSED") {
+        actions += '<button class="link-btn" type="button" data-reply-support="' + escapeHtml(ticket.id) + '">回复</button>' +
+          '<button class="link-btn" type="button" data-close-support="' + escapeHtml(ticket.id) + '">关闭</button>';
+      } else {
+        actions += '<button class="link-btn" type="button" disabled style="opacity:0.5;cursor:not-allowed">已关闭</button>';
+      }
+      return '<tr data-status="' + supportStatusFilter(ticket.status) + '">' +
+        '<td>' + escapeHtml(user) + '</td>' +
+        '<td>' + escapeHtml(supportTypeText(ticket.type)) + '</td>' +
+        '<td>' + escapeHtml(orderText) + '</td>' +
+        '<td class="support-content-cell">' + escapeHtml(ticket.content) + reply + '</td>' +
+        '<td><span class="status ' + supportStatusClass(ticket.status) + '">' + supportStatusText(ticket.status) + '</span></td>' +
+        '<td>' + escapeHtml(shortTime(ticket.createdAt)) + '</td>' +
+        '<td class="mini-actions">' + actions + '</td>' +
+      '</tr>';
+    }).join("");
+    tableBody.onclick = handleSupportTableClick;
+  }
+
+  function handleSupportTableClick(event) {
+    var showButton = event.target.closest("[data-show-support]");
+    var replyButton = event.target.closest("[data-reply-support]");
+    var closeButton = event.target.closest("[data-close-support]");
+    if (showButton) {
+      var showTicket = findSupportTicket(showButton.dataset.showSupport);
+      if (showTicket) {
+        showSupportConversation(showTicket, false);
+      }
+      return;
+    }
+    if (replyButton) {
+      var ticket = findSupportTicket(replyButton.dataset.replySupport);
+      if (!ticket) {
+        return;
+      }
+      showSupportConversation(ticket, true);
+      return;
+    }
+    if (closeButton) {
+      var id = closeButton.dataset.closeSupport;
+      if (!confirm("确定关闭这条客服工单吗？关闭后不能继续回复。")) {
+        return;
+      }
+      closeButton.disabled = true;
+      patch("/admin/support-tickets/" + encodeURIComponent(id) + "/close", {})
+        .then(function () {
+          showToast("客服工单已关闭");
+          return reloadSupportTickets();
+        })
+        .catch(function (error) {
+          showToast(error.message);
+        })
+        .finally(function () {
+          closeButton.disabled = false;
+        });
+    }
+  }
+
+  function findSupportTicket(id) {
+    return state.supportTickets.find(function (item) {
+      return item.id === id;
+    });
+  }
+
+  function supportConversationTickets(ticket) {
+    var list = state.supportTickets.filter(function (item) {
+      if (ticket.userId && item.userId) {
+        return item.userId === ticket.userId;
+      }
+      if (ticket.orderId && item.orderId) {
+        return item.orderId === ticket.orderId;
+      }
+      return item.id === ticket.id;
+    });
+    return list.sort(function (a, b) {
+      return String(a.createdAt || "").localeCompare(String(b.createdAt || ""));
+    });
+  }
+
+  function ensureSupportDialog() {
+    var dialog = $("#supportConversationDialog");
+    if (dialog) {
+      return dialog;
+    }
+    var wrapper = document.createElement("div");
+    wrapper.id = "supportConversationDialog";
+    wrapper.className = "support-dialog";
+    wrapper.hidden = true;
+    wrapper.innerHTML = [
+      '<div class="support-dialog-mask" data-close-support-dialog></div>',
+      '<section class="support-dialog-panel" role="dialog" aria-modal="true" aria-label="客服完整会话">',
+      '  <header class="support-dialog-head">',
+      '    <div><strong data-support-dialog-title>客户会话</strong><span data-support-dialog-sub>完整聊天记录</span></div>',
+      '    <button class="link-btn" type="button" data-close-support-dialog>关闭</button>',
+      '  </header>',
+      '  <div class="support-dialog-body" data-support-dialog-body></div>',
+      '  <footer class="support-dialog-reply" data-support-dialog-reply></footer>',
+      '</section>'
+    ].join("");
+    document.body.appendChild(wrapper);
+    wrapper.addEventListener("click", function (event) {
+      if (event.target.closest("[data-close-support-dialog]")) {
+        hideSupportConversation();
+      }
+      var submit = event.target.closest("[data-submit-support-reply]");
+      if (submit) {
+        submitSupportDialogReply(submit);
+      }
+    });
+    return wrapper;
+  }
+
+  function supportUserName(ticket) {
+    return ticket.userNickname || (ticket.userId ? "用户 " + ticket.userId.slice(-6) : "游客用户");
+  }
+
+  function showSupportConversation(ticket, focusReply) {
+    state.activeSupportTicketId = ticket.id;
+    var dialog = ensureSupportDialog();
+    var title = $("[data-support-dialog-title]", dialog);
+    var sub = $("[data-support-dialog-sub]", dialog);
+    var body = $("[data-support-dialog-body]", dialog);
+    var reply = $("[data-support-dialog-reply]", dialog);
+    var list = supportConversationTickets(ticket);
+    if (title) title.textContent = supportUserName(ticket);
+    if (sub) {
+      sub.textContent = (ticket.orderNo ? "订单 " + ticket.orderNo + " · " : "") + list.length + " 条客服消息";
+    }
+    if (body) {
+      body.innerHTML = list.map(function (item) {
+        var receipt = item.status === "PENDING" ? "未读" : "已读";
+        var serviceText = item.replyContent || "客服暂未回复，待处理。";
+        var serviceLabel = item.replyContent ? "客服回复" : "等待客服";
+        return [
+          '<article class="support-dialog-message">',
+          '  <div class="support-dialog-bubble user">',
+          '    <div class="support-dialog-meta"><span>' + escapeHtml(supportTypeText(item.type)) + '</span><em>' + escapeHtml(supportStatusText(item.status)) + '</em></div>',
+          '    <p>' + escapeHtml(item.content) + '</p>',
+          '    <small>' + escapeHtml(chatTime(item.createdAt)) + ' · ' + escapeHtml(receipt) + '</small>',
+          '  </div>',
+          '  <div class="support-dialog-bubble service ' + supportStatusFilter(item.status) + '">',
+          '    <div class="support-dialog-meta"><span>' + escapeHtml(serviceLabel) + '</span></div>',
+          '    <p>' + escapeHtml(serviceText) + '</p>',
+          '    <small>' + escapeHtml(chatTime(item.repliedAt || item.closedAt || item.createdAt)) + '</small>',
+          '  </div>',
+          '</article>'
+        ].join("");
+      }).join("");
+      body.scrollTop = body.scrollHeight;
+    }
+    renderSupportDialogReply(ticket, reply);
+    dialog.hidden = false;
+    document.body.classList.add("dialog-open");
+    if (focusReply) {
+      setTimeout(function () {
+        var textarea = $("[data-support-dialog-textarea]", dialog);
+        if (textarea && !textarea.disabled) textarea.focus();
+      }, 0);
+    }
+  }
+
+  function renderSupportDialogReply(ticket, node) {
+    if (!node) return;
+    if (ticket.status === "CLOSED") {
+      node.innerHTML = '<div class="support-dialog-closed">该工单已关闭，不能继续回复。</div>';
+      return;
+    }
+    node.innerHTML = [
+      '<textarea data-support-dialog-textarea placeholder="输入回复内容，用户前台会直接看到"></textarea>',
+      '<button class="btn primary" type="button" data-submit-support-reply="' + escapeHtml(ticket.id) + '">发送回复</button>'
+    ].join("");
+  }
+
+  function hideSupportConversation() {
+    var dialog = $("#supportConversationDialog");
+    if (dialog) {
+      dialog.hidden = true;
+    }
+    state.activeSupportTicketId = "";
+    document.body.classList.remove("dialog-open");
+  }
+
+  function submitSupportDialogReply(button) {
+    var dialog = $("#supportConversationDialog");
+    var ticketId = button.dataset.submitSupportReply;
+    var ticket = findSupportTicket(ticketId);
+    var textarea = dialog ? $("[data-support-dialog-textarea]", dialog) : null;
+    var text = textarea ? textarea.value.trim() : "";
+    if (!ticket || !text) {
+      showToast("请输入回复内容");
+      return;
+    }
+    button.disabled = true;
+    patch("/admin/support-tickets/" + encodeURIComponent(ticket.id) + "/reply", {
+      replyContent: text
+    }).then(function () {
+      showToast("已回复，用户前台可查看");
+      return reloadSupportTickets();
+    }).then(function () {
+      var latest = findSupportTicket(ticket.id);
+      if (latest) {
+        showSupportConversation(latest, false);
+      }
+    }).catch(function (error) {
+      showToast(error.message);
+    }).finally(function () {
+      button.disabled = false;
+    });
   }
 
   function initAnalyticsPage() {
@@ -1325,13 +1795,13 @@
       return Number(b.sales || 0) - Number(a.sales || 0);
     })[0];
     var waitingCount = (orders || []).filter(function (order) {
-      return order.status === "WAITING_PICKUP";
+      return order.status === "MAKING" || order.status === "WAITING_PICKUP" || order.status === "DELIVERING";
     }).length;
     var paragraphs = $all("p.muted", noteCard);
     if (paragraphs[0]) {
       paragraphs[0].textContent = waitingCount
-        ? "当前还有 " + waitingCount + " 笔待取餐订单，建议优先处理订单管理页。"
-        : "当前没有待取餐订单，订单处理压力较低。";
+        ? "当前还有 " + waitingCount + " 笔待处理订单，建议优先处理订单管理页。"
+        : "当前没有待处理订单，订单处理压力较低。";
     }
     if (paragraphs[1]) {
       paragraphs[1].textContent = hotProduct
@@ -1358,6 +1828,7 @@
     initCouponsPage();
     initActivitiesPage();
     initUsersPage();
+    initSupportPage();
     initAnalyticsPage();
   });
 })();

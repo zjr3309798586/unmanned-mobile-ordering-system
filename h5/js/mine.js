@@ -3,7 +3,7 @@
  *
  * 主要职责:
  *   1. 顶部 hero 区:显示昵称和登录提示文案(未登录 → "点这里登录";已登录 → "点这里退出")
- *   2. 资产数字:券数 / 积分 / 余额,来自 /api/mine
+ *   2. 资产数字:券数 / 已省金额 / 余额,来自 /api/mine
  *   3. 订单待取餐徽章:统计 /api/orders 里 WAITING_PICKUP 的数量
  *   4. 登录入口:点 hero 区 → 弹 prompt 输入昵称做 devLogin;已登录则 confirm 退出
  *
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var heroTitle = document.querySelector(".hero-title");
   var heroSubtitle = document.querySelector(".hero-subtitle");
   var couponNum = document.querySelector('[data-asset="coupon"]');
-  var pointsNum = document.querySelector('[data-asset="points"]');
+  var savingNum = document.querySelector('[data-asset="saving"]');
   var balanceNum = document.querySelector('[data-asset="balance"]');
   var orderBadge = document.querySelector('[data-order-badge="pickup"]');
 
@@ -36,7 +36,9 @@ document.addEventListener("DOMContentLoaded", function () {
     setText(heroTitle, nickname);
     setText(heroSubtitle, isGuest ? "游客模式 · 可点这里退出或切换账号" : "已登录 · 同步订单与会员权益");
     setText(couponNum, user.couponCount != null ? user.couponCount : 0);
-    setText(pointsNum, user.points != null ? user.points : 0);
+    if (savingNum && app && app.money) {
+      savingNum.textContent = app.money(user.savingAmount);
+    }
     // 余额需要格式化成 "¥ X.XX",用 app.money;app 没加载时跳过
     if (balanceNum && app && app.money) {
       balanceNum.textContent = app.money(user.balance);
@@ -51,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!orderBadge) return;
     var list = orders || [];
     var waiting = list.filter(function (o) {
-      return o.status === "WAITING_PICKUP";
+      return o.status === "WAITING_PICKUP" || o.status === "DELIVERING";
     }).length;
     if (waiting > 0) {
       orderBadge.textContent = waiting;

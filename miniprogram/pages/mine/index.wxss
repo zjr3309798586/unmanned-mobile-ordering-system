@@ -30,8 +30,8 @@ page { background: #f5faff; }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80rpx;
-  height: 80rpx;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background: rgba(255,255,255,0.7);
   box-shadow: 0 8rpx 28rpx rgba(70,110,170,0.12);
@@ -135,7 +135,7 @@ page { background: #f5faff; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 68rpx;
+  min-height: 88rpx;
   padding: 0 24rpx;
   border-radius: 999rpx;
   border: 2rpx solid #adc7ff;
@@ -347,43 +347,134 @@ page { background: #f5faff; }
   opacity: 0.7;
 }
 
-.bottom-nav {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  z-index: 10;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0,1fr));
-  min-height: 156rpx;
-  padding: 16rpx 16rpx calc(16rpx + env(safe-area-inset-bottom));
-  background: rgba(255,255,255,0.96);
-  border-top: 1rpx solid rgba(0,91,191,0.1);
-  box-shadow: 0 -16rpx 40rpx rgba(0,91,191,0.08);
+/* UI polish: refine profile page spacing without changing sections. */
+.mine-shell {
+  padding-bottom: 188rpx;
 }
 
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4rpx;
-  color: #5c6a80;
-  font-size: 24rpx;
+.mine-hero {
+  min-height: 520rpx;
+  padding: 34rpx 40rpx 64rpx;
 }
 
-.nav-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 68rpx;
-  height: 68rpx;
+.hero-profile {
+  gap: 24rpx;
+  margin-top: 136rpx;
 }
 
-.nav-logo-icon {
-  width: 56rpx;
-  height: 56rpx;
-  filter: grayscale(1) brightness(0.55);
-  opacity: 0.9;
+.hero-avatar {
+  width: 172rpx;
+  height: 172rpx;
 }
 
-.nav-item.is-active { color: #005bbf; }
-.nav-item.is-active .nav-logo-icon { filter: none; opacity: 1; }
+.hero-title {
+  font-size: 50rpx;
+  line-height: 1.12;
+}
+
+.hero-subtitle {
+  margin-top: 12rpx;
+  line-height: 1.45;
+}
+
+.mine-main {
+  margin-top: -12rpx;
+  padding: 0 28rpx;
+  gap: 24rpx;
+}
+
+.member-card,
+.asset-card,
+.orders-card,
+.features-card,
+.story-card {
+  border: 1rpx solid rgba(31, 111, 255, 0.08);
+  box-shadow: 0 20rpx 52rpx rgba(31, 111, 255, 0.08);
+}
+
+.member-card {
+  grid-template-columns: 96rpx minmax(0,1fr) auto;
+  gap: 22rpx;
+  padding: 30rpx;
+}
+
+.member-icon {
+  width: 92rpx;
+  height: 92rpx;
+}
+
+.member-title-line {
+  font-size: 36rpx;
+  line-height: 1.2;
+}
+
+.member-sub {
+  font-size: 22rpx;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.member-btn {
+  padding: 0 22rpx;
+}
+
+.asset-card,
+.orders-card,
+.features-card {
+  padding: 32rpx;
+}
+
+.block-title {
+  margin-bottom: 26rpx;
+  line-height: 1.22;
+}
+
+.asset-grid {
+  gap: 10rpx;
+}
+
+.asset-item {
+  grid-template-columns: 72rpx minmax(0,1fr);
+  column-gap: 12rpx;
+}
+
+.asset-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 22rpx;
+}
+
+.asset-icon image {
+  width: 42rpx;
+  height: 42rpx;
+}
+
+.asset-num {
+  font-size: 34rpx;
+}
+
+.asset-label,
+.order-label,
+.feature-label {
+  line-height: 1.28;
+}
+
+.orders-grid,
+.features-grid {
+  gap: 10rpx;
+}
+
+.feature-item {
+  min-height: 128rpx;
+  gap: 12rpx;
+  padding: 12rpx 2rpx;
+}
+
+.story-row {
+  gap: 16rpx;
+}
+
+.story-card {
+  min-height: 224rpx;
+  padding: 28rpx 24rpx;
+}

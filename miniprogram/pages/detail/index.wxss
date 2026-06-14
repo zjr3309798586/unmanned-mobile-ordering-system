@@ -10,15 +10,15 @@ page { background: #f7f8fa; }
 /* 顶部图区 */
 .d-img-wrap { position: relative; width: 100%; aspect-ratio: 1 / 1; background: #fff; }
 .d-topbar { position: absolute; top: 0; left: 0; width: 100%; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 32rpx; }
-.d-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 64rpx; height: 64rpx; border-radius: 50%; background: rgba(255,255,255,0.5); }
-.d-back-arr { font-size: 48rpx; font-weight: 300; color: #191c23; line-height: 1; }
-.d-share-arr { font-size: 32rpx; color: #191c23; }
+.d-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 88rpx; height: 88rpx; border-radius: 50%; background: rgba(255,255,255,0.5); }
+.d-icon-img { width: 40rpx; height: 40rpx; }
+.d-icon-img.is-share { width: 36rpx; height: 36rpx; }
 .d-top-right { display: flex; align-items: center; gap: 16rpx; }
-.d-top-pill { display: inline-flex; align-items: center; height: 64rpx; padding: 0 20rpx; border-radius: 999rpx; background: rgba(255,255,255,0.5); border: 1rpx solid rgba(229,231,235,0.6); }
+.d-top-pill { display: inline-flex; align-items: center; min-height: 88rpx; padding: 0 24rpx; border-radius: 999rpx; background: rgba(255,255,255,0.5); border: 1rpx solid rgba(229,231,235,0.6); }
 .d-pill-dots { display: inline-flex; gap: 6rpx; }
 .d-dot { width: 10rpx; height: 10rpx; border-radius: 50%; background: #191c23; }
 .d-pill-sep { width: 2rpx; height: 28rpx; background: #d1d5db; margin: 0 16rpx; }
-.d-pill-loc { font-size: 28rpx; color: #191c23; }
+.d-pill-loc { width: 32rpx; height: 32rpx; }
 .d-hero-img { width: 100%; height: 100%; background: #fff; }
 
 /* 主体 */
@@ -29,7 +29,7 @@ page { background: #f7f8fa; }
 .d-name { font-size: 44rpx; font-weight: 700; color: #191c23; letter-spacing: -0.5rpx; margin-bottom: 12rpx; display: block; }
 .d-desc { font-size: 24rpx; color: #414754; line-height: 1.6; }
 
-.d-fav { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; color: #414754; flex-shrink: 0; }
+.d-fav { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: 104rpx; min-height: 104rpx; color: #414754; flex-shrink: 0; }
 .d-fav-icon { font-size: 36rpx; }
 .d-fav-label { margin-top: 4rpx; font-size: 20rpx; font-weight: 500; }
 .d-fav.is-active { color: #f5a623; }
@@ -44,7 +44,7 @@ page { background: #f7f8fa; }
 .d-opt-star { color: #ef4444; margin-left: 4rpx; }
 .d-opt-btns { flex: 1 1 auto; display: flex; flex-wrap: wrap; gap: 24rpx; }
 
-.d-opt-btn { position: relative; padding: 16rpx 40rpx; border-radius: 999rpx; border: 2rpx solid transparent; background: #f3f4f6; color: #191c23; font-size: 28rpx; font-weight: 400; }
+.d-opt-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 88rpx; padding: 0 40rpx; border-radius: 999rpx; border: 2rpx solid transparent; background: #f3f4f6; color: #191c23; font-size: 28rpx; font-weight: 400; }
 .d-opt-btn.is-active { background: #f0f7ff; border-color: #1a73e8; color: #1a73e8; font-weight: 500; }
 .d-opt-btn.is-active::after { content: "✓"; position: absolute; top: -8rpx; right: -8rpx; width: 32rpx; height: 32rpx; border-radius: 50%; background: #1a73e8; color: #fff; font-size: 20rpx; display: flex; align-items: center; justify-content: center; }
 
@@ -61,7 +61,7 @@ page { background: #f7f8fa; }
 .d-pr-origin { margin-left: 12rpx; color: #414754; font-size: 26rpx; text-decoration: line-through; opacity: 0.5; }
 
 .d-qty { display: inline-flex; align-items: center; gap: 24rpx; padding: 8rpx; border-radius: 999rpx; background: #f3f4f6; }
-.d-qty-minus, .d-qty-plus { display: inline-flex; align-items: center; justify-content: center; width: 56rpx; height: 56rpx; border-radius: 50%; font-size: 32rpx; line-height: 1; }
+.d-qty-minus, .d-qty-plus { display: inline-flex; align-items: center; justify-content: center; width: 88rpx; height: 88rpx; border-radius: 50%; font-size: 38rpx; line-height: 1; }
 .d-qty-minus { background: transparent; color: #414754; }
 .d-qty-plus { background: #005bbf; color: #fff; }
 .d-qty-num { min-width: 36rpx; text-align: center; font-size: 32rpx; font-weight: 500; color: #191c23; }
@@ -69,3 +69,82 @@ page { background: #f7f8fa; }
 .d-spec-summary { color: #999; font-size: 24rpx; margin-bottom: 24rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .d-cta { width: 100%; padding: 28rpx 0; border-radius: 999rpx; background: #005bbf; color: #fff; font-size: 32rpx; font-weight: 700; text-align: center; box-shadow: 0 16rpx 40rpx rgba(0,91,191,0.2); }
+
+/* UI polish: product detail spacing and option readability. */
+.detail-shell {
+  padding-bottom: 440rpx;
+}
+
+.d-topbar {
+  padding: 28rpx;
+}
+
+.d-main {
+  margin-top: -42rpx;
+  padding: 42rpx 28rpx 42rpx;
+}
+
+.d-head-row {
+  gap: 20rpx;
+  margin-bottom: 22rpx;
+}
+
+.d-name {
+  line-height: 1.18;
+}
+
+.d-desc,
+.d-spec-summary {
+  line-height: 1.48;
+}
+
+.d-divider {
+  margin: 38rpx 0;
+}
+
+.d-options {
+  gap: 38rpx;
+}
+
+.d-opt-row {
+  gap: 24rpx;
+}
+
+.d-opt-label {
+  width: 104rpx;
+  padding-top: 14rpx;
+  line-height: 1.3;
+}
+
+.d-opt-btns {
+  gap: 18rpx;
+}
+
+.d-opt-btn {
+  min-height: 84rpx;
+  padding: 0 34rpx;
+}
+
+.d-footer {
+  padding: 22rpx 28rpx calc(28rpx + env(safe-area-inset-bottom));
+}
+
+.d-foot-row {
+  margin-bottom: 10rpx;
+}
+
+.d-qty {
+  gap: 18rpx;
+}
+
+.d-qty-minus,
+.d-qty-plus {
+  width: 84rpx;
+  height: 84rpx;
+}
+
+.d-cta {
+  min-height: 92rpx;
+  padding: 0;
+  line-height: 92rpx;
+}

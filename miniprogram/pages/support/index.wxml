@@ -1,0 +1,120 @@
+<view class="support-shell">
+  <view class="support-top">
+    <view class="support-back" bindtap="goBack">‹</view>
+    <view class="support-title-group">
+      <text class="support-title">云豹客服</text>
+      <view class="support-title-sub"><text class="online-dot"></text>智能助手在线</view>
+    </view>
+    <view class="support-top-link" bindtap="loadPage">刷新</view>
+  </view>
+
+  <view class="support-main support-chat-main">
+    <view class="support-chat-head">
+      <image class="support-chat-avatar" src="/images/mascot/mascot-yunbao-144.png" mode="aspectFill"/>
+      <view>
+        <text class="support-card-title">云豹小点·校园店</text>
+        <view class="support-card-sub">营业中 · 08:00-22:30 · 平均 30 秒响应</view>
+      </view>
+      <view class="support-service-status">可转人工</view>
+    </view>
+
+    <view class="support-chat-panel">
+      <view class="support-date-divider">今天</view>
+      <view class="support-bot-thread">
+        <view class="support-chat-item">
+          <view class="support-bubble-row is-service">
+            <image class="service-avatar" src="/images/mascot/mascot-yunbao-144.png" mode="aspectFill"/>
+            <view class="support-bubble support-bot-bubble">
+              <view class="bubble-head">
+                <text>智能助手</text>
+                <text class="bubble-pill">自动回复</text>
+              </view>
+              <text class="bubble-content">你好，我是云豹小点智能助手。你可以直接描述问题，我会先帮你快速解答；如果没有解决，再转给员工继续处理。</text>
+              <view class="support-service-card">
+                <text>常见服务</text>
+                <text>取餐进度、优惠券、订单取消、商品问题都可以处理</text>
+              </view>
+              <view class="bot-action-row">
+                <button wx:for="{{quickButtons}}" wx:key="key" type="default" data-key="{{item.key}}" bindtap="askQuick">{{item.label}}</button>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="support-chat-item" wx:for="{{botMessages}}" wx:key="id">
+          <view class="support-bubble-row {{item.role === 'user' ? 'is-user' : 'is-service'}}">
+            <image wx:if="{{item.role !== 'user'}}" class="service-avatar" src="/images/mascot/mascot-yunbao-144.png" mode="aspectFill"/>
+            <view class="support-bubble {{item.role !== 'user' ? 'support-bot-bubble' : ''}}">
+              <view class="bubble-head" wx:if="{{item.role !== 'user'}}">
+                <text>{{item.title}}</text>
+                <text class="bubble-pill">{{item.subtitle}}</text>
+              </view>
+              <text class="bubble-content">{{item.content}}</text>
+              <view class="message-footer" wx:if="{{item.role === 'user'}}">
+                <text>{{item.time}}</text>
+                <text class="message-receipt {{item.receiptClass}}">{{item.receiptText}}</text>
+              </view>
+              <view class="service-time" wx:if="{{item.role !== 'user'}}">{{item.time}}</view>
+              <view class="bot-action-row" wx:if="{{item.withTransfer}}">
+                <button class="is-primary" type="default" loading="{{submitting}}" disabled="{{submitting}}" bindtap="transferHuman">没解决，转人工</button>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="support-inline-thread">
+        <view class="support-loading" wx:if="{{loading}}">正在加载人工客服消息...</view>
+        <view class="support-chat-list" wx:if="{{!loading && tickets.length}}">
+          <view class="support-chat-item" wx:for="{{tickets}}" wx:key="id">
+            <view class="support-bubble-row is-user">
+              <view class="support-bubble">
+                <view class="bubble-head">
+                  <text>{{item.typeText}}</text>
+                  <text>{{item.statusText}}</text>
+                </view>
+                <text class="bubble-content">{{item.content}}</text>
+                <view class="message-footer">
+                  <text>{{item.meta}}</text>
+                  <text class="message-receipt {{item.receiptClass}}">{{item.receiptText}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="support-bubble-row is-service">
+              <image class="service-avatar" src="/images/mascot/mascot-yunbao-144.png" mode="aspectFill"/>
+              <view class="support-bubble support-bot-bubble {{item.statusClass}}">
+                <view class="bubble-head">
+                  <text>{{item.replyLabel}}</text>
+                </view>
+                <text class="bubble-content">{{item.replyText}}</text>
+                <view class="service-time">{{item.serviceTime}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="support-empty" wx:if="{{!loading && !tickets.length}}">
+          <text class="empty-title">暂无人工客服消息</text>
+          <text class="empty-sub">机器人没有解决时，点击“没解决，转人工”，员工回复会直接出现在当前对话里。</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="support-composer">
+    <view class="composer-tools" wx:if="{{toolsOpen}}">
+      <view class="composer-tool-title">更多信息可选填，方便员工更快处理</view>
+      <picker mode="selector" range="{{typeOptions}}" range-key="label" value="{{typeIndex}}" bindchange="changeType">
+        <view class="picker-value">{{selectedTypeLabel}}</view>
+      </picker>
+      <picker mode="selector" range="{{orderOptions}}" range-key="label" value="{{orderIndex}}" bindchange="changeOrder">
+        <view class="picker-value">{{selectedOrderLabel}}</view>
+      </picker>
+      <input class="support-input" maxlength="100" value="{{contact}}" placeholder="联系方式选填" bindinput="inputContact"/>
+    </view>
+    <view class="composer-input-row">
+      <button class="composer-more-btn {{toolsOpen ? 'is-open' : ''}}" type="default" bindtap="toggleTools">{{toolsOpen ? '×' : '+'}}</button>
+      <textarea class="support-textarea" maxlength="1000" value="{{content}}" placeholder="请输入问题，像聊天一样发送" bindinput="inputContent"/>
+      <button class="support-submit" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitTicket">发送</button>
+    </view>
+  </view>
+</view>
