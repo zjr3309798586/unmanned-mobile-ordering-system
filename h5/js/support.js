@@ -125,10 +125,13 @@ document.addEventListener("DOMContentLoaded", function () {
     return status === "PENDING" ? "is-unread" : "is-read";
   }
 
+  var scrollTimer = null;
+
   function scrollChatToBottom() {
-    window.requestAnimationFrame(function () {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    });
+    window.clearTimeout(scrollTimer);
+    scrollTimer = window.setTimeout(function () {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "auto" });
+    }, 60);
   }
 
   function classifyQuestion(content) {
@@ -255,7 +258,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderTickets(tickets) {
-    var list = Array.isArray(tickets) ? tickets : [];
+    var list = Array.isArray(tickets)
+      ? tickets.slice().sort(function (a, b) {
+        return String(a.createdAt || "").localeCompare(String(b.createdAt || ""));
+      })
+      : [];
     if (!list.length) {
       if (listNode) listNode.innerHTML = "";
       if (emptyNode) emptyNode.hidden = false;

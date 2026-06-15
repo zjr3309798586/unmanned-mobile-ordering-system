@@ -71,7 +71,7 @@
     <view class="home-divider"></view>
 
     <view class="quick-grid">
-      <navigator class="qg-item" url="/pages/menu/index" open-type="redirect">
+      <navigator class="qg-item" url="/pages/menu/index" open-type="reLaunch">
         <view class="qg-icon qg-icon-99">
           <text class="qg-99-num">9.9</text>
           <text class="qg-99-tag">喝咖啡</text>
@@ -79,7 +79,7 @@
         <text class="qg-h">高品质咖啡</text>
         <text class="qg-sub">全场9.9</text>
       </navigator>
-      <navigator class="qg-item" url="/pages/saving-card/index" open-type="redirect">
+      <navigator class="qg-item" url="/pages/saving-card/index" open-type="reLaunch">
         <view class="qg-icon qg-icon-30">
           <text class="qg-30-num">领30元</text>
           <text class="qg-30-tag">券</text>
@@ -87,7 +87,7 @@
         <text class="qg-h">领30元券包</text>
         <text class="qg-sub">加入社群</text>
       </navigator>
-      <navigator class="qg-item" url="/pages/saving-card/index" open-type="redirect">
+      <navigator class="qg-item" url="/pages/saving-card/index" open-type="reLaunch">
         <view class="qg-icon qg-icon-coupon">
           <view class="qg-coupon-shape">
             <view class="qg-coupon-box"></view>
@@ -97,7 +97,7 @@
         <text class="qg-h">领券中心</text>
         <text class="qg-sub">专享福利</text>
       </navigator>
-      <navigator class="qg-item" url="/pages/saving-card/index" open-type="redirect">
+      <navigator class="qg-item" url="/pages/saving-card/index" open-type="reLaunch">
         <view class="qg-icon qg-icon-code">
           <view class="qg-code-shape">
             <view class="qg-code-line"></view>
@@ -114,11 +114,11 @@
           <text class="home-eyebrow">Popular</text>
           <text class="home-section-title">热门推荐</text>
         </view>
-        <navigator class="home-section-more" url="/pages/menu/index" open-type="redirect">查看全部</navigator>
+        <navigator class="home-section-more" url="/pages/menu/index" open-type="reLaunch">查看全部</navigator>
       </view>
       <scroll-view class="home-product-row" scroll-x="true" show-scrollbar="false">
         <navigator class="home-product-card" wx:for="{{recommendProducts}}" wx:key="id" url="/pages/detail/index?id={{item.id}}" open-type="navigate">
-          <image src="{{item.imageUrl}}" mode="aspectFill"/>
+          <image src="{{item.imageUrl}}" mode="aspectFit"/>
           <text class="home-product-tag">{{item.tag}}</text>
           <text class="home-product-name">{{item.name}}</text>
           <text class="home-product-desc">{{item.description}}</text>
@@ -139,10 +139,10 @@
   </view>
 
   <view class="bottom-nav home-bottom-nav">
-    <navigator class="nav-item is-active" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/home/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

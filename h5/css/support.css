@@ -476,6 +476,122 @@
   opacity: 0.58;
 }
 
+/* Final polish: calmer ecommerce-chat rhythm and lower repaint cost. */
+.support-chat-main {
+  padding: 8px 10px 126px;
+}
+
+.support-chat-head {
+  gap: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 0 5px 14px rgba(31, 111, 255, 0.08);
+}
+
+.support-chat-head img,
+.support-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.support-chat-head strong {
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.support-chat-head p {
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.support-service-status {
+  padding: 5px 8px;
+  font-size: 11px;
+}
+
+.support-bot-thread,
+.support-chat-list {
+  gap: 10px;
+}
+
+.support-chat-item {
+  gap: 6px;
+}
+
+.support-bubble-row {
+  gap: 6px;
+}
+
+.support-bubble {
+  max-width: 76%;
+  padding: 9px 10px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(31, 111, 255, 0.055);
+}
+
+.support-bot-bubble {
+  max-width: calc(100% - 38px);
+}
+
+.support-bubble p {
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.support-service-card {
+  margin-top: 8px;
+  padding: 8px;
+}
+
+.bot-action-row {
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.bot-action-row button {
+  min-height: 38px;
+  border-radius: 16px;
+}
+
+.support-inline-thread {
+  gap: 10px;
+}
+
+.support-composer {
+  z-index: 88;
+  padding: 7px 10px calc(7px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -8px 20px rgba(15, 23, 42, 0.07);
+}
+
+.composer-tools {
+  gap: 6px;
+  margin-bottom: 6px;
+  padding: 8px;
+  border-radius: 16px;
+}
+
+.composer-input-row {
+  grid-template-columns: 40px minmax(0, 1fr) 66px;
+  gap: 7px;
+}
+
+.composer-more-btn {
+  width: 40px;
+  height: 40px;
+}
+
+.composer-input-row textarea {
+  min-height: 40px;
+  max-height: 76px;
+  padding: 9px 11px;
+  border-radius: 18px;
+}
+
+.support-submit {
+  min-height: 40px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

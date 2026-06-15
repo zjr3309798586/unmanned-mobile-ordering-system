@@ -153,6 +153,7 @@ Page({
       api.post("/cart/items", { productId: self.data.product.id, spec: spec, quantity: self.data.quantity })
         .then(function () {
           wx.showToast({ title: "已加入购物车", icon: "success" });
+          wx.setStorageSync("openSelectedCartOnMenu", true);
           setTimeout(function () {
             wx.navigateBack({
               delta: 1,

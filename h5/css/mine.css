@@ -327,13 +327,7 @@
 
 .features-grid::before {
   content: "";
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  top: 50%;
-  height: 1px;
-  background: #e6eef9;
-  transform: translateY(-50%);
+  display: none;
 }
 
 .feature-item {

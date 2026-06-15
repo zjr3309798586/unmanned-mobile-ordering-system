@@ -2,8 +2,7 @@
 
   <view class="mine-hero">
     <view class="hero-actions">
-      <view class="hero-icon-btn"><image src="/images/icons/chat.svg" mode="aspectFit"/></view>
-      <view class="hero-icon-btn"><image src="/images/icons/settings.svg" mode="aspectFit"/></view>
+      <navigator class="hero-icon-btn" url="/pages/support/index"><image src="/images/icons/chat.svg" mode="aspectFit"/></navigator>
     </view>
 
     <image class="hero-mascot-cup" src="/images/home/home-mascot-cup.png" mode="widthFix"/>
@@ -25,7 +24,7 @@
         <view class="member-title-line">云豹会员 <text class="member-arrow">›</text></view>
         <view class="member-sub">享专属优惠 · 生日礼遇 · 下单更省</view>
       </view>
-      <navigator class="member-btn" url="/pages/saving-card/index" open-type="redirect">查看会员权益</navigator>
+      <navigator class="member-btn" url="/pages/saving-card/index" open-type="reLaunch">查看会员权益</navigator>
     </view>
 
     <view class="asset-card">
@@ -59,22 +58,22 @@
     <view class="orders-card">
       <view class="block-title">我的订单</view>
       <view class="orders-grid">
-        <navigator class="order-item" url="/pages/order/index" open-type="redirect">
+        <navigator class="order-item" url="/pages/order/index" open-type="reLaunch">
           <view class="order-icon"><image src="/images/icons/ord-wallet.svg" mode="aspectFit"/></view>
           <view class="order-label">待付款</view>
         </navigator>
-        <navigator class="order-item" url="/pages/order/index" open-type="redirect">
+        <navigator class="order-item" url="/pages/order/index" open-type="reLaunch">
           <view class="order-icon order-icon-badge">
             <image src="/images/icons/ord-cal.svg" mode="aspectFit"/>
             <text class="badge-dot" wx:if="{{waitingCount > 0}}">{{waitingCount}}</text>
           </view>
           <view class="order-label">待取餐</view>
         </navigator>
-        <navigator class="order-item" url="/pages/order/index" open-type="redirect">
+        <navigator class="order-item" url="/pages/order/index" open-type="reLaunch">
           <view class="order-icon"><image src="/images/icons/ord-check.svg" mode="aspectFit"/></view>
           <view class="order-label">已完成</view>
         </navigator>
-        <navigator class="order-item" url="/pages/order/index" open-type="redirect">
+        <navigator class="order-item" url="/pages/order/index" open-type="reLaunch">
           <view class="order-icon"><image src="/images/icons/ord-head.svg" mode="aspectFit"/></view>
           <view class="order-label">售后</view>
         </navigator>
@@ -86,12 +85,8 @@
       <view class="features-grid">
         <navigator class="feature-item" url="/pages/address/index"><view class="feature-icon-svg"><image src="/images/icons/fn-pin.svg" mode="aspectFit"/></view><view class="feature-label">收货地址</view></navigator>
         <navigator class="feature-item" url="/pages/support/index"><view class="feature-icon-svg"><image src="/images/icons/fn-headset.svg" mode="aspectFit"/></view><view class="feature-label">联系客服</view></navigator>
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-receipt.svg" mode="aspectFit"/></view><view class="feature-label">发票助手</view></view>
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-hex.svg" mode="aspectFit"/></view><view class="feature-label">设置</view></view>
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-help.svg" mode="aspectFit"/></view><view class="feature-label">帮助中心</view></view>
         <navigator class="feature-item" url="/pages/favorites/index"><view class="feature-icon-svg"><image src="/images/icons/fn-star.svg" mode="aspectFit"/></view><view class="feature-label">口味收藏</view></navigator>
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-coin.svg" mode="aspectFit"/></view><view class="feature-label">省钱明细</view></view>
-        <view class="feature-item"><view class="feature-icon-svg"><image src="/images/icons/fn-gift.svg" mode="aspectFit"/></view><view class="feature-label">券包记录</view></view>
+        <navigator class="feature-item" url="/pages/cart/index"><view class="feature-icon-svg"><image src="/images/icons/cart-bag.svg" mode="aspectFit"/></view><view class="feature-label">购物车</view></navigator>
       </view>
     </view>
 
@@ -114,10 +109,10 @@
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine-active.svg" mode="aspectFit"/></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/mine/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine-active.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

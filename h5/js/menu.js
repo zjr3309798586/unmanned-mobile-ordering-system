@@ -436,6 +436,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var searchInput = document.querySelector("[data-search-input]");
   var searchCancel = document.querySelector("[data-search-cancel]");
   var searchResults = document.querySelector("[data-search-results]");
+  var searchTimer = null;
 
   function openSearch() {
     if (!searchOverlay) return;
@@ -464,7 +465,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var name = (p.name || "").toLowerCase();
       var desc = (p.description || "").toLowerCase();
       return name.indexOf(kw) >= 0 || desc.indexOf(kw) >= 0;
-    });
+    }).slice(0, 20);
     if (hits.length === 0) {
       searchResults.innerHTML = '<p class="so-empty">没找到相关商品</p>';
       return;
@@ -481,5 +482,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (searchBtn) searchBtn.addEventListener("click", openSearch);
   if (searchCancel) searchCancel.addEventListener("click", closeSearch);
   // input 事件:每次按键都重新过滤,无需点击搜索按钮
-  if (searchInput) searchInput.addEventListener("input", function () { renderSearch(searchInput.value); });
+  if (searchInput) searchInput.addEventListener("input", function () {
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(function () {
+      renderSearch(searchInput.value);
+    }, 120);
+  });
 });

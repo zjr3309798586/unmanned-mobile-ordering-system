@@ -1,11 +1,11 @@
 <view class="support-shell">
   <view class="support-top">
-    <view class="support-back" bindtap="goBack">‹</view>
+    <view class="support-back" hover-class="support-tap" bindtap="goBack">‹</view>
     <view class="support-title-group">
       <text class="support-title">云豹客服</text>
       <view class="support-title-sub"><text class="online-dot"></text>智能助手在线</view>
     </view>
-    <view class="support-top-link" bindtap="loadPage">刷新</view>
+    <view class="support-top-link" hover-class="support-tap" bindtap="loadPage">刷新</view>
   </view>
 
   <view class="support-main support-chat-main">
@@ -18,7 +18,14 @@
       <view class="support-service-status">可转人工</view>
     </view>
 
-    <view class="support-chat-panel">
+    <scroll-view
+      class="support-chat-panel {{toolsOpen ? 'is-tools-open' : ''}}"
+      scroll-y="true"
+      enhanced="true"
+      show-scrollbar="{{false}}"
+      scroll-into-view="{{scrollAnchor}}"
+      scroll-with-animation="{{false}}"
+    >
       <view class="support-date-divider">今天</view>
       <view class="support-bot-thread">
         <view class="support-chat-item">
@@ -31,11 +38,11 @@
               </view>
               <text class="bubble-content">你好，我是云豹小点智能助手。你可以直接描述问题，我会先帮你快速解答；如果没有解决，再转给员工继续处理。</text>
               <view class="support-service-card">
-                <text>常见服务</text>
-                <text>取餐进度、优惠券、订单取消、商品问题都可以处理</text>
+                <text class="service-card-title">常见服务</text>
+                <text class="service-card-desc">取餐进度、优惠券、订单取消、商品问题都可以处理</text>
               </view>
               <view class="bot-action-row">
-                <button wx:for="{{quickButtons}}" wx:key="key" type="default" data-key="{{item.key}}" bindtap="askQuick">{{item.label}}</button>
+                <button class="bot-action-btn" hover-class="support-tap" wx:for="{{quickButtons}}" wx:key="key" type="default" data-key="{{item.key}}" bindtap="askQuick">{{item.label}}</button>
               </view>
             </view>
           </view>
@@ -56,7 +63,7 @@
               </view>
               <view class="service-time" wx:if="{{item.role !== 'user'}}">{{item.time}}</view>
               <view class="bot-action-row" wx:if="{{item.withTransfer}}">
-                <button class="is-primary" type="default" loading="{{submitting}}" disabled="{{submitting}}" bindtap="transferHuman">没解决，转人工</button>
+                <button class="bot-action-btn is-primary" hover-class="support-tap" type="default" loading="{{submitting}}" disabled="{{submitting}}" bindtap="transferHuman">没解决，转人工</button>
               </view>
             </view>
           </view>
@@ -97,7 +104,8 @@
           <text class="empty-sub">机器人没有解决时，点击“没解决，转人工”，员工回复会直接出现在当前对话里。</text>
         </view>
       </view>
-    </view>
+      <view id="support-bottom" class="support-bottom-anchor"></view>
+    </scroll-view>
   </view>
 
   <view class="support-composer">
@@ -112,9 +120,19 @@
       <input class="support-input" maxlength="100" value="{{contact}}" placeholder="联系方式选填" bindinput="inputContact"/>
     </view>
     <view class="composer-input-row">
-      <button class="composer-more-btn {{toolsOpen ? 'is-open' : ''}}" type="default" bindtap="toggleTools">{{toolsOpen ? '×' : '+'}}</button>
-      <textarea class="support-textarea" maxlength="1000" value="{{content}}" placeholder="请输入问题，像聊天一样发送" bindinput="inputContent"/>
-      <button class="support-submit" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitTicket">发送</button>
+      <button class="composer-more-btn {{toolsOpen ? 'is-open' : ''}}" hover-class="support-tap" type="default" bindtap="toggleTools">{{toolsOpen ? '×' : '+'}}</button>
+      <input
+        class="support-textarea"
+        maxlength="500"
+        value="{{content}}"
+        placeholder="请输入问题，像聊天一样发送"
+        confirm-type="send"
+        cursor-spacing="24"
+        adjust-position="{{true}}"
+        bindinput="inputContent"
+        bindconfirm="submitTicket"
+      />
+      <button class="support-submit {{content ? 'is-ready' : ''}}" hover-class="support-tap" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitTicket">发送</button>
     </view>
   </view>
 </view>

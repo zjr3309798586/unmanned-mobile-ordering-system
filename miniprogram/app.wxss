@@ -672,6 +672,7 @@ button::after {
   border-top: 1rpx solid rgba(31, 111, 255, 0.1) !important;
   background: rgba(255, 255, 255, 0.96) !important;
   box-shadow: 0 -28rpx 68rpx rgba(31, 111, 255, 0.1) !important;
+  backdrop-filter: blur(28rpx) !important;
 }
 
 .bottom-nav .nav-item {
@@ -681,9 +682,9 @@ button::after {
   justify-content: center !important;
   gap: 6rpx !important;
   min-height: 116rpx !important;
-  color: #526078 !important;
+  color: #5c6a80 !important;
   font-size: 24rpx !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
   line-height: 1.2 !important;
 }
 
@@ -703,7 +704,8 @@ button::after {
 .bottom-nav .nav-logo-icon {
   width: 56rpx !important;
   height: 56rpx !important;
-  opacity: 0.48 !important;
+  opacity: 0.9 !important;
+  filter: grayscale(1) brightness(0.55) !important;
 }
 
 .bottom-nav .nav-item.is-active {
@@ -718,6 +720,7 @@ button::after {
 
 .bottom-nav .nav-item.is-active .nav-logo-icon {
   transform: scale(1.04) !important;
+  filter: none !important;
   opacity: 1 !important;
 }
 
@@ -762,25 +765,48 @@ navigator {
 }
 
 .bottom-nav {
-  min-height: 148rpx !important;
-  padding: 12rpx 16rpx calc(14rpx + env(safe-area-inset-bottom)) !important;
+  min-height: 156rpx !important;
+  padding: 16rpx 16rpx calc(16rpx + env(safe-area-inset-bottom)) !important;
 }
 
 .bottom-nav .nav-item {
-  gap: 4rpx !important;
-  min-height: 108rpx !important;
-  font-size: 23rpx !important;
+  gap: 6rpx !important;
+  min-height: 116rpx !important;
+  font-size: 24rpx !important;
 }
 
 .bottom-nav .nav-icon {
-  width: 64rpx !important;
-  height: 64rpx !important;
-  border-radius: 24rpx !important;
+  width: 68rpx !important;
+  height: 68rpx !important;
+  border-radius: 28rpx !important;
 }
 
 .bottom-nav .nav-logo-icon {
-  width: 52rpx !important;
-  height: 52rpx !important;
+  width: 56rpx !important;
+  height: 56rpx !important;
+}
+
+/* Bottom nav alignment guard: every tab keeps the same width and centered icon/text. */
+.bottom-nav .nav-item {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding: 8rpx 0 10rpx !important;
+  text-align: center !important;
+  overflow: hidden !important;
+}
+
+.bottom-nav .nav-item text {
+  display: block !important;
+  width: 100% !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  line-height: 1.15 !important;
+}
+
+.bottom-nav .nav-icon,
+.bottom-nav .nav-logo-icon {
+  flex: 0 0 auto !important;
 }
 
 /* Custom navigation safe area after disabling native navigation bars. */

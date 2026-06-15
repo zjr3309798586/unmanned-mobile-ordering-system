@@ -391,7 +391,7 @@ Page({
     this.setData({ deliveryContact: value });
     wx.setStorageSync("deliveryContact", value);
   },
-  onEdit() { wx.showToast({ title: "编辑模式开发中", icon: "none" }); },
+  onEdit() { this.clearCart(); },
   addAddon(event) {
     var id = event.currentTarget.dataset.id;
     if (!id) return;

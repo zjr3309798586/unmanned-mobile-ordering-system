@@ -2,7 +2,7 @@
   <view class="fav-top">
     <view class="fav-back" bindtap="goBack">‹</view>
     <text class="fav-title">口味收藏</text>
-    <navigator class="fav-top-link" url="/pages/menu/index" open-type="redirect">去点餐</navigator>
+    <navigator class="fav-top-link" url="/pages/menu/index" open-type="reLaunch">去点餐</navigator>
   </view>
 
   <view class="fav-main">
@@ -21,14 +21,14 @@
           <text class="fav-section-title">我的收藏</text>
           <text class="fav-section-sub">{{countText}}</text>
         </view>
-        <navigator class="fav-section-link" url="/pages/menu/index" open-type="redirect">继续看看</navigator>
+        <navigator class="fav-section-link" url="/pages/menu/index" open-type="reLaunch">继续看看</navigator>
       </view>
 
       <view class="fav-loading" wx:if="{{loading}}">正在加载收藏...</view>
 
       <view class="fav-list" wx:if="{{!loading && favorites.length}}">
         <view class="fav-product" wx:for="{{favorites}}" wx:key="id">
-          <image class="fav-product-img" src="{{item.imageUrl}}" mode="aspectFill"/>
+          <image class="fav-product-img" src="{{item.imageUrl}}" mode="aspectFit"/>
           <view class="fav-product-main">
             <text class="fav-product-name">{{item.name}}</text>
             <text class="fav-product-desc">{{item.description}}</text>
@@ -50,16 +50,16 @@
         <view class="empty-icon">★</view>
         <text class="empty-title">还没有收藏的口味</text>
         <text class="empty-sub">进入商品详情页，点击“口味收藏”，这里就会出现你的常点商品。</text>
-        <navigator class="empty-btn" url="/pages/menu/index" open-type="redirect">去点餐页逛逛</navigator>
+        <navigator class="empty-btn" url="/pages/menu/index" open-type="reLaunch">去点餐页逛逛</navigator>
       </view>
     </view>
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine-active.svg" mode="aspectFit"/></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/mine/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine-active.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

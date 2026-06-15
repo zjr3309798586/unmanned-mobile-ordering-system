@@ -169,14 +169,14 @@ page { background: #F4F8FF; }
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 60;
+  z-index: 90;
   background: rgba(0,0,0,0.45);
   opacity: 0; pointer-events: none;
   transition: opacity .2s;
 }
 .coupon-mask.is-open { opacity: 1; pointer-events: auto; }
 .coupon-drawer {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 70;
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 91;
   max-height: 75vh;
   background: #fff;
   border-radius: 32rpx 32rpx 0 0;

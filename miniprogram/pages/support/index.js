@@ -98,8 +98,11 @@ Page({
     contact: "",
     botMessages: [],
     tickets: [],
-    countText: "正在加载..."
+    countText: "正在加载...",
+    scrollAnchor: ""
   },
+
+  _scrollTimer: null,
 
   onShow() {
     this.ensureLogin().then(() => {
@@ -107,6 +110,21 @@ Page({
     }).catch((error) => {
       wx.showToast({ title: error.message || "请先登录", icon: "none" });
     });
+  },
+
+  onHide() {
+    this.clearScrollTimer();
+  },
+
+  onUnload() {
+    this.clearScrollTimer();
+  },
+
+  clearScrollTimer() {
+    if (this._scrollTimer) {
+      clearTimeout(this._scrollTimer);
+      this._scrollTimer = null;
+    }
   },
 
   ensureLogin() {
@@ -146,7 +164,9 @@ Page({
   },
 
   renderTickets(tickets) {
-    const list = (tickets || []).map((ticket) => {
+    const list = (tickets || []).slice().sort((a, b) => {
+      return String(a.createdAt || "").localeCompare(String(b.createdAt || ""));
+    }).map((ticket) => {
       const meta = [
         shortTime(ticket.createdAt),
         ticket.orderNo ? "订单 " + ticket.orderNo : "未关联订单"
@@ -173,13 +193,12 @@ Page({
   },
 
   scrollToBottom() {
-    if (!wx.pageScrollTo) return;
-    wx.nextTick(() => {
-      wx.pageScrollTo({
-        scrollTop: 99999,
-        duration: 180
+    this.clearScrollTimer();
+    this._scrollTimer = setTimeout(() => {
+      this.setData({ scrollAnchor: "" }, () => {
+        this.setData({ scrollAnchor: "support-bottom" });
       });
-    });
+    }, 60);
   },
 
   appendUserMessage(content, receipt) {
@@ -298,10 +317,13 @@ Page({
   },
 
   toggleTools() {
-    this.setData({ toolsOpen: !this.data.toolsOpen });
+    this.setData({ toolsOpen: !this.data.toolsOpen }, () => {
+      this.scrollToBottom();
+    });
   },
 
   submitTicket() {
+    if (this.data.submitting) return;
     const content = (this.data.content || "").trim();
     if (!content) {
       wx.showToast({ title: "请先输入问题", icon: "none" });

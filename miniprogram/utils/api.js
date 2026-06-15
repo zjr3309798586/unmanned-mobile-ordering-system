@@ -64,6 +64,15 @@ function request(path, options = {}) {
 }
 
 const IMG_DIRS = ["nav", "home", "menu", "mine", "saving", "mascot", "common", "icons", "uploads"];
+const PRODUCT_IMAGE_ALIASES = {
+  "product-orange-coffee.svg": "/images/menu/menu-product-orange.png",
+  "product-coconut-latte.svg": "/images/menu/menu-product-latte.png",
+  "product-grapefruit-tea.svg": "/images/menu/menu-product-grape.png",
+  "product-milk-tea.svg": "/images/menu/menu-product-milk-tea.png",
+  "product-toast.svg": "/images/menu/menu-product-wrap.png",
+  "product-lemon-tea.svg": "/images/menu/menu-product-orange.png",
+  "product-default.svg": "/images/menu/menu-product-milk-tea.png"
+};
 
 function guessSubdir(filename) {
   if (/^nav-/.test(filename)) return "nav";
@@ -90,9 +99,10 @@ function imageUrl(value) {
   if (value.indexOf("/images/") === 0) {
     const rest = value.substring("/images/".length);
     const head = rest.split("/")[0];
-    if (head === "uploads") return config.assetBaseUrl + value;
-    if (IMG_DIRS.indexOf(head) !== -1) return value;
+    if (head === "uploads") return value;
     const filename = rest.split("/").pop();
+    if (PRODUCT_IMAGE_ALIASES[filename]) return PRODUCT_IMAGE_ALIASES[filename];
+    if (IMG_DIRS.indexOf(head) !== -1) return value;
     const sub = guessSubdir(filename);
     return sub ? "/images/" + sub + "/" + filename : localFallback;
   }

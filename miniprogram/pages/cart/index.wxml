@@ -5,7 +5,7 @@
       <image class="ct-back-icon" src="/images/icons/d-back.svg" mode="aspectFit"/>
     </view>
     <text class="ct-title">购物车</text>
-    <view class="ct-edit" bindtap="onEdit">编辑</view>
+    <view class="ct-edit" bindtap="clearCart">清空</view>
   </view>
 
   <view class="cart-main">
@@ -70,7 +70,7 @@
       <view class="cart-items">
         <view class="cart-item" wx:for="{{items}}" wx:key="id">
           <view class="ci-thumb">
-            <image src="{{item.imageUrl}}" mode="aspectFill"/>
+            <image src="{{item.imageUrl}}" mode="aspectFit"/>
             <text class="ci-new" wx:if="{{item.isNew}}">新</text>
           </view>
           <view class="ci-body">
@@ -116,7 +116,7 @@
       <view class="addon-row">
         <view class="addon-item" wx:for="{{addons}}" wx:key="id" data-id="{{item.id}}" bindtap="addAddon">
           <view class="ao-cover">
-            <image src="{{item.imageUrl}}" mode="aspectFill"/>
+            <image src="{{item.imageUrl}}" mode="aspectFit"/>
             <text class="ao-save">{{item.save}}</text>
           </view>
           <view class="ao-info">
@@ -213,10 +213,10 @@
   </view>
 
   <view class="bottom-nav cart-bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/menu/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item" url="/pages/order/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

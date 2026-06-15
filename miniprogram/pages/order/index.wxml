@@ -1,5 +1,9 @@
 <view class="order-shell">
 
+  <view class="order-titlebar">
+    <view class="order-title">订单</view>
+  </view>
+
   <view class="order-topbar">
     <view class="order-tab {{tab === 'self' ? 'is-active' : ''}}" data-tab="self" bindtap="switchTab">
       <text>自取</text><view class="order-tab-bar"></view>
@@ -42,10 +46,20 @@
             联系电话：{{item.deliveryContact}} · 配送费 ¥{{item.deliveryFee}}
           </view>
           <view class="oc-body">
-            <view class="oc-thumbs">
-              <view class="oc-thumb" wx:for="{{item.thumbs}}" wx:for-item="thumb" wx:key="*this">
-                <image src="{{thumb}}" mode="aspectFit"/>
-              </view>
+            <view class="oc-cover">
+              <image src="{{item.coverImage}}" mode="aspectFit"/>
+            </view>
+            <view class="oc-summary">
+              <block wx:if="{{item.hasSummaryItems}}">
+                <view class="oc-line" wx:for="{{item.summaryItems}}" wx:for-item="summary" wx:key="name">
+                  <text class="oc-product-name">{{summary.name}}</text>
+                  <text class="oc-product-qty">×{{summary.quantity}}</text>
+                </view>
+              </block>
+              <block wx:else>
+                <view class="oc-no-items">暂无商品明细</view>
+              </block>
+              <view class="oc-more">{{item.summaryText}}</view>
             </view>
             <view class="oc-price">
               <view class="oc-pay">¥{{item.amount}}</view>
@@ -63,10 +77,10 @@
   </view>
 
   <view class="bottom-nav">
-    <navigator class="nav-item" url="/pages/home/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
-    <navigator class="nav-item" url="/pages/menu/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
-    <navigator class="nav-item" url="/pages/saving-card/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
-    <navigator class="nav-item is-active" url="/pages/order/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
-    <navigator class="nav-item" url="/pages/mine/index" open-type="redirect"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
+    <navigator class="nav-item" url="/pages/home/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-home.svg" mode="aspectFit"/></view><text>首页</text></navigator>
+    <navigator class="nav-item" url="/pages/menu/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-menu.svg" mode="aspectFit"/></view><text>点餐</text></navigator>
+    <navigator class="nav-item" url="/pages/saving-card/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-saving.svg" mode="aspectFit"/></view><text>省钱卡</text></navigator>
+    <navigator class="nav-item is-active" url="/pages/order/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-order.svg" mode="aspectFit"/></view><text>订单</text></navigator>
+    <navigator class="nav-item" url="/pages/mine/index" open-type="reLaunch"><view class="nav-icon"><image class="nav-logo-icon" src="/images/nav/nav-mine.svg" mode="aspectFit"/></view><text>我的</text></navigator>
   </view>
 </view>

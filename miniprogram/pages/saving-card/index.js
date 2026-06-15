@@ -25,12 +25,13 @@ Page({
   },
 
   loadData() {
+    const loggedIn = auth.isLoggedIn();
     Promise.all([
-      api.get("/saving-card/plans"),
-      api.get("/coupons"),
-      api.get("/products"),
-      auth.isLoggedIn() ? api.get("/user/coupons") : Promise.resolve([]),
-      auth.isLoggedIn() ? api.get("/mine") : Promise.resolve(null)
+      api.get("/saving-card/plans").catch(() => []),
+      api.get("/coupons").catch(() => []),
+      api.get("/products").catch(() => []),
+      loggedIn ? api.get("/user/coupons").catch(() => []) : Promise.resolve([]),
+      loggedIn ? api.get("/mine").catch(() => null) : Promise.resolve(null)
     ]).then(([plans, coupons, products, userCoupons, profile]) => {
       const couponStatus = {};
       (userCoupons || []).forEach((coupon) => {
@@ -46,6 +47,7 @@ Page({
       const availableCoupons = (coupons || []).filter((coupon) => coupon.available !== false);
 
       this.setData({
+        loggedIn,
         opened,
         opening: false,
         openButtonText: opened ? "去点餐" : "立即开通",
@@ -74,7 +76,8 @@ Page({
         }))
       });
     }).catch((error) => {
-      wx.showToast({ title: error.message, icon: "none" });
+      this.setData({ opening: false, openButtonText: this.data.opened ? "去点餐" : "立即开通" });
+      wx.showToast({ title: error.message || "省钱卡加载失败", icon: "none" });
     });
   },
 
@@ -85,35 +88,38 @@ Page({
     return "¥" + text;
   },
 
+  ensureLogin() {
+    if (auth.isLoggedIn()) {
+      return Promise.resolve();
+    }
+    if (auth.devLogin) {
+      return auth.devLogin();
+    }
+    return Promise.reject(new Error("请先登录"));
+  },
+
   openCard() {
     if (this.data.opening) return;
     if (this.data.opened) {
       wx.redirectTo({ url: "/pages/menu/index" });
       return;
     }
-    if (!auth.isLoggedIn()) {
-      wx.showToast({ title: "请先登录", icon: "none" });
-      wx.redirectTo({ url: "/pages/mine/index" });
-      return;
-    }
 
     this.setData({ opening: true, openButtonText: "开通中..." });
-    api.post("/saving-card/open", {}).then(() => {
-      this.setData({ opened: true, opening: false, openButtonText: "去点餐" });
-      wx.showToast({ title: "省钱卡已开通", icon: "success" });
-      this.loadData();
-    }).catch((error) => {
-      this.setData({ opening: false, openButtonText: "立即开通" });
-      wx.showToast({ title: error.message, icon: "none" });
-    });
+    this.ensureLogin()
+      .then(() => api.post("/saving-card/open", {}))
+      .then(() => {
+        this.setData({ loggedIn: true, opened: true, opening: false, openButtonText: "去点餐" });
+        wx.showToast({ title: "省钱卡已开通", icon: "success" });
+        this.loadData();
+      })
+      .catch((error) => {
+        this.setData({ opening: false, openButtonText: "立即开通" });
+        wx.showToast({ title: error.message || "开通失败", icon: "none" });
+      });
   },
 
   claimCoupon(event) {
-    if (!auth.isLoggedIn()) {
-      wx.showToast({ title: "请先登录", icon: "none" });
-      wx.redirectTo({ url: "/pages/mine/index" });
-      return;
-    }
     if (!this.data.opened) {
       wx.showToast({ title: "请先开通省钱卡", icon: "none" });
       return;
@@ -126,12 +132,15 @@ Page({
       return;
     }
 
-    api.post(`/user/coupons/${couponId}/claim`, {}).then(() => {
-      wx.showToast({ title: "优惠券已领取", icon: "success" });
-      this.loadData();
-    }).catch((error) => {
-      wx.showToast({ title: error.message, icon: "none" });
-    });
+    this.ensureLogin()
+      .then(() => api.post(`/user/coupons/${couponId}/claim`, {}))
+      .then(() => {
+        wx.showToast({ title: "优惠券已领取", icon: "success" });
+        this.loadData();
+      })
+      .catch((error) => {
+        wx.showToast({ title: error.message || "领取失败", icon: "none" });
+      });
   },
 
   scrollRules() {

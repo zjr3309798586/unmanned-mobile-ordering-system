@@ -2,6 +2,14 @@ const api = require("../../utils/api");
 const auth = require("../../utils/auth");
 const format = require("../../utils/format");
 
+function normalizeId(value) {
+  return value == null ? "" : String(value);
+}
+
+function sameId(a, b) {
+  return normalizeId(a) === normalizeId(b);
+}
+
 Page({
   data: {
     categories: [],
@@ -24,10 +32,18 @@ Page({
 
   _allProducts: [],
   _cartItems: [],
+  _searchTimer: null,
 
   onShow() {
     this.syncOrderMode(wx.getStorageSync("orderMode") === "delivery" ? "delivery" : "pickup", false);
     this.loadData();
+  },
+
+  onUnload() {
+    if (this._searchTimer) {
+      clearTimeout(this._searchTimer);
+      this._searchTimer = null;
+    }
   },
 
   loadData() {
@@ -38,11 +54,22 @@ Page({
       auth.isLoggedIn() ? api.get("/cart") : Promise.resolve(null),
       auth.isLoggedIn() ? api.get("/user/coupons") : Promise.resolve([])
     ]).then(function (res) {
-      var cats = res[0] || [];
-      var products = res[1] || [];
+      var cats = (res[0] || []).map(function (cat) {
+        return Object.assign({}, cat, { id: normalizeId(cat.id) });
+      });
+      var products = (res[1] || []).map(function (product) {
+        return Object.assign({}, product, {
+          id: normalizeId(product.id),
+          categoryId: normalizeId(product.categoryId)
+        });
+      });
       var cart = res[2];
       var coupons = (res[3] || []).filter(function (c) { return c.status === "AVAILABLE" || !c.status; });
-      var activeCat = cats.length > 0 ? cats[0].id : "";
+      var currentActive = normalizeId(self.data.activeCat);
+      var activeCat = "";
+      if (cats.length > 0) {
+        activeCat = cats.some(function (cat) { return sameId(cat.id, currentActive); }) ? currentActive : cats[0].id;
+      }
       self._allProducts = products;
       self._cartItems = cart ? (cart.items || []) : [];
       self.setData({
@@ -55,6 +82,11 @@ Page({
         couponCount: coupons.length,
         couponItems: self.buildCouponItems(coupons),
         cartItems: self.buildCartItems()
+      }, function () {
+        if (wx.getStorageSync("openSelectedCartOnMenu")) {
+          wx.removeStorageSync("openSelectedCartOnMenu");
+          self.openDrawer();
+        }
       });
     }).catch(function () {});
   },
@@ -62,12 +94,14 @@ Page({
   buildProducts(catId) {
     var cartItems = this._cartItems;
     return (this._allProducts || []).filter(function (p) {
-      return !catId || p.categoryId === catId;
+      return !catId || sameId(p.categoryId, catId);
     }).map(function (p) {
       var price = Number(p.price || 0);
       var ps = price.toFixed(1).split(".");
       var qty = 0;
-      cartItems.forEach(function (ci) { if (ci.productId === p.id) qty += ci.quantity; });
+      cartItems.forEach(function (ci) {
+        if (sameId(ci.productId, p.id)) qty += Number(ci.quantity || 0);
+      });
       return {
         ...p,
         imageUrl: api.imageUrl(p.image),
@@ -118,7 +152,10 @@ Page({
 
   openCouponDrawer() {
     var self = this;
-    this.setData({ couponDrawerOpen: true });
+    this.setData({
+      couponDrawerOpen: true,
+      drawerOpen: false
+    });
 
     var show = function () {
       api.get("/user/coupons").then(function (list) {
@@ -126,10 +163,11 @@ Page({
         self.setData({
           couponCount: coupons.length,
           couponItems: self.buildCouponItems(coupons),
-          couponDrawerOpen: true
+          couponDrawerOpen: true,
+          drawerOpen: false
         });
       }).catch(function (e) {
-        self.setData({ couponDrawerOpen: true, couponItems: [] });
+        self.setData({ couponDrawerOpen: true, drawerOpen: false, couponItems: [] });
         wx.showToast({ title: e.message || "优惠券加载失败", icon: "none" });
       });
     };
@@ -139,7 +177,7 @@ Page({
     }
     if (auth.devLogin) {
       auth.devLogin().then(show).catch(function () {
-        self.setData({ couponDrawerOpen: true, couponItems: [] });
+        self.setData({ couponDrawerOpen: true, drawerOpen: false, couponItems: [] });
         wx.showToast({ title: "登录失败", icon: "none" });
       });
     }
@@ -177,7 +215,12 @@ Page({
   },
 
   openDrawer() {
-    this.setData({ drawerOpen: true });
+    var nextOpen = !this.data.drawerOpen;
+    this.setData({
+      drawerOpen: nextOpen,
+      couponDrawerOpen: false,
+      cartItems: this.buildCartItems()
+    });
   },
 
   closeDrawer() {
@@ -223,8 +266,8 @@ Page({
   },
 
   switchCat(event) {
-    var catId = event.currentTarget.dataset.id;
-    var cat = this.data.categories.find(function (c) { return c.id === catId; });
+    var catId = normalizeId(event.currentTarget.dataset.id);
+    var cat = this.data.categories.find(function (c) { return sameId(c.id, catId); });
     this.setData({
       activeCat: catId,
       catTitle: cat ? cat.name : "全部商品",
@@ -233,8 +276,16 @@ Page({
   },
 
   addCart(event) {
-    var id = event.currentTarget.dataset.id;
+    var id = normalizeId(event.currentTarget.dataset.id);
     wx.navigateTo({ url: "/pages/detail/index?id=" + id });
+  },
+
+  goCart() {
+    if (Number(this.data.cartQty || 0) <= 0) {
+      wx.showToast({ title: "请先选择商品", icon: "none" });
+      return;
+    }
+    wx.navigateTo({ url: "/pages/cart/index" });
   },
 
   openSearch() {
@@ -247,31 +298,39 @@ Page({
 
   onSearchInput(event) {
     var kw = (event.detail.value || "").trim().toLowerCase();
+    if (this._searchTimer) {
+      clearTimeout(this._searchTimer);
+      this._searchTimer = null;
+    }
     if (!kw) {
       this.setData({ searchKw: "", searchHits: [] });
       return;
     }
-    var hits = (this._allProducts || []).filter(function (p) {
-      var n = (p.name || "").toLowerCase();
-      var d = (p.description || "").toLowerCase();
-      return n.indexOf(kw) >= 0 || d.indexOf(kw) >= 0;
-    }).map(function (p) {
-      return {
-        id: p.id,
-        name: p.name,
-        description: p.description,
-        imageUrl: p.image ? api.imageUrl(p.image) : "/images/common/food-placeholder.svg",
-        priceText: Number(p.price || 0).toFixed(1)
-      };
-    });
-    this.setData({ searchKw: kw, searchHits: hits });
+    this.setData({ searchKw: kw });
+    var self = this;
+    this._searchTimer = setTimeout(function () {
+      var hits = (self._allProducts || []).filter(function (p) {
+        var n = (p.name || "").toLowerCase();
+        var d = (p.description || "").toLowerCase();
+        return n.indexOf(kw) >= 0 || d.indexOf(kw) >= 0;
+      }).slice(0, 20).map(function (p) {
+        return {
+          id: p.id,
+          name: p.name,
+          description: p.description,
+          imageUrl: p.image ? api.imageUrl(p.image) : "/images/common/food-placeholder.svg",
+          priceText: Number(p.price || 0).toFixed(1)
+        };
+      });
+      self.setData({ searchHits: hits });
+    }, 120);
   },
 
   minusCart(event) {
-    var id = event.currentTarget.dataset.id;
+    var id = normalizeId(event.currentTarget.dataset.id);
     var self = this;
     if (!auth.isLoggedIn()) return;
-    var cartItem = this._cartItems.find(function (ci) { return ci.productId === id; });
+    var cartItem = this._cartItems.find(function (ci) { return sameId(ci.productId, id); });
     if (!cartItem) return;
     if (cartItem.quantity <= 1) {
       api.del("/cart/items/" + cartItem.id)

@@ -73,6 +73,15 @@ Page({
     const pickupType = order.pickupType || "SELF_PICKUP";
     const isDelivery = pickupType === "DELIVERY";
     const pickupNo = order.pickupNo || order.orderNo || "—";
+    const qty = items.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+    const summaryItems = items.slice(0, 3).map((item) => {
+      const name = item.productName || item.name || item.title || (item.product && item.product.name) || "";
+      return {
+        name,
+        quantity: Number(item.quantity || 0)
+      };
+    }).filter((item) => item.name);
+    const coverImage = items.length ? api.imageUrl(items[0].image || items[0].productImage || "") : "/images/common/food-placeholder.svg";
     return {
       id: order.id,
       pickupType: pickupType,
@@ -84,11 +93,12 @@ Page({
       metaText: isDelivery ? ("配送至 " + (order.deliveryAddress || "校园地址待确认")) : ("取餐号 " + pickupNo),
       deliveryContact: order.deliveryContact || "未填写",
       deliveryFee: Number(order.deliveryFee || 0).toFixed(1),
-      thumbs: items.length
-        ? items.map((item) => api.imageUrl(item.image || "")).slice(0, 3)
-        : ["/images/common/food-placeholder.svg"],
-      amount: Number(order.payableAmount || 0).toFixed(0),
-      qty: items.reduce((sum, item) => sum + Number(item.quantity || 1), 0)
+      coverImage,
+      summaryItems,
+      hasSummaryItems: summaryItems.length > 0,
+      summaryText: items.length ? ("共 " + qty + " 件商品") : "暂无商品明细",
+      amount: Number(order.payableAmount || 0).toFixed(1),
+      qty
     };
   },
 

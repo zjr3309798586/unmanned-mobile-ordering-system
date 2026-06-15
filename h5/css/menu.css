@@ -1044,3 +1044,25 @@
 .so-desc { margin-top: 2px; color: #9ca3af; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .so-price { color: #e53935; font-size: 14px; font-weight: 700; flex: 0 0 auto; }
 
+/* Final polish: stable z-index scale and cheaper drawer motion. */
+.cart-mask {
+  z-index: 90;
+  background: rgba(15, 32, 60, 0.38);
+  transition: opacity 0.18s ease;
+}
+
+.cart-drawer {
+  z-index: 91;
+  transform: translateX(-50%) translateY(110%);
+  box-shadow: 0 -8px 24px rgba(31, 111, 255, 0.14);
+  transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s 0.2s;
+  will-change: transform;
+}
+
+.cart-drawer.is-open {
+  transform: translateX(-50%) translateY(0);
+}
+
+.coupon-mask { z-index: 100; }
+.coupon-drawer { z-index: 101; will-change: transform; transition-duration: 0.2s; }
+.search-overlay { z-index: 110; }

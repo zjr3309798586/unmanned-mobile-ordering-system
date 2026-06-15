@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var qty = 1;   // 用户选的数量
 
-  // ===== 按 ?id= 拉真实商品 =====
+  // ===== 按 ?id= 拉商品详情 =====
   // 没有 id 时(直接打开 detail.html 调试)就用 html 里写死的占位数据
   var productId = app && app.queryParam ? app.queryParam("id") : null;
   if (productId && app && app.get) {

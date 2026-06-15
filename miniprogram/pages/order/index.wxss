@@ -7,14 +7,34 @@ page { background: #F4F8FF; }
   color: #191c23;
 }
 
-/* 顶部 tab */
+/* 顶部标题与 tab：避开微信胶囊区域。 */
+.order-titlebar {
+  position: sticky;
+  top: 0;
+  z-index: 42;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 112rpx;
+  padding: 58rpx 200rpx 16rpx;
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.96);
+}
+
+.order-title {
+  color: #071a44;
+  font-size: 38rpx;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
 .order-topbar {
-  position: sticky; top: 0; z-index: 40;
+  position: sticky; top: 112rpx; z-index: 40;
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
-  height: 176rpx;
-  padding: 80rpx 32rpx 0;
+  height: 96rpx;
+  padding: 0 32rpx;
   background: rgba(255,255,255,0.9);
 }
 .order-tab { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 88rpx; padding: 0 48rpx 24rpx; }
@@ -158,4 +178,229 @@ page { background: #F4F8FF; }
   padding: 0 28rpx;
 }
 
+/* Alignment fix: keep order cards stable on small screens. */
+.oc-head {
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.oc-store {
+  flex: 1 1 0;
+  min-width: 0;
+  gap: 12rpx;
+}
+
+.oc-store-name {
+  max-width: none;
+  flex: 1 1 auto;
+}
+
+.oc-status {
+  justify-content: flex-end;
+  max-width: 160rpx;
+  line-height: 1.25;
+  text-align: right;
+}
+
+.oc-body {
+  align-items: center;
+}
+
+.oc-price {
+  min-width: 128rpx;
+  margin-left: 20rpx;
+}
+
+.oc-actions {
+  align-items: center;
+}
+
+.oc-btn {
+  box-sizing: border-box;
+  min-width: 176rpx;
+  text-align: center;
+}
+
 /* 底部导航 */
+
+/* Final order page fix from screenshots: safe top, real item summary, no card drift. */
+.order-shell {
+  padding-bottom: calc(188rpx + env(safe-area-inset-bottom));
+}
+
+.order-titlebar {
+  position: sticky;
+  top: 0;
+  z-index: 45;
+  min-height: 176rpx;
+  padding: 88rpx 200rpx 18rpx;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.order-topbar {
+  top: 176rpx;
+  height: 92rpx;
+  padding: 0 40rpx;
+  border-bottom: 1rpx solid rgba(219, 231, 246, 0.7);
+}
+
+.order-tab {
+  min-height: 88rpx;
+  padding: 0 44rpx 18rpx;
+}
+
+.order-main {
+  padding: 24rpx 28rpx 0;
+}
+
+.order-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18rpx;
+  min-height: 520rpx;
+  padding: 0;
+}
+
+.order-empty text {
+  display: block;
+  color: #5c6b8a;
+  font-size: 28rpx;
+  line-height: 1.4;
+}
+
+.order-empty-btn {
+  margin-top: 8rpx;
+}
+
+.order-card {
+  padding: 30rpx;
+  border-radius: 30rpx;
+  box-shadow: 0 16rpx 44rpx rgba(31, 111, 255, 0.08);
+}
+
+.oc-head {
+  align-items: flex-start;
+}
+
+.oc-store {
+  gap: 10rpx;
+}
+
+.oc-icon-btn {
+  display: none;
+}
+
+.oc-store-name {
+  color: #071a44;
+  font-size: 30rpx;
+  font-weight: 900;
+}
+
+.oc-status {
+  max-width: 150rpx;
+  color: #f04b1f;
+  font-size: 25rpx;
+  font-weight: 800;
+}
+
+.oc-status image {
+  display: none;
+}
+
+.oc-meta {
+  margin-bottom: 24rpx;
+  color: #5c6b8a;
+  font-size: 23rpx;
+  line-height: 1.45;
+  word-break: break-all;
+}
+
+.oc-body {
+  display: grid;
+  grid-template-columns: 112rpx minmax(0, 1fr) 118rpx;
+  align-items: center;
+  gap: 22rpx;
+  margin-bottom: 28rpx;
+}
+
+.oc-cover {
+  width: 112rpx;
+  height: 112rpx;
+  overflow: hidden;
+  border-radius: 24rpx;
+  background: #eef5ff;
+}
+
+.oc-cover image {
+  width: 100%;
+  height: 100%;
+}
+
+.oc-summary {
+  min-width: 0;
+}
+
+.oc-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  color: #102033;
+  font-size: 25rpx;
+  line-height: 1.48;
+}
+
+.oc-product-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-product-qty {
+  flex: 0 0 auto;
+  color: #5c6b8a;
+}
+
+.oc-more {
+  margin-top: 8rpx;
+  color: #7a8aa0;
+  font-size: 22rpx;
+}
+
+.oc-no-items {
+  color: #7a8aa0;
+  font-size: 25rpx;
+  line-height: 1.48;
+}
+
+.oc-price {
+  min-width: 0;
+  margin-left: 0;
+  text-align: right;
+}
+
+.oc-pay {
+  color: #f04b1f;
+  font-size: 34rpx;
+  font-weight: 900;
+}
+
+.oc-actions {
+  gap: 18rpx;
+}
+
+.oc-btn {
+  min-width: 168rpx;
+  min-height: 72rpx;
+  padding: 0 24rpx;
+  font-size: 25rpx;
+  line-height: 72rpx;
+}
+
+.oc-btn-dark {
+  background: #1f6fff;
+  border-color: #1f6fff;
+}
